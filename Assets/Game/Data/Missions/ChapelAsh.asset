@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b7885133cbaf547bda13b87bcc5332, type: 3}
+  m_Name: ChapelAsh
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.MissionDefinitionAsset
+  missionId: mission-chapel-ash
+  title: Ashes At Saint Vera
+  summary: Check the chapel courtyard after the fire and leave with proof before
+    the old quarter shuts its doors.
+  startingStageId: investigate-courtyard
+  cashReward: 720
+  reputationDelta: 3
+  unlockDistrictIds: []
+  unlockActivityIds: []
+  stages:
+  - Id: investigate-courtyard
+    Title: Investigate the courtyard
+    ObjectiveText: Search the Saint Vera yard for what survived the fire.
+    NextStageId: leave-quarter
+    CreatesCheckpoint: 1
+  - Id: leave-quarter
+    Title: Leave the quarter
+    ObjectiveText: Disappear before the mourners turn into witnesses.
+    NextStageId: 
+    CreatesCheckpoint: 1
+  checkpoints:
+  - Id: courtyard-checkpoint
+    SceneName: District_OldQuarter_01
+    SpawnPointId: FromChapelInterior
+    MissionStageId: investigate-courtyard
+  - Id: quarter-exit-checkpoint
+    SceneName: District_OldQuarter_01
+    SpawnPointId: OldQuarterStart
+    MissionStageId: leave-quarter
+  failureConditions:
+  - Id: crowd-turned
+    Type: 2
+    Description: Do not let the courtyard crowd pin you in.

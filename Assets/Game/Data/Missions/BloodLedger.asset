@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b7885133cbaf547bda13b87bcc5332, type: 3}
+  m_Name: BloodLedger
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.MissionDefinitionAsset
+  missionId: mission-blood-ledger
+  title: Blood Ledger
+  summary: Read the family ledger in Vincent's office and walk out knowing who is
+    meant to disappear next.
+  startingStageId: read-ledger
+  cashReward: 620
+  reputationDelta: 3
+  unlockDistrictIds: []
+  unlockActivityIds: []
+  stages:
+  - Id: read-ledger
+    Title: Read the ledger
+    ObjectiveText: Review Vincent's marked ledger before anyone else sees it.
+    NextStageId: leave-office
+    CreatesCheckpoint: 1
+  - Id: leave-office
+    Title: Leave the office
+    ObjectiveText: Get out before the names in the book become yours too.
+    NextStageId: 
+    CreatesCheckpoint: 1
+  checkpoints:
+  - Id: blood-ledger-checkpoint
+    SceneName: Interior_BackOffice_01
+    SpawnPointId: LedgerDeskSpawn
+    MissionStageId: read-ledger
+  - Id: blood-ledger-exit-checkpoint
+    SceneName: Interior_BackOffice_01
+    SpawnPointId: LedgerDeskSpawn
+    MissionStageId: leave-office
+  failureConditions:
+  - Id: ledger-read-wrong
+    Type: 1
+    Description: Do not let anyone know you opened the ledger.

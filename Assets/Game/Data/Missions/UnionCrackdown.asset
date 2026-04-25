@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b7885133cbaf547bda13b87bcc5332, type: 3}
+  m_Name: UnionCrackdown
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.MissionDefinitionAsset
+  missionId: mission-union-crackdown
+  title: Union Crackdown
+  summary: Survey Union Square after dark, mark the weak storefront, and leave before
+    the crackdown turns public.
+  startingStageId: survey-square
+  cashReward: 680
+  reputationDelta: 3
+  unlockDistrictIds: []
+  unlockActivityIds: []
+  stages:
+  - Id: survey-square
+    Title: Survey the square
+    ObjectiveText: Mark the storefront that folds when the pressure starts.
+    NextStageId: leave-downtown
+    CreatesCheckpoint: 1
+  - Id: leave-downtown
+    Title: Leave downtown
+    ObjectiveText: Get clear before the square hardens against you.
+    NextStageId: 
+    CreatesCheckpoint: 1
+  checkpoints:
+  - Id: survey-square-checkpoint
+    SceneName: District_BusinessCore_01
+    SpawnPointId: BusinessCoreStart
+    MissionStageId: survey-square
+  - Id: downtown-exit-checkpoint
+    SceneName: District_BusinessCore_01
+    SpawnPointId: BusinessCoreStart
+    MissionStageId: leave-downtown
+  failureConditions:
+  - Id: square-locked-down
+    Type: 4
+    Description: Do not get trapped when the square locks down.

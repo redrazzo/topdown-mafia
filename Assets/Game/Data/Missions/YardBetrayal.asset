@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b7885133cbaf547bda13b87bcc5332, type: 3}
+  m_Name: YardBetrayal
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.MissionDefinitionAsset
+  missionId: mission-yard-betrayal
+  title: Yard Betrayal
+  summary: Inspect the midnight yard handoff and leave alive once the betrayal finally
+    shows its face.
+  startingStageId: inspect-yard
+  cashReward: 780
+  reputationDelta: 4
+  unlockDistrictIds: []
+  unlockActivityIds: []
+  stages:
+  - Id: inspect-yard
+    Title: Inspect the yard handoff
+    ObjectiveText: Reach the yard marker and confirm who sold the route.
+    NextStageId: leave-yard
+    CreatesCheckpoint: 1
+  - Id: leave-yard
+    Title: Leave the yard
+    ObjectiveText: Get out before the trains and traitors close around you.
+    NextStageId: 
+    CreatesCheckpoint: 1
+  checkpoints:
+  - Id: betrayal-checkpoint
+    SceneName: District_RailYard_01
+    SpawnPointId: RailYardStart
+    MissionStageId: inspect-yard
+  - Id: yard-exit-checkpoint
+    SceneName: District_RailYard_01
+    SpawnPointId: FromGarageInterior
+    MissionStageId: leave-yard
+  failureConditions:
+  - Id: yard-ambush
+    Type: 4
+    Description: Do not let the betrayal turn into a clean execution.

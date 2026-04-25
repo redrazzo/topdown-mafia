@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b7885133cbaf547bda13b87bcc5332, type: 3}
+  m_Name: BelloriBooks
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.MissionDefinitionAsset
+  missionId: mission-bellori-books
+  title: Bellori's Books
+  summary: Search Nico Bellori's private ledgers and get back out before the books
+    can disappear into the night.
+  startingStageId: inspect-ledgers
+  cashReward: 420
+  reputationDelta: 2
+  unlockDistrictIds: []
+  unlockActivityIds: []
+  stages:
+  - Id: inspect-ledgers
+    Title: Inspect the ledgers
+    ObjectiveText: Search Bellori's hidden books for the missing names.
+    NextStageId: leave-bookstore
+    CreatesCheckpoint: 1
+  - Id: leave-bookstore
+    Title: Leave the bookstore
+    ObjectiveText: Get back onto the avenue with the pages intact.
+    NextStageId: 
+    CreatesCheckpoint: 1
+  checkpoints:
+  - Id: bookshelf-checkpoint
+    SceneName: Interior_BusinessBookkeeper_01
+    SpawnPointId: BusinessInteriorSpawn
+    MissionStageId: inspect-ledgers
+  - Id: bookstore-exit-checkpoint
+    SceneName: Interior_BusinessBookkeeper_01
+    SpawnPointId: BusinessInteriorSpawn
+    MissionStageId: leave-bookstore
+  failureConditions:
+  - Id: books-lost
+    Type: 3
+    Description: Do not let the ledger pages get burned or taken.

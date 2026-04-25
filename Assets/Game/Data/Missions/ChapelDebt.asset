@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b7885133cbaf547bda13b87bcc5332, type: 3}
+  m_Name: ChapelDebt
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.MissionDefinitionAsset
+  missionId: mission-chapel-debt
+  title: The Chapel Debt
+  summary: Find the debtor hiding in the old quarter and make sure he understands
+    who now owns his Sunday mornings.
+  startingStageId: find-debtor
+  cashReward: 300
+  reputationDelta: 1
+  unlockDistrictIds:
+  - rail-yard
+  unlockActivityIds:
+  - activity-chop-delivery
+  stages:
+  - Id: find-debtor
+    Title: Find the debtor
+    ObjectiveText: Track the debtor through the old quarter.
+    NextStageId: push-message
+    CreatesCheckpoint: 1
+  - Id: push-message
+    Title: Push the message
+    ObjectiveText: "Make the family\u2019s warning clear."
+    NextStageId: 
+    CreatesCheckpoint: 1
+  checkpoints:
+  - Id: quarter-start-checkpoint
+    SceneName: District_OldQuarter_01
+    SpawnPointId: OldQuarterStart
+    MissionStageId: find-debtor
+  - Id: quarter-message-checkpoint
+    SceneName: District_OldQuarter_01
+    SpawnPointId: OldQuarterStart
+    MissionStageId: push-message
+  failureConditions:
+  - Id: debtor-escaped
+    Type: 3
+    Description: Do not let the debtor slip away.

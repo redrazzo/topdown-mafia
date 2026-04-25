@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d361d1478be707849baa105697b94022, type: 3}
+  m_Name: BookkeeperWarning
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.DialogueSequenceAsset
+  dialogueId: dialogue-bookkeeper-warning
+  displayName: Bookkeeper Warning
+  startingNodeId: bookkeeper-open
+  nodes:
+  - Id: bookkeeper-open
+    SpeakerName: Nico Bellori
+    Text: The union books were supposed to stay between the men who bled for them.
+    NextNodeId: tommy-warning
+  - Id: tommy-warning
+    SpeakerName: Tommy Bell
+    Text: Those books belong to the family now. Consider this your quiet notice.
+    NextNodeId: bookkeeper-close
+  - Id: bookkeeper-close
+    SpeakerName: Nico Bellori
+    Text: Then I suppose I just became an expensive friend to have.
+    NextNodeId: 

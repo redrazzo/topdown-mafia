@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b7885133cbaf547bda13b87bcc5332, type: 3}
+  m_Name: LastRun
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.MissionDefinitionAsset
+  missionId: mission-last-run
+  title: Last Run
+  summary: Take Vincent's final order, step back into the harbor night, and accept
+    that there is no clean road left.
+  startingStageId: hear-orders
+  cashReward: 900
+  reputationDelta: 5
+  unlockDistrictIds: []
+  unlockActivityIds: []
+  stages:
+  - Id: hear-orders
+    Title: Hear Vincent's orders
+    ObjectiveText: Take the final order in the back office.
+    NextStageId: leave-for-harbor
+    CreatesCheckpoint: 1
+  - Id: leave-for-harbor
+    Title: Leave for the harbor
+    ObjectiveText: Step out knowing there is no turning back.
+    NextStageId: 
+    CreatesCheckpoint: 1
+  checkpoints:
+  - Id: final-orders-checkpoint
+    SceneName: Interior_BackOffice_01
+    SpawnPointId: InteriorSpawn
+    MissionStageId: hear-orders
+  - Id: final-leave-checkpoint
+    SceneName: Interior_BackOffice_01
+    SpawnPointId: InteriorSpawn
+    MissionStageId: leave-for-harbor
+  failureConditions:
+  - Id: final-order-missed
+    Type: 1
+    Description: Do not walk away before Vincent finishes.

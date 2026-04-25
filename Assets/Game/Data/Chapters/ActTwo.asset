@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78ebe188c07775e4da7778369fd56f43, type: 3}
+  m_Name: ActTwo
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.CampaignChapterAsset
+  chapterId: chapter-act-2
+  displayName: Act II - Open Accounts
+  missions:
+  - {fileID: 11400000, guid: e1a99568276b57442907d60527dd1835, type: 2}
+  - {fileID: 11400000, guid: aa32df4a90b634c41ba5d0be63327f84, type: 2}
+  - {fileID: 11400000, guid: f9f647e30061cae4bb33724324e710c7, type: 2}
+  - {fileID: 11400000, guid: 1ec6bca35d65a8a478c9dfdc814dcd27, type: 2}
+  - {fileID: 11400000, guid: ed0731d9193c5e94794fde5d2245914b, type: 2}
+  nextChapter: {fileID: 11400000, guid: 4c9a664b5a59a0545a8838f9cfd591f9, type: 2}

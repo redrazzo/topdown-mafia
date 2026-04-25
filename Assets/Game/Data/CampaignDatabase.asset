@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20079b0d3014f054ca3000507c0fa28c, type: 3}
+  m_Name: CampaignDatabase
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.CampaignDatabaseAsset
+  missions:
+  - {fileID: 11400000, guid: fe6d547640739174aaaa93d6e39d7f9b, type: 2}
+  - {fileID: 11400000, guid: 8205c8bb2538e2b468c1c5cc3e71f1b6, type: 2}
+  - {fileID: 11400000, guid: cd7556208e7f00a46917e786e6680b93, type: 2}
+  - {fileID: 11400000, guid: 7819c6527521afa4e97883025a9ba1b3, type: 2}
+  - {fileID: 11400000, guid: e1a99568276b57442907d60527dd1835, type: 2}
+  - {fileID: 11400000, guid: aa32df4a90b634c41ba5d0be63327f84, type: 2}
+  - {fileID: 11400000, guid: f9f647e30061cae4bb33724324e710c7, type: 2}
+  - {fileID: 11400000, guid: 1ec6bca35d65a8a478c9dfdc814dcd27, type: 2}
+  - {fileID: 11400000, guid: ed0731d9193c5e94794fde5d2245914b, type: 2}
+  - {fileID: 11400000, guid: f2d20d4b32d769d469d79343bccf4aea, type: 2}
+  - {fileID: 11400000, guid: b465118cafffe914086e5b0d84c7f0ef, type: 2}
+  - {fileID: 11400000, guid: bb53c98ac77d3e042b78f2e45c37c885, type: 2}
+  - {fileID: 11400000, guid: 2574e50e18ee1bc47a6a7a016ae0e029, type: 2}
+  chapters:
+  - {fileID: 11400000, guid: 20171893d5209f340a8370b1f625bdbe, type: 2}
+  - {fileID: 11400000, guid: 73a3bfbe234191a4a9bf73b28a795517, type: 2}
+  - {fileID: 11400000, guid: 4c9a664b5a59a0545a8838f9cfd591f9, type: 2}
+  districts:
+  - {fileID: 11400000, guid: 5188fb6786ccb364b9c383540b343375, type: 2}
+  - {fileID: 11400000, guid: 230b3bbb665cf6e499d131e747f50715, type: 2}
+  - {fileID: 11400000, guid: df6fbbde81dd8f048988da4f882718f7, type: 2}
+  - {fileID: 11400000, guid: 23aa6976e592977478062a9607c6d96e, type: 2}
+  activities:
+  - {fileID: 11400000, guid: f03c8fd177b636942add2f5e0c6602c1, type: 2}
+  - {fileID: 11400000, guid: eb1fbf024d7daf94db2641de34c1a5c1, type: 2}
+  - {fileID: 11400000, guid: 2b28ac3fd34d107489d1e8c2000163f4, type: 2}
+  - {fileID: 11400000, guid: ffd554b9371f7f440869ee20bb249095, type: 2}
+  landmarks:
+  - {fileID: 11400000, guid: 8a9fd02abed9a2a45a2f7661df182245, type: 2}
+  - {fileID: 11400000, guid: 68a02b1aa517a0147a46f4182050c818, type: 2}
+  - {fileID: 11400000, guid: d6100545ccab73a44a88035ad22b36a9, type: 2}
+  - {fileID: 11400000, guid: d29de34815410ee48b707a9d05b9728b, type: 2}
+  vehicles:
+  - {fileID: 11400000, guid: a43605b46903ac144bb868c370ff5db8, type: 2}
+  - {fileID: 11400000, guid: fed75ba99fd4a4841bc2d10539e77050, type: 2}
+  interiorPortals:
+  - {fileID: 11400000, guid: adb0ab3e916b3474282cb3ee4ff6142d, type: 2}
+  - {fileID: 11400000, guid: 409dbcec38a58ec48bbc1f65ae443b17, type: 2}
+  - {fileID: 11400000, guid: c76f0693a1f03524b94f4580e7f5b57c, type: 2}
+  - {fileID: 11400000, guid: b5a9f19b56641524bb17b9e85b5923de, type: 2}
+  dialogues:
+  - {fileID: 11400000, guid: 67f5a707454e5f841857829bcc09cf33, type: 2}
+  - {fileID: 11400000, guid: 273e3daaf7198344cb3f390fc5359b5d, type: 2}
+  - {fileID: 11400000, guid: 0f03747c5d054934da894e24210c8055, type: 2}
+  - {fileID: 11400000, guid: 1cd83bda1550a7740908f231846f1723, type: 2}

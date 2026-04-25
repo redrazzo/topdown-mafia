@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b7885133cbaf547bda13b87bcc5332, type: 3}
+  m_Name: IronlineLedger
+  m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Data.MissionDefinitionAsset
+  missionId: mission-ironline-ledger
+  title: Ironline Ledger
+  summary: Inspect the garage office books and leave the yard before the morning
+    crews realize the numbers moved.
+  startingStageId: inspect-garage-ledger
+  cashReward: 540
+  reputationDelta: 2
+  unlockDistrictIds: []
+  unlockActivityIds: []
+  stages:
+  - Id: inspect-garage-ledger
+    Title: Inspect the garage ledger
+    ObjectiveText: Find the routing ledger in the Ironline office.
+    NextStageId: leave-garage
+    CreatesCheckpoint: 1
+  - Id: leave-garage
+    Title: Leave the garage
+    ObjectiveText: Head back into the yard before the foreman returns.
+    NextStageId: 
+    CreatesCheckpoint: 1
+  checkpoints:
+  - Id: garage-ledger-checkpoint
+    SceneName: Interior_RailYard_Garage_01
+    SpawnPointId: GarageInteriorSpawn
+    MissionStageId: inspect-garage-ledger
+  - Id: garage-exit-checkpoint
+    SceneName: Interior_RailYard_Garage_01
+    SpawnPointId: GarageInteriorSpawn
+    MissionStageId: leave-garage
+  failureConditions:
+  - Id: ledger-burned
+    Type: 3
+    Description: Do not lose the routing ledger.
