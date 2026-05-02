@@ -2945,6 +2945,7 @@ namespace MafiaTopDown.Editor
             instance.transform.rotation = Quaternion.Euler(rotationEuler);
             instance.transform.localScale = scale;
             RemoveCollidersRecursive(instance);
+            EnvironmentArtCatalog.ApplyNoirMaterials(instance, assetPath);
 
             return instance;
         }
@@ -3268,6 +3269,7 @@ namespace MafiaTopDown.Editor
             Material brass)
         {
             var root = new GameObject("ProductionArt_" + prefix + "_UrbanCanyonReadyAssets");
+            CreateReadyRoadTilePass(prefix, root.transform);
             var leftRoles = new[]
             {
                 DistrictBuildingRole.RowHouse,
@@ -3352,6 +3354,51 @@ namespace MafiaTopDown.Editor
             EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "light-curved-double", prefix + "CanyonReadyStreetLightD", new Vector3(5.25f, 0.08f, 16.1f), new Vector3(0f, -90f, 0f), new Vector3(1.35f, 1.35f, 1.35f), root.transform);
             EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "trashcan", prefix + "CanyonReadyTrashCan", new Vector3(-5.95f, 0.08f, -9.8f), Vector3.zero, new Vector3(1.15f, 1.15f, 1.15f), root.transform);
             EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "mailbox", prefix + "CanyonReadyMailbox", new Vector3(5.95f, 0.08f, 8.8f), Vector3.zero, new Vector3(1.1f, 1.1f, 1.1f), root.transform);
+        }
+
+        private static void CreateReadyRoadTilePass(string prefix, Transform root)
+        {
+            for (var index = 0; index < 7; index += 1)
+            {
+                var z = -17.4f + (index * 5.8f);
+                EnvironmentArtCatalog.CreateKenneyFallback(
+                    "CityKitRoads",
+                    "road-straight",
+                    prefix + "ReadyRoadStraight_" + index,
+                    new Vector3(0f, 0.132f, z),
+                    Vector3.zero,
+                    new Vector3(2.85f, 1f, 2.85f),
+                    root);
+            }
+
+            for (var index = 0; index < 3; index += 1)
+            {
+                var z = -11.6f + (index * 11.6f);
+                EnvironmentArtCatalog.CreateKenneyFallback(
+                    "CityKitRoads",
+                    "road-intersection-line",
+                    prefix + "ReadyRoadIntersection_" + index,
+                    new Vector3(0f, 0.136f, z),
+                    Vector3.zero,
+                    new Vector3(2.92f, 1f, 2.92f),
+                    root);
+                EnvironmentArtCatalog.CreateKenneyFallback(
+                    "CityKitRoads",
+                    "road-side",
+                    prefix + "ReadySideStreetLeft_" + index,
+                    new Vector3(-7.1f, 0.134f, z),
+                    new Vector3(0f, 90f, 0f),
+                    new Vector3(2.2f, 1f, 2.2f),
+                    root);
+                EnvironmentArtCatalog.CreateKenneyFallback(
+                    "CityKitRoads",
+                    "road-side",
+                    prefix + "ReadySideStreetRight_" + index,
+                    new Vector3(7.1f, 0.134f, z + 1.5f),
+                    new Vector3(0f, -90f, 0f),
+                    new Vector3(2.2f, 1f, 2.2f),
+                    root);
+            }
         }
 
         private static void PlaceDocksBuilding(

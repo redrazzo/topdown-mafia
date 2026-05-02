@@ -39,6 +39,7 @@ namespace MafiaTopDown.Editor
         {
             return CreateFirstAvailable(
                 GetDistrictBuildingChoices(district, role),
+                district,
                 instanceName,
                 position,
                 rotationEuler,
@@ -61,7 +62,31 @@ namespace MafiaTopDown.Editor
                 position,
                 rotationEuler,
                 scale,
-                parent);
+                parent,
+                InferDistrict(instanceName));
+        }
+
+        internal static void ApplyNoirMaterials(GameObject instance, string assetPath, DistrictArtStyle? district = null)
+        {
+            var resolvedDistrict = district ?? InferDistrict(instance.name + " " + assetPath);
+            var renderers = instance.GetComponentsInChildren<Renderer>(true);
+            foreach (var renderer in renderers)
+            {
+                var sourceMaterials = renderer.sharedMaterials;
+                if (sourceMaterials.Length == 0)
+                {
+                    continue;
+                }
+
+                var replacementMaterials = new Material[sourceMaterials.Length];
+                for (var index = 0; index < sourceMaterials.Length; index += 1)
+                {
+                    var sourceName = sourceMaterials[index] != null ? sourceMaterials[index].name : string.Empty;
+                    replacementMaterials[index] = ResolveNoirMaterial(assetPath, instance.name, sourceName, resolvedDistrict);
+                }
+
+                renderer.sharedMaterials = replacementMaterials;
+            }
         }
 
         private static DistrictBuildingRole MapDocksRole(DocksBuildingRole role)
@@ -265,6 +290,7 @@ namespace MafiaTopDown.Editor
 
         private static GameObject? CreateFirstAvailable(
             string[] assetPaths,
+            DistrictArtStyle district,
             string instanceName,
             Vector3 position,
             Vector3 rotationEuler,
@@ -273,7 +299,7 @@ namespace MafiaTopDown.Editor
         {
             foreach (var assetPath in assetPaths)
             {
-                var instance = CreateModel(assetPath, instanceName, position, rotationEuler, scale, parent);
+                var instance = CreateModel(assetPath, instanceName, position, rotationEuler, scale, parent, district);
                 if (instance != null)
                 {
                     return instance;
@@ -289,7 +315,8 @@ namespace MafiaTopDown.Editor
             Vector3 position,
             Vector3 rotationEuler,
             Vector3 scale,
-            Transform parent)
+            Transform parent,
+            DistrictArtStyle? district = null)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (asset == null)
@@ -309,8 +336,188 @@ namespace MafiaTopDown.Editor
             instance.transform.rotation = Quaternion.Euler(rotationEuler);
             instance.transform.localScale = scale;
             RemoveCollidersRecursive(instance);
+            ApplyNoirMaterials(instance, assetPath, district);
 
             return instance;
+        }
+
+        private static DistrictArtStyle InferDistrict(string text)
+        {
+            if (text.Contains("Business", System.StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("Commercial", System.StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("Union", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return DistrictArtStyle.BusinessCore;
+            }
+
+            if (text.Contains("Quarter", System.StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("Tenement", System.StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("Suburban", System.StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("Chapel", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return DistrictArtStyle.OldQuarter;
+            }
+
+            if (text.Contains("Rail", System.StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("Industrial", System.StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("Garage", System.StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("Ironline", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return DistrictArtStyle.RailYard;
+            }
+
+            return DistrictArtStyle.Docks;
+        }
+
+        private static Material ResolveNoirMaterial(
+            string assetPath,
+            string instanceName,
+            string sourceMaterialName,
+            DistrictArtStyle district)
+        {
+            var key = (assetPath + " " + instanceName + " " + sourceMaterialName).ToLowerInvariant();
+            var materialKey = sourceMaterialName.ToLowerInvariant();
+            var assetNameStart = assetPath.LastIndexOf('/') + 1;
+            var assetName = assetPath.Substring(assetNameStart).ToLowerInvariant();
+            if (materialKey.Contains("window") || materialKey.Contains("glass") || materialKey.Contains("lamp") || materialKey.Contains("light") || materialKey.Contains("emissive"))
+            {
+                return GetOrCreateNoirMaterial("NoirReadyWindowGlow", new Color(1f, 0.72f, 0.34f), 0.72f, 0.02f, new Color(1f, 0.58f, 0.24f) * 1.8f);
+            }
+
+            if (assetName.StartsWith("road", System.StringComparison.OrdinalIgnoreCase) ||
+                key.Contains("asphalt"))
+            {
+                return GetOrCreateNoirMaterial("NoirReadyWetAsphalt", new Color(0.055f, 0.064f, 0.072f), 0.84f, 0.02f);
+            }
+
+            if (key.Contains("sidewalk") || key.Contains("pavement") || assetName.StartsWith("tile", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return GetOrCreateNoirMaterial("NoirReadySidewalk", new Color(0.22f, 0.215f, 0.195f), 0.32f, 0f);
+            }
+
+            if (key.Contains("roof"))
+            {
+                return GetOrCreateNoirMaterial("NoirReadyTarRoof", new Color(0.045f, 0.048f, 0.052f), 0.24f, 0f);
+            }
+
+            if (key.Contains("metal") ||
+                key.Contains("rail") ||
+                key.Contains("tank") ||
+                key.Contains("chimney") ||
+                key.Contains("barrier") ||
+                assetName.StartsWith("light", System.StringComparison.OrdinalIgnoreCase) ||
+                assetName.StartsWith("bridge", System.StringComparison.OrdinalIgnoreCase) ||
+                assetName.StartsWith("construction", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return GetOrCreateNoirMaterial("NoirReadyOiledMetal", new Color(0.18f, 0.19f, 0.19f), 0.68f, 0.72f);
+            }
+
+            if (key.Contains("sign") || key.Contains("awning") || key.Contains("parasol") || key.Contains("cone"))
+            {
+                return GetOrCreateNoirMaterial("NoirReadyAgedSignage", new Color(0.38f, 0.28f, 0.13f), 0.42f, 0.12f);
+            }
+
+            if (key.Contains("tree") || key.Contains("planter"))
+            {
+                return GetOrCreateNoirMaterial("NoirReadyWetVegetation", new Color(0.1f, 0.14f, 0.1f), 0.28f, 0f);
+            }
+
+            switch (district)
+            {
+                case DistrictArtStyle.BusinessCore:
+                    return GetOrCreateNoirMaterial("NoirReadyBusinessStone", new Color(0.25f, 0.235f, 0.205f), 0.28f, 0f);
+                case DistrictArtStyle.OldQuarter:
+                    return GetOrCreateNoirMaterial("NoirReadyOldQuarterBrick", new Color(0.205f, 0.12f, 0.09f), 0.2f, 0f);
+                case DistrictArtStyle.RailYard:
+                    return GetOrCreateNoirMaterial("NoirReadyRailCorrugated", new Color(0.17f, 0.155f, 0.135f), 0.46f, 0.32f);
+                default:
+                    return GetOrCreateNoirMaterial("NoirReadyDockBrick", new Color(0.18f, 0.095f, 0.075f), 0.2f, 0f);
+            }
+        }
+
+        private static Material GetOrCreateNoirMaterial(
+            string materialName,
+            Color color,
+            float smoothness,
+            float metallic,
+            Color? emissionColor = null)
+        {
+            const string folder = "Assets/Game/Materials/ReadyAssetNoir";
+            EnsureFolder(folder);
+            var assetPath = folder + "/" + materialName + ".mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(assetPath);
+            if (material == null)
+            {
+                var shader = Shader.Find("Standard");
+                if (shader == null)
+                {
+                    shader = Shader.Find("Universal Render Pipeline/Lit");
+                }
+
+                material = new Material(shader);
+                AssetDatabase.CreateAsset(material, assetPath);
+            }
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", color);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", color);
+            }
+
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", smoothness);
+            }
+
+            if (material.HasProperty("_Glossiness"))
+            {
+                material.SetFloat("_Glossiness", smoothness);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", metallic);
+            }
+
+            if (emissionColor.HasValue)
+            {
+                material.EnableKeyword("_EMISSION");
+                if (material.HasProperty("_EmissionColor"))
+                {
+                    material.SetColor("_EmissionColor", emissionColor.Value);
+                }
+            }
+            else
+            {
+                material.DisableKeyword("_EMISSION");
+                if (material.HasProperty("_EmissionColor"))
+                {
+                    material.SetColor("_EmissionColor", Color.black);
+                }
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static void EnsureFolder(string assetPath)
+        {
+            var parts = assetPath.Split('/');
+            var current = parts[0];
+            for (var index = 1; index < parts.Length; index += 1)
+            {
+                var next = current + "/" + parts[index];
+                if (!AssetDatabase.IsValidFolder(next))
+                {
+                    AssetDatabase.CreateFolder(current, parts[index]);
+                }
+
+                current = next;
+            }
         }
 
         private static void RemoveCollidersRecursive(GameObject gameObject)
