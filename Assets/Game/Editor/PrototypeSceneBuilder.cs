@@ -60,6 +60,10 @@ namespace MafiaTopDown.Editor
             BuildBusinessInteriorScene();
             BuildOldQuarterInteriorScene();
             BuildRailYardInteriorScene();
+            BuildDocksWarehouseInteriorScene();
+            BuildBusinessPrintShopInteriorScene();
+            BuildOldQuarterTenementInteriorScene();
+            BuildRailYardDispatchInteriorScene();
             BuildInteriorScene();
             ConfigureBuildSettings();
             AssetDatabase.SaveAssets();
@@ -303,6 +307,7 @@ namespace MafiaTopDown.Editor
             CreateSpawnPoint("PierExitSpawnPoint", "PierExitSpawn", new Vector3(-3.2f, 1f, 9.8f));
             CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(0f, 1f, -12.8f));
             CreateSpawnPoint("FromRailYardGatePoint", "FromRailYardGate", new Vector3(6.8f, 1f, -1.6f));
+            CreateSpawnPoint("FromWarehouseInteriorPoint", "FromWarehouseInterior", new Vector3(-5.15f, 1f, -9.9f));
 
             var campaignSystems = new GameObject("CampaignSystems");
             var saveGameFileService = campaignSystems.AddComponent<SaveGameFileService>();
@@ -548,6 +553,23 @@ namespace MafiaTopDown.Editor
             SetStringValue(doorInteractable, "spawnPointId", "InteriorSpawn");
             SetObjectReference(doorInteractable, "objectiveSystem", missionSystem);
             SetStringValue(doorInteractable, "requiredObjectiveId", "objective-enter-office");
+
+            CreateVisualPrimitive(
+                PrimitiveType.Cube,
+                "ColdStorageApron",
+                new Vector3(-5.82f, 0.145f, -9.9f),
+                new Vector3(1.9f, 0.08f, 2.25f),
+                sidewalk);
+            CreateFreeRoamSceneDoor(
+                "ColdStorageWarehouseDoor",
+                new Vector3(-6.72f, 1.1f, -9.9f),
+                new Vector3(0.35f, 2.2f, 1.85f),
+                officeSign,
+                "Enter cold-storage warehouse",
+                "District_01",
+                "Interior_Docks_Warehouse_01",
+                "WarehouseInteriorSpawn",
+                sceneTransitionController);
 
             var pierNightWatchRoot = CreateObjectiveActionMissionRoot(
                 "PierNightWatchMissionRoot",
@@ -1344,6 +1366,230 @@ namespace MafiaTopDown.Editor
             EditorSceneManager.SaveScene(scene);
         }
 
+        private static void BuildDocksWarehouseInteriorScene()
+        {
+            BuildSupplementalInteriorScene(
+                "Assets/Game/Scenes/Interior_Docks_Warehouse_01.unity",
+                "Interior_Docks_Warehouse_01",
+                "WarehouseInteriorSpawn",
+                "District_01",
+                "FromWarehouseInterior",
+                "Leave the cold-storage warehouse",
+                "Warehouse",
+                new Color(0.07f, 0.085f, 0.095f),
+                new Color(0.12f, 0.14f, 0.14f),
+                new Color(0.19f, 0.22f, 0.22f),
+                new Color(0.34f, 0.24f, 0.16f),
+                new Color(0.63f, 0.47f, 0.21f));
+        }
+
+        private static void BuildBusinessPrintShopInteriorScene()
+        {
+            BuildSupplementalInteriorScene(
+                "Assets/Game/Scenes/Interior_Business_PrintShop_01.unity",
+                "Interior_Business_PrintShop_01",
+                "PrintShopInteriorSpawn",
+                "District_BusinessCore_01",
+                "FromPrintShopInterior",
+                "Leave the union print shop",
+                "PrintShop",
+                new Color(0.09f, 0.085f, 0.075f),
+                new Color(0.16f, 0.135f, 0.115f),
+                new Color(0.28f, 0.24f, 0.2f),
+                new Color(0.48f, 0.36f, 0.2f),
+                new Color(0.16f, 0.18f, 0.2f));
+        }
+
+        private static void BuildOldQuarterTenementInteriorScene()
+        {
+            BuildSupplementalInteriorScene(
+                "Assets/Game/Scenes/Interior_OldQuarter_Tenement_01.unity",
+                "Interior_OldQuarter_Tenement_01",
+                "TenementInteriorSpawn",
+                "District_OldQuarter_01",
+                "FromTenementInterior",
+                "Leave the Sava tenement",
+                "Tenement",
+                new Color(0.105f, 0.085f, 0.075f),
+                new Color(0.19f, 0.145f, 0.11f),
+                new Color(0.29f, 0.22f, 0.17f),
+                new Color(0.42f, 0.26f, 0.16f),
+                new Color(0.72f, 0.58f, 0.38f));
+        }
+
+        private static void BuildRailYardDispatchInteriorScene()
+        {
+            BuildSupplementalInteriorScene(
+                "Assets/Game/Scenes/Interior_RailYard_Dispatch_01.unity",
+                "Interior_RailYard_Dispatch_01",
+                "DispatchInteriorSpawn",
+                "District_RailYard_01",
+                "FromDispatchInterior",
+                "Leave the dispatch office",
+                "Dispatch",
+                new Color(0.07f, 0.08f, 0.09f),
+                new Color(0.12f, 0.12f, 0.115f),
+                new Color(0.18f, 0.2f, 0.2f),
+                new Color(0.28f, 0.19f, 0.14f),
+                new Color(0.82f, 0.58f, 0.24f));
+        }
+
+        private static void BuildSupplementalInteriorScene(
+            string scenePath,
+            string sceneName,
+            string spawnPointId,
+            string exteriorSceneName,
+            string exteriorSpawnPointId,
+            string exitPrompt,
+            string themeKey,
+            Color backgroundColor,
+            Color floorColor,
+            Color wallColor,
+            Color trimColor,
+            Color accentColor)
+        {
+            var scene = OpenOrCreateScene(scenePath);
+            ClearScene(scene);
+            var campaignDatabase = AssetDatabase.LoadAssetAtPath<CampaignDatabaseAsset>("Assets/Game/Data/CampaignDatabase.asset");
+            var chapterAsset = AssetDatabase.LoadAssetAtPath<CampaignChapterAsset>("Assets/Game/Data/Chapters/ActOne.asset");
+
+            var floorMaterial = GetOrCreateMaterial("Assets/Game/Materials/" + themeKey + "InteriorFloor.mat", floorColor, 0.34f, 0f);
+            var wallMaterial = GetOrCreateMaterial("Assets/Game/Materials/" + themeKey + "InteriorWall.mat", wallColor, 0.12f, 0f);
+            var trimMaterial = GetOrCreateMaterial("Assets/Game/Materials/" + themeKey + "InteriorTrim.mat", trimColor, 0.28f, 0f);
+            var accentMaterial = GetOrCreateMaterial("Assets/Game/Materials/" + themeKey + "InteriorAccent.mat", accentColor, 0.7f, 0.25f);
+            var wood = GetOrCreateMaterial("Assets/Game/Materials/CrateWood.mat", new Color(0.44f, 0.29f, 0.18f), 0.18f, 0f);
+            var metal = GetOrCreateMaterial("Assets/Game/Materials/Metal.mat", new Color(0.27f, 0.28f, 0.3f), 0.78f, 0.7f);
+            var paper = GetOrCreateMaterial("Assets/Game/Materials/PaperStack.mat", new Color(0.72f, 0.67f, 0.55f), 0.08f, 0f);
+            var glow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(1f, 0.78f, 0.42f), 0.86f, 0.08f, new Color(1f, 0.68f, 0.28f) * 3.2f);
+            var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.45f, 0.32f, 0.21f), 0.22f, 0f);
+
+            var runtime = CreateFreeRoamInteriorRuntime(
+                sceneName,
+                spawnPointId,
+                new Vector3(0f, 1f, -5.25f),
+                backgroundColor,
+                new Vector3(0f, 12.4f, -8.2f),
+                campaignDatabase,
+                chapterAsset);
+
+            CreateSpawnPoint(themeKey + "DefaultSpawnPoint", "DefaultSpawn", new Vector3(0f, 1f, -5.25f));
+            CreateSpawnPoint(themeKey + "InteriorSpawnPoint", spawnPointId, new Vector3(0f, 1f, -5.25f));
+            CreateSpawnPoint(themeKey + "ExitSpawnPoint", "ExitSpawn", new Vector3(0f, 1f, -4.55f));
+
+            var keyLight = new GameObject(themeKey + "InteriorKeyLight");
+            var pointLight = keyLight.AddComponent<Light>();
+            pointLight.type = LightType.Point;
+            pointLight.range = 20f;
+            pointLight.intensity = 6.8f;
+            pointLight.color = new Color(1f, 0.82f, 0.58f);
+            keyLight.transform.position = new Vector3(0f, 4.4f, -0.2f);
+
+            var fillLight = new GameObject(themeKey + "InteriorWindowFill");
+            var fill = fillLight.AddComponent<Light>();
+            fill.type = LightType.Point;
+            fill.range = 11f;
+            fill.intensity = 2.1f;
+            fill.color = new Color(0.55f, 0.68f, 0.86f);
+            fillLight.transform.position = new Vector3(-5.6f, 2.8f, 3.2f);
+
+            var floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            floor.name = themeKey + "Floor";
+            floor.transform.localScale = new Vector3(2.1f, 1f, 1.8f);
+            AssignMaterial(floor, floorMaterial);
+
+            CreatePrimitive(PrimitiveType.Cube, themeKey + "Ceiling", new Vector3(0f, 5.35f, 0f), new Vector3(9.6f, 0.25f, 8.6f), trimMaterial);
+            CreatePrimitive(PrimitiveType.Cube, themeKey + "BackWall", new Vector3(0f, 2.65f, 8.3f), new Vector3(9.6f, 5.3f, 0.45f), wallMaterial);
+            CreatePrimitive(PrimitiveType.Cube, themeKey + "FrontWall", new Vector3(0f, 2.65f, -8.3f), new Vector3(9.6f, 5.3f, 0.45f), wallMaterial);
+            CreatePrimitive(PrimitiveType.Cube, themeKey + "LeftWall", new Vector3(-8.6f, 2.65f, 0f), new Vector3(0.45f, 5.3f, 16.6f), wallMaterial);
+            CreatePrimitive(PrimitiveType.Cube, themeKey + "RightWall", new Vector3(8.6f, 2.65f, 0f), new Vector3(0.45f, 5.3f, 16.6f), wallMaterial);
+            CreateVisualPrimitive(PrimitiveType.Cube, themeKey + "BackWallpaperPanel", new Vector3(0f, 2.75f, 8.02f), new Vector3(7.8f, 3.4f, 0.08f), trimMaterial);
+            CreateVisualPrimitive(PrimitiveType.Cube, themeKey + "WindowGlowLeft", new Vector3(-8.32f, 3.05f, 2.8f), new Vector3(0.08f, 1.45f, 3.4f), glow);
+            CreateVisualPrimitive(PrimitiveType.Cube, themeKey + "WindowGlowRight", new Vector3(8.32f, 3.05f, -2.6f), new Vector3(0.08f, 1.45f, 3.2f), glow);
+
+            CreateSupplementalInteriorDressing(themeKey, trimMaterial, accentMaterial, wood, metal, paper, glow, contactCoat);
+
+            var exitDoor = CreatePrimitive(
+                PrimitiveType.Cube,
+                themeKey + "ExitDoor",
+                new Vector3(0f, 1f, -6.95f),
+                new Vector3(1.9f, 2.2f, 0.45f),
+                trimMaterial);
+            var exitInteractable = exitDoor.AddComponent<SceneDoorInteractable>();
+            SetObjectReference(exitInteractable, "sceneTransitionController", runtime.SceneTransitionController);
+            SetStringValue(exitInteractable, "promptText", exitPrompt);
+            SetStringValue(exitInteractable, "sourceScene", sceneName);
+            SetStringValue(exitInteractable, "targetScene", exteriorSceneName);
+            SetStringValue(exitInteractable, "spawnPointId", exteriorSpawnPointId);
+
+            EditorSceneManager.SaveScene(scene);
+        }
+
+        private static void CreateSupplementalInteriorDressing(
+            string themeKey,
+            Material trim,
+            Material accent,
+            Material wood,
+            Material metal,
+            Material paper,
+            Material glow,
+            Material contactCoat)
+        {
+            switch (themeKey)
+            {
+                case "Warehouse":
+                    CreateVisualPrimitive(PrimitiveType.Cube, "WarehouseLoadingDesk", new Vector3(-3.4f, 0.95f, 2.8f), new Vector3(2.4f, 1.6f, 1.35f), wood);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "WarehouseScalePlatform", new Vector3(2.8f, 0.35f, 1.8f), new Vector3(2.2f, 0.28f, 1.8f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "WarehouseManifestStack", new Vector3(-3.0f, 1.82f, 2.8f), new Vector3(0.9f, 0.24f, 0.6f), paper);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "WarehouseIceRoomGlow", new Vector3(0f, 2.4f, 7.92f), new Vector3(4.8f, 0.36f, 0.08f), glow);
+                    for (var index = 0; index < 8; index += 1)
+                    {
+                        CreateVisualPrimitive(PrimitiveType.Cube, "WarehouseCrateStack_" + index, new Vector3(-5.4f + ((index % 2) * 1.1f), 0.55f + ((index / 2) * 0.34f), -1.8f + (index * 0.7f)), new Vector3(0.88f, 0.82f, 0.78f), wood);
+                    }
+
+                    CreateNoirActor("WarehouseClerk", new Vector3(3.4f, 1f, 4.2f), contactCoat, null, false);
+                    break;
+
+                case "PrintShop":
+                    CreateVisualPrimitive(PrimitiveType.Cube, "PrintPressBed", new Vector3(0f, 0.9f, 1.8f), new Vector3(4.2f, 1.2f, 2.1f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cylinder, "PrintPressRollerA", new Vector3(-1.2f, 1.65f, 1.8f), new Vector3(0.38f, 0.9f, 0.38f), accent);
+                    CreateVisualPrimitive(PrimitiveType.Cylinder, "PrintPressRollerB", new Vector3(1.2f, 1.65f, 1.8f), new Vector3(0.38f, 0.9f, 0.38f), accent);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "UnionFlyerTable", new Vector3(-4.8f, 0.8f, -0.8f), new Vector3(2.2f, 1.15f, 1.45f), wood);
+                    for (var stack = 0; stack < 6; stack += 1)
+                    {
+                        CreateVisualPrimitive(PrimitiveType.Cube, "PrintPaperStack_" + stack, new Vector3(-5.0f + (stack * 0.34f), 1.45f + (stack * 0.03f), -0.8f), new Vector3(0.55f, 0.08f, 0.72f), paper);
+                    }
+
+                    CreateVisualPrimitive(PrimitiveType.Cube, "InkCabinet", new Vector3(5.1f, 1.4f, 3.4f), new Vector3(1.5f, 2.4f, 1.2f), trim);
+                    CreateNoirActor("PrintShopForeman", new Vector3(4.2f, 1f, -2.4f), contactCoat, null, false);
+                    break;
+
+                case "Tenement":
+                    CreateVisualPrimitive(PrimitiveType.Cube, "TenementKitchenTable", new Vector3(-2.8f, 0.78f, 1.8f), new Vector3(2.1f, 1f, 1.35f), wood);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "TenementBed", new Vector3(4.4f, 0.55f, 2.8f), new Vector3(2.6f, 0.72f, 1.8f), trim);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "TenementBlanket", new Vector3(4.4f, 0.98f, 2.8f), new Vector3(2.35f, 0.12f, 1.55f), accent);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "TenementRadiator", new Vector3(-7.9f, 0.95f, -1.6f), new Vector3(0.22f, 1.3f, 2.3f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "TenementSaintCard", new Vector3(0f, 2.8f, 8.0f), new Vector3(1.1f, 1.4f, 0.08f), accent);
+                    for (var chair = 0; chair < 4; chair += 1)
+                    {
+                        CreateVisualPrimitive(PrimitiveType.Cube, "TenementChair_" + chair, new Vector3(-4.2f + (chair * 0.9f), 0.55f, 0.2f), new Vector3(0.55f, 0.9f, 0.55f), wood);
+                    }
+
+                    CreateNoirActor("TenementNeighbor", new Vector3(-5.1f, 1f, 4.4f), contactCoat, null, false);
+                    break;
+
+                default:
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DispatchMapTable", new Vector3(-1.2f, 0.9f, 2.3f), new Vector3(3.2f, 1.2f, 1.8f), wood);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DispatchRouteMap", new Vector3(-1.2f, 1.58f, 2.3f), new Vector3(2.65f, 0.08f, 1.3f), paper);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DispatchSignalBoard", new Vector3(0f, 2.9f, 7.96f), new Vector3(5.4f, 2.2f, 0.08f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DispatchAmberSignal", new Vector3(-1.8f, 3.2f, 7.9f), new Vector3(0.52f, 0.52f, 0.05f), glow);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DispatchRedSignal", new Vector3(0f, 3.2f, 7.9f), new Vector3(0.52f, 0.52f, 0.05f), accent);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DispatchLockerRow", new Vector3(5.6f, 1.7f, -1.4f), new Vector3(1.4f, 3.1f, 3.4f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cylinder, "DispatchStovePipe", new Vector3(-6.5f, 2.8f, -2.6f), new Vector3(0.22f, 2.8f, 0.22f), metal);
+                    CreateNoirActor("DispatchOperator", new Vector3(3.5f, 1f, 3.8f), contactCoat, null, false);
+                    break;
+            }
+        }
+
         private static void BuildBusinessCoreScene()
         {
             var scene = OpenOrCreateScene("Assets/Game/Scenes/District_BusinessCore_01.unity");
@@ -1446,6 +1692,7 @@ namespace MafiaTopDown.Editor
             CreateSpawnPoint("FromDocksGatePoint", "FromDocksGate", new Vector3(0f, 1f, -14f));
             CreateSpawnPoint("FromOldQuarterGatePoint", "FromOldQuarterGate", new Vector3(12f, 1f, 0f));
             CreateSpawnPoint("FromBookkeeperInteriorPoint", "FromBookkeeperInterior", new Vector3(5.4f, 1f, -3.2f));
+            CreateSpawnPoint("FromPrintShopInteriorPoint", "FromPrintShopInterior", new Vector3(-5.35f, 1f, -10.6f));
 
             CreateTravelGate(
                 "ToDocksGate",
@@ -1495,6 +1742,23 @@ namespace MafiaTopDown.Editor
             SetStringValue(businessInteriorInteractable, "sourceScene", "District_BusinessCore_01");
             SetStringValue(businessInteriorInteractable, "targetScene", "Interior_BusinessBookkeeper_01");
             SetStringValue(businessInteriorInteractable, "spawnPointId", "BusinessInteriorSpawn");
+
+            CreateVisualPrimitive(
+                PrimitiveType.Cube,
+                "PrintShopApron",
+                new Vector3(-5.85f, 0.14f, -10.6f),
+                new Vector3(1.8f, 0.08f, 2.2f),
+                sidewalk);
+            CreateFreeRoamSceneDoor(
+                "PrintShopDoor",
+                new Vector3(-6.85f, 1.1f, -10.6f),
+                new Vector3(0.35f, 2.2f, 1.85f),
+                officeSign,
+                "Enter union print shop",
+                "District_BusinessCore_01",
+                "Interior_Business_PrintShop_01",
+                "PrintShopInteriorSpawn",
+                runtime.SceneTransitionController);
 
             CreateStaticVehicle("BusinessSedan", new Vector3(3.8f, 0.72f, 6.5f), new Vector3(1.8f, 0.95f, 4f), new Color(0.12f, 0.12f, 0.14f), metal, windowGlow);
             CreateEnemyGuard("BusinessWatchman", new Vector3(4.2f, 1f, 11.5f), enemyCoat, runtime.PlayerController, runtime.PlayerHealth);
@@ -1668,6 +1932,7 @@ namespace MafiaTopDown.Editor
             CreateSpawnPoint("OldQuarterExitSpawnPoint", "OldQuarterExitSpawn", new Vector3(8.2f, 1f, -2.6f));
             CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(12.2f, 1f, 0f));
             CreateSpawnPoint("FromChapelInteriorPoint", "FromChapelInterior", new Vector3(-5.2f, 1f, 8.4f));
+            CreateSpawnPoint("FromTenementInteriorPoint", "FromTenementInterior", new Vector3(5.35f, 1f, -2.2f));
 
             CreateTravelGate(
                 "ToBusinessCoreGate",
@@ -1717,6 +1982,23 @@ namespace MafiaTopDown.Editor
             SetStringValue(chapelInteriorInteractable, "sourceScene", "District_OldQuarter_01");
             SetStringValue(chapelInteriorInteractable, "targetScene", "Interior_OldQuarter_Chapel_01");
             SetStringValue(chapelInteriorInteractable, "spawnPointId", "ChapelInteriorSpawn");
+
+            CreateVisualPrimitive(
+                PrimitiveType.Cube,
+                "TenementApron",
+                new Vector3(5.85f, 0.145f, -2.2f),
+                new Vector3(1.75f, 0.08f, 2.05f),
+                sidewalk);
+            CreateFreeRoamSceneDoor(
+                "SavaTenementDoor",
+                new Vector3(6.85f, 1.1f, -2.2f),
+                new Vector3(0.35f, 2.2f, 1.75f),
+                sign,
+                "Enter Sava tenement",
+                "District_OldQuarter_01",
+                "Interior_OldQuarter_Tenement_01",
+                "TenementInteriorSpawn",
+                runtime.SceneTransitionController);
 
             CreateStaticVehicle("QuarterCoupe", new Vector3(-2.9f, 0.72f, 7.4f), new Vector3(1.7f, 0.92f, 3.8f), new Color(0.19f, 0.07f, 0.05f), metal, windowGlow);
             CreateEnemyGuard("QuarterCollector", new Vector3(2.6f, 1f, 9.2f), enemyCoat, runtime.PlayerController, runtime.PlayerHealth);
@@ -1863,6 +2145,7 @@ namespace MafiaTopDown.Editor
             CreateSpawnPoint("FromDocksGatePoint", "FromDocksGate", new Vector3(0f, 1f, -12.2f));
             CreateSpawnPoint("FromOldQuarterGatePoint", "FromOldQuarterGate", new Vector3(-2.6f, 1f, -12.2f));
             CreateSpawnPoint("FromGarageInteriorPoint", "FromGarageInterior", new Vector3(-5.2f, 1f, -6.8f));
+            CreateSpawnPoint("FromDispatchInteriorPoint", "FromDispatchInterior", new Vector3(-5.15f, 1f, 9.2f));
 
             CreateTravelGate(
                 "ToDocksFromRailGate",
@@ -1895,6 +2178,23 @@ namespace MafiaTopDown.Editor
             SetStringValue(garageInteriorInteractable, "sourceScene", "District_RailYard_01");
             SetStringValue(garageInteriorInteractable, "targetScene", "Interior_RailYard_Garage_01");
             SetStringValue(garageInteriorInteractable, "spawnPointId", "GarageInteriorSpawn");
+
+            CreateVisualPrimitive(
+                PrimitiveType.Cube,
+                "DispatchApron",
+                new Vector3(-5.75f, 0.145f, 9.2f),
+                new Vector3(1.9f, 0.08f, 2.15f),
+                gravel);
+            CreateFreeRoamSceneDoor(
+                "DispatchOfficeDoor",
+                new Vector3(-6.85f, 1.1f, 9.2f),
+                new Vector3(0.35f, 2.2f, 1.85f),
+                sign,
+                "Enter dispatch office",
+                "District_RailYard_01",
+                "Interior_RailYard_Dispatch_01",
+                "DispatchInteriorSpawn",
+                runtime.SceneTransitionController);
 
             var yardMissionRoot = new GameObject("YardHeatMissionRoot");
             var yardGuardA = CreateEnemyGuard("RailYardGuardA", new Vector3(-3.1f, 1f, -2.4f), enemyCoat, runtime.PlayerController, runtime.PlayerHealth, null, yardMissionRoot.transform);
@@ -1965,8 +2265,12 @@ namespace MafiaTopDown.Editor
                 new EditorBuildSettingsScene("Assets/Game/Scenes/District_OldQuarter_01.unity", true),
                 new EditorBuildSettingsScene("Assets/Game/Scenes/District_RailYard_01.unity", true),
                 new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_BusinessBookkeeper_01.unity", true),
+                new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_Business_PrintShop_01.unity", true),
                 new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_OldQuarter_Chapel_01.unity", true),
+                new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_OldQuarter_Tenement_01.unity", true),
                 new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_RailYard_Garage_01.unity", true),
+                new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_RailYard_Dispatch_01.unity", true),
+                new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_Docks_Warehouse_01.unity", true),
                 new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_BackOffice_01.unity", true)
             };
         }
@@ -2101,8 +2405,8 @@ namespace MafiaTopDown.Editor
         private static void CreateSceneObjectiveHud(
             string name,
             SimpleObjectiveSystem objectiveSystem,
-            SaveGameFileService saveGameFileService = null,
-            CampaignDatabaseAsset campaignDatabase = null)
+            SaveGameFileService? saveGameFileService = null,
+            CampaignDatabaseAsset? campaignDatabase = null)
         {
             var hudRoot = new GameObject(name);
             var hud = hudRoot.AddComponent<ObjectiveHudController>();
@@ -4079,6 +4383,27 @@ namespace MafiaTopDown.Editor
             return gate;
         }
 
+        private static GameObject CreateFreeRoamSceneDoor(
+            string name,
+            Vector3 position,
+            Vector3 scale,
+            Material material,
+            string promptText,
+            string sourceScene,
+            string targetScene,
+            string spawnPointId,
+            SceneTransitionController sceneTransitionController)
+        {
+            var door = CreatePrimitive(PrimitiveType.Cube, name, position, scale, material);
+            var interactable = door.AddComponent<SceneDoorInteractable>();
+            SetObjectReference(interactable, "sceneTransitionController", sceneTransitionController);
+            SetStringValue(interactable, "promptText", promptText);
+            SetStringValue(interactable, "sourceScene", sourceScene);
+            SetStringValue(interactable, "targetScene", targetScene);
+            SetStringValue(interactable, "spawnPointId", spawnPointId);
+            return door;
+        }
+
         private static GameObject CreateChapelAshMissionRoot(
             ExteriorRuntimeBundle runtime,
             SimpleObjectiveSystem objectiveSystem,
@@ -4170,10 +4495,10 @@ namespace MafiaTopDown.Editor
             string spawnPointId,
             SceneTransitionController sceneTransitionController,
             SaveGameFileService saveGameFileService,
-            SimpleObjectiveSystem objectiveSystem = null,
+            SimpleObjectiveSystem? objectiveSystem = null,
             string requiredObjectiveId = "",
-            CampaignProgressionController campaignProgressionController = null,
-            MissionDefinitionAsset missionAsset = null,
+            CampaignProgressionController? campaignProgressionController = null,
+            MissionDefinitionAsset? missionAsset = null,
             string missionStageId = "")
         {
             var gate = CreatePrimitive(PrimitiveType.Cube, name, position, scale, material);

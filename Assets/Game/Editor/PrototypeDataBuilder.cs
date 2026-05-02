@@ -57,6 +57,10 @@ namespace MafiaTopDown.Editor
             var belloriBooksPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/BelloriBooksPortal.asset");
             var saintVeraPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/SaintVeraPortal.asset");
             var ironlineOfficePortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/IronlineOfficePortal.asset");
+            var docksWarehousePortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/DocksWarehousePortal.asset");
+            var businessPrintShopPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/BusinessPrintShopPortal.asset");
+            var oldQuarterTenementPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/OldQuarterTenementPortal.asset");
+            var railDispatchPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/RailDispatchPortal.asset");
             var campaign = EnsureAsset<CampaignDatabaseAsset>("Assets/Game/Data/CampaignDatabase.asset");
 
             PopulateMission(
@@ -446,6 +450,10 @@ namespace MafiaTopDown.Editor
             PopulatePortal(belloriBooksPortal, "portal-bellori-books", "District_BusinessCore_01", "FromBookkeeperInterior", "Interior_BusinessBookkeeper_01", "BusinessInteriorSpawn");
             PopulatePortal(saintVeraPortal, "portal-saint-vera", "District_OldQuarter_01", "FromChapelInterior", "Interior_OldQuarter_Chapel_01", "ChapelInteriorSpawn");
             PopulatePortal(ironlineOfficePortal, "portal-ironline-office", "District_RailYard_01", "FromGarageInterior", "Interior_RailYard_Garage_01", "GarageInteriorSpawn");
+            PopulatePortal(docksWarehousePortal, "portal-docks-warehouse", "District_01", "FromWarehouseInterior", "Interior_Docks_Warehouse_01", "WarehouseInteriorSpawn");
+            PopulatePortal(businessPrintShopPortal, "portal-business-print-shop", "District_BusinessCore_01", "FromPrintShopInterior", "Interior_Business_PrintShop_01", "PrintShopInteriorSpawn");
+            PopulatePortal(oldQuarterTenementPortal, "portal-old-quarter-tenement", "District_OldQuarter_01", "FromTenementInterior", "Interior_OldQuarter_Tenement_01", "TenementInteriorSpawn");
+            PopulatePortal(railDispatchPortal, "portal-rail-dispatch", "District_RailYard_01", "FromDispatchInterior", "Interior_RailYard_Dispatch_01", "DispatchInteriorSpawn");
             PopulateCampaignDatabase(
                 campaign,
                 new UnityEngine.Object[] { mission, unionDue, chapelDebt, yardHeat, belloriBooks, saintVeraSilence, pierNightWatch, ironlineLedger, bloodLedger, unionCrackdown, chapelAsh, yardBetrayal, lastRun },
@@ -454,7 +462,7 @@ namespace MafiaTopDown.Editor
                 new UnityEngine.Object[] { dockCourier, ledgerRun, lookoutRun, chopDelivery },
                 new UnityEngine.Object[] { harborOffice, unionSquare, saintVera, ironlineGarage },
                 new UnityEngine.Object[] { fleetlineSedan, harborTruck },
-                new UnityEngine.Object[] { backOfficePortal, belloriBooksPortal, saintVeraPortal, ironlineOfficePortal },
+                new UnityEngine.Object[] { backOfficePortal, belloriBooksPortal, saintVeraPortal, ironlineOfficePortal, docksWarehousePortal, businessPrintShopPortal, oldQuarterTenementPortal, railDispatchPortal },
                 new UnityEngine.Object[] { lucaBriefing, vincentHandoff, bookkeeperWarning, debtorThreat });
 
             EditorUtility.SetDirty(mission);
@@ -495,6 +503,10 @@ namespace MafiaTopDown.Editor
             EditorUtility.SetDirty(belloriBooksPortal);
             EditorUtility.SetDirty(saintVeraPortal);
             EditorUtility.SetDirty(ironlineOfficePortal);
+            EditorUtility.SetDirty(docksWarehousePortal);
+            EditorUtility.SetDirty(businessPrintShopPortal);
+            EditorUtility.SetDirty(oldQuarterTenementPortal);
+            EditorUtility.SetDirty(railDispatchPortal);
             EditorUtility.SetDirty(campaign);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
