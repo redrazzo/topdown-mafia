@@ -73,7 +73,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
                 return chapterTitle;
             }
 
-            return chapterTitle + "  •  " + missionTitle;
+            return chapterTitle + " - " + missionTitle;
         }
     }
 }

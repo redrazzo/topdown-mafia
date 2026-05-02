@@ -295,6 +295,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(4.8f, 0f, 4f), metal, windowGlow);
             CreateLampPost(new Vector3(-4.8f, 0f, 12f), metal, windowGlow);
             CreateLampPost(new Vector3(4.8f, 0f, 18f), metal, windowGlow);
+            CreateNoirStreetDressing("Dock", metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
 
             var player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             player.name = "Player";
@@ -1389,6 +1390,8 @@ namespace MafiaTopDown.Editor
             var enemyCoat = GetOrCreateMaterial("Assets/Game/Materials/EnemyCoat.mat", new Color(0.14f, 0.16f, 0.18f), 0.15f, 0f);
             var policeCoat = GetOrCreateMaterial("Assets/Game/Materials/PoliceCoat.mat", new Color(0.08f, 0.13f, 0.19f), 0.18f, 0f);
             var officeSign = GetOrCreateMaterial("Assets/Game/Materials/OfficeSign.mat", new Color(0.13f, 0.12f, 0.12f), 0.32f, 0f);
+            var crateWood = GetOrCreateMaterial("Assets/Game/Materials/CrateWood.mat", new Color(0.44f, 0.29f, 0.18f), 0.18f, 0f);
+            var puddle = GetOrCreateMaterial("Assets/Game/Materials/Puddle.mat", new Color(0.12f, 0.14f, 0.15f), 0.96f, 0.02f);
 
             ApplyExteriorAtmosphere(new Color(0.16f, 0.17f, 0.2f), new Color(0.16f, 0.18f, 0.21f), 0.014f, new Color(1f, 0.9f, 0.78f), 0.88f, Quaternion.Euler(38f, -24f, 0f));
 
@@ -1430,6 +1433,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(4.8f, 0f, 0f), metal, windowGlow);
             CreateLampPost(new Vector3(-4.8f, 0f, 9f), metal, windowGlow);
             CreateLampPost(new Vector3(4.8f, 0f, 16f), metal, windowGlow);
+            CreateNoirStreetDressing("Business", metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
                 "District_BusinessCore_01",
@@ -1615,6 +1619,9 @@ namespace MafiaTopDown.Editor
             var enemyCoat = GetOrCreateMaterial("Assets/Game/Materials/EnemyCoat.mat", new Color(0.14f, 0.16f, 0.18f), 0.15f, 0f);
             var policeCoat = GetOrCreateMaterial("Assets/Game/Materials/PoliceCoat.mat", new Color(0.08f, 0.13f, 0.19f), 0.18f, 0f);
             var sign = GetOrCreateMaterial("Assets/Game/Materials/OfficeSign.mat", new Color(0.13f, 0.12f, 0.12f), 0.32f, 0f);
+            var crateWood = GetOrCreateMaterial("Assets/Game/Materials/CrateWood.mat", new Color(0.44f, 0.29f, 0.18f), 0.18f, 0f);
+            var puddle = GetOrCreateMaterial("Assets/Game/Materials/Puddle.mat", new Color(0.12f, 0.14f, 0.15f), 0.96f, 0.02f);
+            var brass = GetOrCreateMaterial("Assets/Game/Materials/Brass.mat", new Color(0.63f, 0.47f, 0.21f), 0.8f, 0.88f);
 
             ApplyExteriorAtmosphere(new Color(0.14f, 0.15f, 0.18f), new Color(0.15f, 0.16f, 0.18f), 0.016f, new Color(0.96f, 0.87f, 0.78f), 0.8f, Quaternion.Euler(32f, -34f, 0f));
 
@@ -1644,6 +1651,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(-4.2f, 0f, -4f), metal, windowGlow);
             CreateLampPost(new Vector3(4.2f, 0f, 4f), metal, windowGlow);
             CreateLampPost(new Vector3(-4.2f, 0f, 12f), metal, windowGlow);
+            CreateNoirStreetDressing("Quarter", metal, windowGlow, crateWood, sign, sidewalk, puddle, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
                 "District_OldQuarter_01",
@@ -1803,6 +1811,9 @@ namespace MafiaTopDown.Editor
             var enemyCoat = GetOrCreateMaterial("Assets/Game/Materials/EnemyCoat.mat", new Color(0.14f, 0.16f, 0.18f), 0.15f, 0f);
             var policeCoat = GetOrCreateMaterial("Assets/Game/Materials/PoliceCoat.mat", new Color(0.08f, 0.13f, 0.19f), 0.18f, 0f);
             var sign = GetOrCreateMaterial("Assets/Game/Materials/OfficeSign.mat", new Color(0.13f, 0.12f, 0.12f), 0.32f, 0f);
+            var crateWood = GetOrCreateMaterial("Assets/Game/Materials/CrateWood.mat", new Color(0.44f, 0.29f, 0.18f), 0.18f, 0f);
+            var puddle = GetOrCreateMaterial("Assets/Game/Materials/Puddle.mat", new Color(0.12f, 0.14f, 0.15f), 0.96f, 0.02f);
+            var brass = GetOrCreateMaterial("Assets/Game/Materials/Brass.mat", new Color(0.63f, 0.47f, 0.21f), 0.8f, 0.88f);
 
             ApplyExteriorAtmosphere(new Color(0.13f, 0.14f, 0.17f), new Color(0.14f, 0.16f, 0.18f), 0.02f, new Color(0.95f, 0.84f, 0.71f), 0.76f, Quaternion.Euler(28f, -40f, 0f));
 
@@ -1828,6 +1839,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(-4.6f, 0f, -11f), metal, windowGlow);
             CreateLampPost(new Vector3(4.6f, 0f, -4f), metal, windowGlow);
             CreateLampPost(new Vector3(4.6f, 0f, 11f), metal, windowGlow);
+            CreateNoirStreetDressing("Rail", metal, windowGlow, crateWood, sign, gravel, puddle, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
                 "District_RailYard_01",
@@ -2367,6 +2379,64 @@ namespace MafiaTopDown.Editor
             {
                 renderer.sharedMaterial = material;
             }
+        }
+
+        private static void CreateNoirStreetDressing(
+            string prefix,
+            Material metal,
+            Material glow,
+            Material wood,
+            Material sign,
+            Material groundAccent,
+            Material puddle,
+            Material brass)
+        {
+            CreatePrimitive(PrimitiveType.Cube, prefix + "LeftCurbShadow", new Vector3(-4.55f, 0.13f, 0f), new Vector3(0.18f, 0.04f, 31f), sign);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "RightCurbShadow", new Vector3(4.55f, 0.13f, 0f), new Vector3(0.18f, 0.04f, 31f), sign);
+
+            for (var index = 0; index < 5; index += 1)
+            {
+                var z = -12f + (index * 6f);
+                var leftX = -6.55f - (index % 2 * 0.45f);
+                var rightX = 6.65f + (index % 2 * 0.4f);
+
+                CreatePrimitive(PrimitiveType.Cube, prefix + "PosterBoardL_" + index, new Vector3(leftX, 1.45f, z), new Vector3(0.12f, 1.05f, 1.1f), sign);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "PosterTrimL_" + index, new Vector3(leftX + 0.02f, 1.98f, z), new Vector3(0.14f, 0.08f, 1.16f), brass);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "NeonSlashR_" + index, new Vector3(rightX, 2.2f, z + 2.6f), new Vector3(0.12f, 0.18f, 1.45f), glow);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "Awning_" + index, new Vector3(rightX, 2.05f, z + 0.7f), new Vector3(1.25f, 0.18f, 1.5f), sign);
+            }
+
+            for (var index = 0; index < 6; index += 1)
+            {
+                var z = -13f + (index * 5f);
+                var x = index % 2 == 0 ? -3.25f : 3.15f;
+                CreatePrimitive(PrimitiveType.Cube, prefix + "WetStreetGlint_" + index, new Vector3(x, 0.125f, z), new Vector3(1.25f, 0.015f, 0.55f), puddle);
+            }
+
+            CreatePrimitive(PrimitiveType.Cube, prefix + "NewsStandBase", new Vector3(-5.75f, 0.75f, -7.6f), new Vector3(1.25f, 1.1f, 1.1f), wood);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "NewsStandRoof", new Vector3(-5.75f, 1.45f, -7.6f), new Vector3(1.55f, 0.18f, 1.35f), sign);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "Payphone", new Vector3(5.65f, 1.25f, -6.2f), new Vector3(0.55f, 1.8f, 0.45f), metal);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "PayphoneGlow", new Vector3(5.65f, 1.85f, -6.47f), new Vector3(0.42f, 0.42f, 0.05f), glow);
+
+            for (var index = 0; index < 4; index += 1)
+            {
+                CreatePrimitive(PrimitiveType.Cylinder, prefix + "Barrel_" + index, new Vector3(-6.75f + (index * 0.55f), 0.65f, 6.8f + (index % 2 * 0.55f)), new Vector3(0.28f, 0.6f, 0.28f), metal);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "Crate_" + index, new Vector3(6.2f + (index % 2 * 0.55f), 0.55f, 8.8f + (index * 0.55f)), new Vector3(0.8f, 0.8f, 0.8f), wood);
+            }
+
+            CreatePrimitive(PrimitiveType.Cube, prefix + "OverheadCableA", new Vector3(0f, 5.95f, -3f), new Vector3(13.2f, 0.035f, 0.035f), metal);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "OverheadCableB", new Vector3(0f, 5.55f, 8f), new Vector3(13.2f, 0.035f, 0.035f), metal);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "CigaretteKiosk", new Vector3(5.9f, 0.72f, 13.8f), new Vector3(1.15f, 1.1f, 0.9f), groundAccent);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "KioskSign", new Vector3(5.9f, 1.55f, 13.8f), new Vector3(1.28f, 0.22f, 1f), brass);
+            CreateSteamVent(prefix + "SteamVentA", new Vector3(-3.8f, 0.12f, 11.2f), metal, glow);
+            CreateSteamVent(prefix + "SteamVentB", new Vector3(3.5f, 0.12f, -10.6f), metal, glow);
+        }
+
+        private static void CreateSteamVent(string name, Vector3 position, Material metal, Material glow)
+        {
+            CreatePrimitive(PrimitiveType.Cylinder, name + "Grate", position, new Vector3(0.45f, 0.04f, 0.45f), metal);
+            CreatePrimitive(PrimitiveType.Cube, name + "VaporA", position + new Vector3(0f, 0.55f, 0f), new Vector3(0.28f, 0.75f, 0.28f), glow);
+            CreatePrimitive(PrimitiveType.Cube, name + "VaporB", position + new Vector3(0.24f, 1f, 0.12f), new Vector3(0.2f, 0.8f, 0.2f), glow);
         }
 
         private static void CreateLampPost(Vector3 basePosition, Material poleMaterial, Material glowMaterial)
