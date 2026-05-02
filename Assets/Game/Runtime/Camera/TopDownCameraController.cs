@@ -10,6 +10,8 @@ namespace MafiaTopDown.Gameplay.Runtime.Camera
         [SerializeField] private float zoomSpeed = 8f;
         [SerializeField] private float minimumHeight = 12f;
         [SerializeField] private float maximumHeight = 24f;
+        [SerializeField] private float pitch = 55f;
+        [SerializeField] private float yaw = -3f;
 
         public void SetFollowTarget(Transform target)
         {
@@ -31,7 +33,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Camera
 
             var targetPosition = followTarget.position + offset;
             transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * followSmoothness);
-            transform.rotation = Quaternion.Euler(55f, 0f, 0f);
+            transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
         }
     }
 }

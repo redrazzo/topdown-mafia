@@ -13,6 +13,8 @@ using MafiaTopDown.Gameplay.Runtime.Vehicles;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 namespace MafiaTopDown.Editor
@@ -102,18 +104,18 @@ namespace MafiaTopDown.Editor
             var chopDeliveryActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/ChopDelivery.asset");
 
             EnsureFolder("Assets/Game/Materials");
-            var asphalt = GetOrCreateMaterial("Assets/Game/Materials/Asphalt.mat", new Color(0.18f, 0.18f, 0.2f), 0.72f, 0f);
-            var sidewalk = GetOrCreateMaterial("Assets/Game/Materials/Sidewalk.mat", new Color(0.36f, 0.34f, 0.32f), 0.24f, 0f);
+            var asphalt = GetOrCreateMaterial("Assets/Game/Materials/Asphalt.mat", new Color(0.09f, 0.105f, 0.125f), 0.86f, 0.02f);
+            var sidewalk = GetOrCreateMaterial("Assets/Game/Materials/Sidewalk.mat", new Color(0.24f, 0.23f, 0.21f), 0.34f, 0f);
             var lanePaint = GetOrCreateMaterial("Assets/Game/Materials/LanePaint.mat", new Color(0.9f, 0.76f, 0.34f), 0.65f, 0f);
-            var brick = GetOrCreateMaterial("Assets/Game/Materials/Brick.mat", new Color(0.34f, 0.18f, 0.16f), 0.12f, 0f);
+            var brick = GetOrCreateMaterial("Assets/Game/Materials/Brick.mat", new Color(0.2f, 0.11f, 0.1f), 0.18f, 0f);
             var warmDoor = GetOrCreateMaterial("Assets/Game/Materials/WarmDoor.mat", new Color(0.62f, 0.49f, 0.28f), 0.28f, 0f);
             var sedanPaint = GetOrCreateMaterial("Assets/Game/Materials/SedanPaint.mat", new Color(0.37f, 0.07f, 0.08f), 0.8f, 0.1f);
             var awning = GetOrCreateMaterial("Assets/Game/Materials/Awning.mat", new Color(0.1f, 0.12f, 0.14f), 0.18f, 0f);
             var playerCoat = GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.68f, 0.67f, 0.61f), 0.15f, 0f);
             var enemyCoat = GetOrCreateMaterial("Assets/Game/Materials/EnemyCoat.mat", new Color(0.14f, 0.16f, 0.18f), 0.15f, 0f);
             var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.45f, 0.32f, 0.21f), 0.22f, 0f);
-            var roof = GetOrCreateMaterial("Assets/Game/Materials/Roof.mat", new Color(0.16f, 0.12f, 0.11f), 0.14f, 0f);
-            var windowGlow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(0.92f, 0.74f, 0.42f), 0.78f, 0.1f, new Color(0.92f, 0.74f, 0.42f) * 0.9f);
+            var roof = GetOrCreateMaterial("Assets/Game/Materials/Roof.mat", new Color(0.055f, 0.06f, 0.07f), 0.22f, 0f);
+            var windowGlow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(1f, 0.78f, 0.42f), 0.86f, 0.08f, new Color(1f, 0.68f, 0.28f) * 3.2f);
             var metal = GetOrCreateMaterial("Assets/Game/Materials/Metal.mat", new Color(0.27f, 0.28f, 0.3f), 0.78f, 0.7f);
             var crateWood = GetOrCreateMaterial("Assets/Game/Materials/CrateWood.mat", new Color(0.44f, 0.29f, 0.18f), 0.18f, 0f);
             var officeSign = GetOrCreateMaterial("Assets/Game/Materials/OfficeSign.mat", new Color(0.13f, 0.12f, 0.12f), 0.32f, 0f);
@@ -126,16 +128,17 @@ namespace MafiaTopDown.Editor
             var lightComponent = light.AddComponent<Light>();
             lightComponent.type = LightType.Directional;
             lightComponent.color = new Color(1f, 0.88f, 0.73f);
-            lightComponent.intensity = 0.82f;
+            lightComponent.intensity = 0.58f;
             lightComponent.shadows = LightShadows.Soft;
             light.transform.rotation = Quaternion.Euler(36f, -38f, 0f);
 
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.17f, 0.18f, 0.22f);
+            RenderSettings.ambientLight = new Color(0.075f, 0.085f, 0.105f);
             RenderSettings.fog = true;
-            RenderSettings.fogColor = new Color(0.17f, 0.19f, 0.23f);
+            RenderSettings.fogColor = new Color(0.08f, 0.095f, 0.12f);
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogDensity = 0.018f;
+            RenderSettings.fogDensity = 0.026f;
+            CreateNoirPostProcessVolume("District_01", new Color(0.78f, 0.86f, 1f), -0.38f, 46f, -24f, 2.1f, 0.48f);
 
             var streetPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
             streetPlane.name = "StreetPlane";
@@ -297,6 +300,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(-4.8f, 0f, 12f), metal, windowGlow);
             CreateLampPost(new Vector3(4.8f, 0f, 18f), metal, windowGlow);
             CreateNoirStreetDressing("Dock", metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
+            CreateNoirSpawnComposition("DockStart", new Vector3(0f, 0f, -12f), metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass, "MORETTI");
             CreateDocksIdentityPass(metal, windowGlow, crateWood, officeSign, water, brass);
 
             var player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
@@ -354,15 +358,13 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.28f, 0.29f, 0.33f);
             camera.orthographic = false;
-            camera.fieldOfView = 46f;
+            camera.fieldOfView = 42f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 100f;
-            cameraRoot.transform.position = new Vector3(0f, 19f, -16f);
+            cameraRoot.transform.position = player.transform.position + new Vector3(-0.9f, 13.2f, -8.1f);
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            SetVector3Value(topDownCamera, "offset", new Vector3(0f, 18f, -13f));
-            SetFloatValue(topDownCamera, "minimumHeight", 16f);
-            SetFloatValue(topDownCamera, "maximumHeight", 24f);
+            ConfigureNoirCamera(camera, topDownCamera, new Vector3(-0.9f, 13.2f, -8.1f), 61f, -3f, 9.5f, 18f);
 
             var sceneTransitionControllerObject = new GameObject("SceneTransitionController");
             var sceneTransitionController = sceneTransitionControllerObject.AddComponent<SceneTransitionController>();
@@ -789,13 +791,12 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.11f, 0.1f, 0.09f);
             camera.orthographic = false;
-            camera.fieldOfView = 52f;
-            cameraRoot.transform.position = new Vector3(0f, 15f, -10f);
+            camera.fieldOfView = 46f;
+            cameraRoot.transform.position = player.transform.position + new Vector3(0f, 10.8f, -6.8f);
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            SetVector3Value(topDownCamera, "offset", new Vector3(0f, 14f, -9f));
-            SetFloatValue(topDownCamera, "minimumHeight", 11f);
-            SetFloatValue(topDownCamera, "maximumHeight", 18f);
+            ConfigureNoirCamera(camera, topDownCamera, new Vector3(0f, 10.8f, -6.8f), 60f, 0f, 8.5f, 15f);
+            CreateNoirPostProcessVolume("Interior_BackOffice_01", new Color(1f, 0.78f, 0.55f), -0.28f, 36f, -12f, 1.6f, 0.4f);
 
             var transitionRoot = new GameObject("SceneTransitionController");
             var transitionController = transitionRoot.AddComponent<SceneTransitionController>();
@@ -1387,12 +1388,12 @@ namespace MafiaTopDown.Editor
             var unionCrackdownMission = AssetDatabase.LoadAssetAtPath<MissionDefinitionAsset>("Assets/Game/Data/Missions/UnionCrackdown.asset");
 
             EnsureFolder("Assets/Game/Materials");
-            var asphalt = GetOrCreateMaterial("Assets/Game/Materials/Asphalt.mat", new Color(0.18f, 0.18f, 0.2f), 0.72f, 0f);
-            var sidewalk = GetOrCreateMaterial("Assets/Game/Materials/Sidewalk.mat", new Color(0.36f, 0.34f, 0.32f), 0.24f, 0f);
-            var stone = GetOrCreateMaterial("Assets/Game/Materials/Stone.mat", new Color(0.28f, 0.27f, 0.24f), 0.22f, 0f);
-            var brick = GetOrCreateMaterial("Assets/Game/Materials/Brick.mat", new Color(0.31f, 0.19f, 0.18f), 0.12f, 0f);
+            var asphalt = GetOrCreateMaterial("Assets/Game/Materials/Asphalt.mat", new Color(0.09f, 0.105f, 0.125f), 0.86f, 0.02f);
+            var sidewalk = GetOrCreateMaterial("Assets/Game/Materials/Sidewalk.mat", new Color(0.24f, 0.23f, 0.21f), 0.34f, 0f);
+            var stone = GetOrCreateMaterial("Assets/Game/Materials/Stone.mat", new Color(0.22f, 0.22f, 0.2f), 0.32f, 0f);
+            var brick = GetOrCreateMaterial("Assets/Game/Materials/Brick.mat", new Color(0.21f, 0.13f, 0.12f), 0.18f, 0f);
             var lanePaint = GetOrCreateMaterial("Assets/Game/Materials/LanePaint.mat", new Color(0.9f, 0.76f, 0.34f), 0.65f, 0f);
-            var windowGlow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(0.92f, 0.74f, 0.42f), 0.78f, 0.1f, new Color(0.92f, 0.74f, 0.42f) * 0.9f);
+            var windowGlow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(1f, 0.78f, 0.42f), 0.86f, 0.08f, new Color(1f, 0.68f, 0.28f) * 3.2f);
             var brass = GetOrCreateMaterial("Assets/Game/Materials/Brass.mat", new Color(0.63f, 0.47f, 0.21f), 0.8f, 0.88f);
             var metal = GetOrCreateMaterial("Assets/Game/Materials/Metal.mat", new Color(0.27f, 0.28f, 0.3f), 0.78f, 0.7f);
             var enemyCoat = GetOrCreateMaterial("Assets/Game/Materials/EnemyCoat.mat", new Color(0.14f, 0.16f, 0.18f), 0.15f, 0f);
@@ -1401,7 +1402,7 @@ namespace MafiaTopDown.Editor
             var crateWood = GetOrCreateMaterial("Assets/Game/Materials/CrateWood.mat", new Color(0.44f, 0.29f, 0.18f), 0.18f, 0f);
             var puddle = GetOrCreateMaterial("Assets/Game/Materials/Puddle.mat", new Color(0.12f, 0.14f, 0.15f), 0.96f, 0.02f);
 
-            ApplyExteriorAtmosphere(new Color(0.16f, 0.17f, 0.2f), new Color(0.16f, 0.18f, 0.21f), 0.014f, new Color(1f, 0.9f, 0.78f), 0.88f, Quaternion.Euler(38f, -24f, 0f));
+            ApplyExteriorAtmosphere(new Color(0.08f, 0.085f, 0.105f), new Color(0.075f, 0.085f, 0.105f), 0.024f, new Color(1f, 0.82f, 0.58f), 0.62f, Quaternion.Euler(38f, -24f, 0f));
 
             var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.name = "BusinessGround";
@@ -1442,6 +1443,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(-4.8f, 0f, 9f), metal, windowGlow);
             CreateLampPost(new Vector3(4.8f, 0f, 16f), metal, windowGlow);
             CreateNoirStreetDressing("Business", metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
+            CreateNoirSpawnComposition("BusinessStart", new Vector3(0f, 0f, -15f), metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass, "UNION SQ");
             CreateBusinessCoreIdentityPass(metal, windowGlow, stone, officeSign, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
@@ -1620,12 +1622,12 @@ namespace MafiaTopDown.Editor
             var chapelAshMission = AssetDatabase.LoadAssetAtPath<MissionDefinitionAsset>("Assets/Game/Data/Missions/ChapelAsh.asset");
 
             EnsureFolder("Assets/Game/Materials");
-            var asphalt = GetOrCreateMaterial("Assets/Game/Materials/Asphalt.mat", new Color(0.17f, 0.17f, 0.19f), 0.72f, 0f);
-            var sidewalk = GetOrCreateMaterial("Assets/Game/Materials/Sidewalk.mat", new Color(0.33f, 0.31f, 0.29f), 0.2f, 0f);
-            var tenement = GetOrCreateMaterial("Assets/Game/Materials/TenementBrick.mat", new Color(0.3f, 0.17f, 0.15f), 0.1f, 0f);
-            var churchStone = GetOrCreateMaterial("Assets/Game/Materials/ChurchStone.mat", new Color(0.36f, 0.34f, 0.29f), 0.18f, 0f);
+            var asphalt = GetOrCreateMaterial("Assets/Game/Materials/Asphalt.mat", new Color(0.085f, 0.1f, 0.12f), 0.86f, 0.02f);
+            var sidewalk = GetOrCreateMaterial("Assets/Game/Materials/Sidewalk.mat", new Color(0.22f, 0.21f, 0.19f), 0.32f, 0f);
+            var tenement = GetOrCreateMaterial("Assets/Game/Materials/TenementBrick.mat", new Color(0.22f, 0.12f, 0.1f), 0.18f, 0f);
+            var churchStone = GetOrCreateMaterial("Assets/Game/Materials/ChurchStone.mat", new Color(0.27f, 0.26f, 0.23f), 0.28f, 0f);
             var laundry = GetOrCreateMaterial("Assets/Game/Materials/LaundryCloth.mat", new Color(0.67f, 0.63f, 0.58f), 0.12f, 0f);
-            var windowGlow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(0.92f, 0.74f, 0.42f), 0.78f, 0.1f, new Color(0.92f, 0.74f, 0.42f) * 0.9f);
+            var windowGlow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(1f, 0.78f, 0.42f), 0.86f, 0.08f, new Color(1f, 0.68f, 0.28f) * 3.2f);
             var metal = GetOrCreateMaterial("Assets/Game/Materials/Metal.mat", new Color(0.27f, 0.28f, 0.3f), 0.78f, 0.7f);
             var enemyCoat = GetOrCreateMaterial("Assets/Game/Materials/EnemyCoat.mat", new Color(0.14f, 0.16f, 0.18f), 0.15f, 0f);
             var policeCoat = GetOrCreateMaterial("Assets/Game/Materials/PoliceCoat.mat", new Color(0.08f, 0.13f, 0.19f), 0.18f, 0f);
@@ -1634,7 +1636,7 @@ namespace MafiaTopDown.Editor
             var puddle = GetOrCreateMaterial("Assets/Game/Materials/Puddle.mat", new Color(0.12f, 0.14f, 0.15f), 0.96f, 0.02f);
             var brass = GetOrCreateMaterial("Assets/Game/Materials/Brass.mat", new Color(0.63f, 0.47f, 0.21f), 0.8f, 0.88f);
 
-            ApplyExteriorAtmosphere(new Color(0.14f, 0.15f, 0.18f), new Color(0.15f, 0.16f, 0.18f), 0.016f, new Color(0.96f, 0.87f, 0.78f), 0.8f, Quaternion.Euler(32f, -34f, 0f));
+            ApplyExteriorAtmosphere(new Color(0.07f, 0.075f, 0.09f), new Color(0.075f, 0.075f, 0.085f), 0.026f, new Color(1f, 0.78f, 0.52f), 0.56f, Quaternion.Euler(32f, -34f, 0f));
 
             var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.name = "QuarterGround";
@@ -1663,6 +1665,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(4.2f, 0f, 4f), metal, windowGlow);
             CreateLampPost(new Vector3(-4.2f, 0f, 12f), metal, windowGlow);
             CreateNoirStreetDressing("Quarter", metal, windowGlow, crateWood, sign, sidewalk, puddle, brass);
+            CreateNoirSpawnComposition("QuarterStart", new Vector3(0f, 0f, -12.8f), metal, windowGlow, crateWood, sign, sidewalk, puddle, brass, "ST VERA");
             CreateOldQuarterIdentityPass(metal, windowGlow, churchStone, tenement, laundry, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
@@ -1816,11 +1819,11 @@ namespace MafiaTopDown.Editor
             var yardBetrayalMission = AssetDatabase.LoadAssetAtPath<MissionDefinitionAsset>("Assets/Game/Data/Missions/YardBetrayal.asset");
 
             EnsureFolder("Assets/Game/Materials");
-            var asphalt = GetOrCreateMaterial("Assets/Game/Materials/Asphalt.mat", new Color(0.16f, 0.17f, 0.18f), 0.72f, 0f);
-            var gravel = GetOrCreateMaterial("Assets/Game/Materials/Gravel.mat", new Color(0.24f, 0.23f, 0.22f), 0.18f, 0f);
-            var rustMetal = GetOrCreateMaterial("Assets/Game/Materials/RustMetal.mat", new Color(0.34f, 0.22f, 0.17f), 0.58f, 0.45f);
-            var tankMetal = GetOrCreateMaterial("Assets/Game/Materials/TankMetal.mat", new Color(0.22f, 0.26f, 0.28f), 0.72f, 0.62f);
-            var windowGlow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(0.92f, 0.74f, 0.42f), 0.78f, 0.1f, new Color(0.92f, 0.74f, 0.42f) * 0.9f);
+            var asphalt = GetOrCreateMaterial("Assets/Game/Materials/Asphalt.mat", new Color(0.08f, 0.095f, 0.11f), 0.86f, 0.02f);
+            var gravel = GetOrCreateMaterial("Assets/Game/Materials/Gravel.mat", new Color(0.18f, 0.18f, 0.17f), 0.26f, 0f);
+            var rustMetal = GetOrCreateMaterial("Assets/Game/Materials/RustMetal.mat", new Color(0.24f, 0.15f, 0.11f), 0.62f, 0.45f);
+            var tankMetal = GetOrCreateMaterial("Assets/Game/Materials/TankMetal.mat", new Color(0.14f, 0.17f, 0.19f), 0.78f, 0.62f);
+            var windowGlow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(1f, 0.78f, 0.42f), 0.86f, 0.08f, new Color(1f, 0.68f, 0.28f) * 3.2f);
             var metal = GetOrCreateMaterial("Assets/Game/Materials/Metal.mat", new Color(0.27f, 0.28f, 0.3f), 0.78f, 0.7f);
             var enemyCoat = GetOrCreateMaterial("Assets/Game/Materials/EnemyCoat.mat", new Color(0.14f, 0.16f, 0.18f), 0.15f, 0f);
             var policeCoat = GetOrCreateMaterial("Assets/Game/Materials/PoliceCoat.mat", new Color(0.08f, 0.13f, 0.19f), 0.18f, 0f);
@@ -1829,7 +1832,7 @@ namespace MafiaTopDown.Editor
             var puddle = GetOrCreateMaterial("Assets/Game/Materials/Puddle.mat", new Color(0.12f, 0.14f, 0.15f), 0.96f, 0.02f);
             var brass = GetOrCreateMaterial("Assets/Game/Materials/Brass.mat", new Color(0.63f, 0.47f, 0.21f), 0.8f, 0.88f);
 
-            ApplyExteriorAtmosphere(new Color(0.13f, 0.14f, 0.17f), new Color(0.14f, 0.16f, 0.18f), 0.02f, new Color(0.95f, 0.84f, 0.71f), 0.76f, Quaternion.Euler(28f, -40f, 0f));
+            ApplyExteriorAtmosphere(new Color(0.06f, 0.07f, 0.085f), new Color(0.065f, 0.075f, 0.09f), 0.03f, new Color(0.92f, 0.78f, 0.58f), 0.52f, Quaternion.Euler(28f, -40f, 0f));
 
             var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.name = "RailGround";
@@ -1854,6 +1857,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(4.6f, 0f, -4f), metal, windowGlow);
             CreateLampPost(new Vector3(4.6f, 0f, 11f), metal, windowGlow);
             CreateNoirStreetDressing("Rail", metal, windowGlow, crateWood, sign, gravel, puddle, brass);
+            CreateNoirSpawnComposition("RailStart", new Vector3(0f, 0f, -13.5f), metal, windowGlow, crateWood, sign, gravel, puddle, brass, "IRONLINE");
             CreateRailYardIdentityPass(metal, windowGlow, rustMetal, tankMetal, crateWood, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
@@ -2236,13 +2240,13 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = backgroundColor;
             camera.orthographic = false;
-            camera.fieldOfView = 52f;
-            cameraRoot.transform.position = playerPosition + cameraOffset;
+            camera.fieldOfView = 46f;
+            var tunedInteriorCameraOffset = new Vector3(cameraOffset.x, Mathf.Min(cameraOffset.y, 10.8f), -6.8f);
+            cameraRoot.transform.position = playerPosition + tunedInteriorCameraOffset;
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            SetVector3Value(topDownCamera, "offset", cameraOffset);
-            SetFloatValue(topDownCamera, "minimumHeight", 11f);
-            SetFloatValue(topDownCamera, "maximumHeight", 18f);
+            ConfigureNoirCamera(camera, topDownCamera, tunedInteriorCameraOffset, 60f, 0f, 8.5f, 15f);
+            CreateNoirPostProcessVolume(sceneName, new Color(1f, 0.78f, 0.55f), -0.28f, 36f, -12f, 1.6f, 0.4f);
 
             var transitionRoot = new GameObject("SceneTransitionController");
             var transitionController = transitionRoot.AddComponent<SceneTransitionController>();
@@ -2334,15 +2338,15 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = backgroundColor;
             camera.orthographic = false;
-            camera.fieldOfView = 46f;
+            camera.fieldOfView = 42f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 100f;
-            cameraRoot.transform.position = playerPosition + cameraOffset;
+            var tunedDistrictCameraOffset = new Vector3(cameraOffset.x - 0.9f, Mathf.Min(cameraOffset.y, 13.2f), -8.1f);
+            cameraRoot.transform.position = playerPosition + tunedDistrictCameraOffset;
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            SetVector3Value(topDownCamera, "offset", cameraOffset);
-            SetFloatValue(topDownCamera, "minimumHeight", 15f);
-            SetFloatValue(topDownCamera, "maximumHeight", 24f);
+            ConfigureNoirCamera(camera, topDownCamera, tunedDistrictCameraOffset, 61f, -3f, 9.5f, 18f);
+            CreateNoirPostProcessVolume(sceneName, ResolveDistrictColorFilter(sceneName), -0.42f, 48f, -24f, 2.15f, 0.5f);
 
             var transitionRoot = new GameObject("SceneTransitionController");
             var transitionController = transitionRoot.AddComponent<SceneTransitionController>();
@@ -2378,6 +2382,137 @@ namespace MafiaTopDown.Editor
                 SceneTransitionController = transitionController,
                 DialogueController = dialogueController
             };
+        }
+
+        private static Color ResolveDistrictColorFilter(string sceneName)
+        {
+            if (sceneName.Contains("BusinessCore", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new Color(1f, 0.9f, 0.72f);
+            }
+
+            if (sceneName.Contains("OldQuarter", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new Color(1f, 0.82f, 0.68f);
+            }
+
+            if (sceneName.Contains("RailYard", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new Color(0.76f, 0.86f, 1f);
+            }
+
+            return new Color(0.78f, 0.86f, 1f);
+        }
+
+        private static void ConfigureNoirCamera(
+            Camera camera,
+            TopDownCameraController topDownCamera,
+            Vector3 offset,
+            float pitch,
+            float yaw,
+            float minimumHeight,
+            float maximumHeight)
+        {
+            camera.allowHDR = true;
+            camera.allowMSAA = true;
+
+            var additionalCameraData = camera.GetComponent<UniversalAdditionalCameraData>();
+            if (additionalCameraData == null)
+            {
+                additionalCameraData = camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
+            }
+
+            additionalCameraData.renderPostProcessing = true;
+            additionalCameraData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+            additionalCameraData.dithering = true;
+            additionalCameraData.stopNaN = true;
+
+            SetVector3Value(topDownCamera, "offset", offset);
+            SetFloatValue(topDownCamera, "minimumHeight", minimumHeight);
+            SetFloatValue(topDownCamera, "maximumHeight", maximumHeight);
+            SetFloatValue(topDownCamera, "pitch", pitch);
+            SetFloatValue(topDownCamera, "yaw", yaw);
+        }
+
+        private static void CreateNoirPostProcessVolume(
+            string sceneName,
+            Color colorFilter,
+            float postExposure,
+            float contrast,
+            float saturation,
+            float bloomIntensity,
+            float vignetteIntensity)
+        {
+            var profile = GetOrCreateNoirVolumeProfile("Assets/Game/Data/Volumes/" + sceneName + "_NoirGrade.asset");
+            var colorAdjustments = GetOrAddVolumeComponent<ColorAdjustments>(profile);
+            SetVolumeParameter(colorAdjustments.postExposure, postExposure);
+            SetVolumeParameter(colorAdjustments.contrast, contrast);
+            SetVolumeParameter(colorAdjustments.saturation, saturation);
+            SetVolumeParameter(colorAdjustments.colorFilter, colorFilter);
+
+            var tonemapping = GetOrAddVolumeComponent<Tonemapping>(profile);
+            SetVolumeParameter(tonemapping.mode, TonemappingMode.ACES);
+
+            var bloom = GetOrAddVolumeComponent<Bloom>(profile);
+            SetVolumeParameter(bloom.threshold, 0.52f);
+            SetVolumeParameter(bloom.intensity, bloomIntensity);
+            SetVolumeParameter(bloom.scatter, 0.74f);
+            SetVolumeParameter(bloom.tint, new Color(1f, 0.72f, 0.38f));
+
+            var vignette = GetOrAddVolumeComponent<Vignette>(profile);
+            SetVolumeParameter(vignette.intensity, vignetteIntensity);
+            SetVolumeParameter(vignette.smoothness, 0.72f);
+
+            var grain = GetOrAddVolumeComponent<FilmGrain>(profile);
+            SetVolumeParameter(grain.type, FilmGrainLookup.Thin1);
+            SetVolumeParameter(grain.intensity, 0.22f);
+            SetVolumeParameter(grain.response, 0.72f);
+
+            EditorUtility.SetDirty(profile);
+
+            var volumeObject = new GameObject(sceneName + "_NoirGradeVolume");
+            var volume = volumeObject.AddComponent<Volume>();
+            volume.isGlobal = true;
+            volume.priority = 50f;
+            volume.sharedProfile = profile;
+        }
+
+        private static VolumeProfile GetOrCreateNoirVolumeProfile(string assetPath)
+        {
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(assetPath);
+            if (profile != null)
+            {
+                return profile;
+            }
+
+            var directory = System.IO.Path.GetDirectoryName(assetPath);
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                EnsureFolder(directory.Replace('\\', '/'));
+            }
+
+            profile = ScriptableObject.CreateInstance<VolumeProfile>();
+            profile.name = System.IO.Path.GetFileNameWithoutExtension(assetPath);
+            AssetDatabase.CreateAsset(profile, assetPath);
+            return profile;
+        }
+
+        private static T GetOrAddVolumeComponent<T>(VolumeProfile profile)
+            where T : VolumeComponent
+        {
+            if (!profile.TryGet<T>(out var component))
+            {
+                component = profile.Add<T>(true);
+            }
+
+            component.active = true;
+            return component;
+        }
+
+        private static void SetVolumeParameter<T>(VolumeParameter<T> parameter, T value)
+        {
+            parameter.overrideState = true;
+            parameter.value = value;
         }
 
         private static GameObject CreatePrimitive(PrimitiveType primitiveType, string name, Vector3 position, Vector3 scale, Material material)
@@ -2448,6 +2583,68 @@ namespace MafiaTopDown.Editor
             CreatePrimitive(PrimitiveType.Cube, prefix + "KioskSign", new Vector3(5.9f, 1.55f, 13.8f), new Vector3(1.28f, 0.22f, 1f), brass);
             CreateSteamVent(prefix + "SteamVentA", new Vector3(-3.8f, 0.12f, 11.2f), metal, glow);
             CreateSteamVent(prefix + "SteamVentB", new Vector3(3.5f, 0.12f, -10.6f), metal, glow);
+        }
+
+        private static void CreateNoirSpawnComposition(
+            string prefix,
+            Vector3 anchor,
+            Material metal,
+            Material glow,
+            Material wood,
+            Material sign,
+            Material masonry,
+            Material puddle,
+            Material brass,
+            string marqueeText)
+        {
+            var streetZ = anchor.z + 3.8f;
+            CreatePrimitive(PrimitiveType.Cube, prefix + "ForegroundShadow", anchor + new Vector3(0f, 0.14f, -7.8f), new Vector3(10.8f, 0.05f, 0.72f), sign);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "LeftFacadeMass", anchor + new Vector3(-7.25f, 2.2f, -1.2f), new Vector3(2.4f, 4.4f, 7.4f), masonry);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "RightFacadeMass", anchor + new Vector3(7.15f, 2.4f, 1.2f), new Vector3(2.2f, 4.8f, 8.6f), sign);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "LeftAwning", anchor + new Vector3(-5.85f, 2.35f, 1.1f), new Vector3(1.15f, 0.24f, 2.9f), sign);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "RightAwning", anchor + new Vector3(5.85f, 2.45f, 4.4f), new Vector3(1.15f, 0.24f, 3.2f), sign);
+
+            for (var index = 0; index < 4; index += 1)
+            {
+                var z = anchor.z - 2.8f + (index * 1.85f);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "LeftWindowGlow_" + index, new Vector3(-5.95f, 3.0f, z), new Vector3(0.08f, 0.72f, 0.74f), glow);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "RightWindowGlow_" + index, new Vector3(5.95f, 3.2f, z + 0.7f), new Vector3(0.08f, 0.68f, 0.8f), glow);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "WetReflection_" + index, new Vector3(index % 2 == 0 ? -1.8f : 2.0f, 0.13f, z + 0.45f), new Vector3(1.6f, 0.018f, 0.42f), puddle);
+            }
+
+            CreatePrimitive(PrimitiveType.Cube, prefix + "MarqueeBack", anchor + new Vector3(0f, 3.85f, streetZ), new Vector3(5.8f, 0.42f, 0.28f), sign);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "MarqueeGlow", anchor + new Vector3(0f, 3.86f, streetZ - 0.18f), new Vector3(5.2f, 0.16f, 0.08f), glow);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "MarqueeBulbLeft", anchor + new Vector3(-2.55f, 3.9f, streetZ - 0.26f), new Vector3(0.22f, 0.22f, 0.06f), glow);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "MarqueeBulbRight", anchor + new Vector3(2.55f, 3.9f, streetZ - 0.26f), new Vector3(0.22f, 0.22f, 0.06f), glow);
+            CreateNoirWorldLabel(prefix + "MarqueeText", marqueeText, anchor + new Vector3(0f, 4.25f, streetZ - 0.38f), 0.2f, new Color(1f, 0.74f, 0.38f));
+
+            CreatePrimitive(PrimitiveType.Cube, prefix + "CrosswalkA", anchor + new Vector3(0f, 0.135f, 1.7f), new Vector3(7.2f, 0.035f, 0.22f), brass);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "CrosswalkB", anchor + new Vector3(0f, 0.135f, 2.45f), new Vector3(7.2f, 0.035f, 0.22f), brass);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "CafeTable", anchor + new Vector3(-5.3f, 0.72f, 4.7f), new Vector3(0.85f, 0.18f, 0.85f), wood);
+            CreatePrimitive(PrimitiveType.Cylinder, prefix + "CafeLamp", anchor + new Vector3(-5.3f, 1.32f, 4.7f), new Vector3(0.18f, 0.45f, 0.18f), glow);
+            CreateStaticVehicle(prefix + "ParkedCoupe", anchor + new Vector3(2.85f, 0.72f, 5.7f), new Vector3(1.65f, 0.92f, 3.55f), new Color(0.08f, 0.08f, 0.1f), metal, glow);
+
+            var lightObject = new GameObject(prefix + "MarqueeLight");
+            lightObject.transform.position = anchor + new Vector3(0f, 3.6f, streetZ - 0.6f);
+            var light = lightObject.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.range = 8.5f;
+            light.intensity = 3.4f;
+            light.color = new Color(1f, 0.66f, 0.28f);
+        }
+
+        private static void CreateNoirWorldLabel(string name, string text, Vector3 position, float characterSize, Color color)
+        {
+            var labelObject = new GameObject(name);
+            labelObject.transform.position = position;
+            labelObject.transform.rotation = Quaternion.Euler(62f, 0f, 0f);
+            var textMesh = labelObject.AddComponent<TextMesh>();
+            textMesh.text = text;
+            textMesh.fontSize = 84;
+            textMesh.characterSize = characterSize;
+            textMesh.anchor = TextAnchor.MiddleCenter;
+            textMesh.alignment = TextAlignment.Center;
+            textMesh.color = color;
         }
 
         private static void CreateDocksIdentityPass(

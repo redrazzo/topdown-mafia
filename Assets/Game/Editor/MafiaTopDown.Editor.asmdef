@@ -3,7 +3,9 @@
   "rootNamespace": "MafiaTopDown.Editor",
   "references": [
     "MafiaTopDown.Domain",
-    "MafiaTopDown.Runtime"
+    "MafiaTopDown.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.Universal.Runtime"
   ],
   "includePlatforms": [
     "Editor"
