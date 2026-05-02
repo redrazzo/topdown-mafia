@@ -1,5 +1,6 @@
 using MafiaTopDown.Gameplay.Domain.Interactions;
 using MafiaTopDown.Gameplay.Runtime.Player;
+using MafiaTopDown.Gameplay.Runtime.UI;
 using MafiaTopDown.Gameplay.Runtime.Vehicles;
 using UnityEngine;
 
@@ -61,7 +62,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Interaction
                 ? "[" + interactKey + "] " + _currentPrompt.PromptText
                 : _currentPrompt.PromptText + " (" + _currentPrompt.DisabledReason + ")";
 
-            GUI.Box(promptRect, text);
+            HudStyleUtility.DrawPrompt(promptRect, text);
         }
 
         private void RefreshCandidates()

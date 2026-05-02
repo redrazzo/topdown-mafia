@@ -6,7 +6,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
     public sealed class ActivityHudController : MonoBehaviour
     {
         [SerializeField] private ActivityProgressionController activityProgressionController;
-        [SerializeField] private Rect activityRect = new Rect(16f, 194f, 360f, 66f);
+        [SerializeField] private Rect activityRect = new Rect(22f, 198f, 285f, 58f);
 
         private void OnGUI()
         {

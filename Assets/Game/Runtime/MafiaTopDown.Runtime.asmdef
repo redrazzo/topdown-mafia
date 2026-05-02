@@ -2,7 +2,8 @@
   "name": "MafiaTopDown.Runtime",
   "rootNamespace": "MafiaTopDown.Gameplay.Runtime",
   "references": [
-    "MafiaTopDown.Domain"
+    "MafiaTopDown.Domain",
+    "UnityEngine.UI"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

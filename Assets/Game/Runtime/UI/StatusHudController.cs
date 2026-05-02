@@ -9,7 +9,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
         [SerializeField] private CombatHealth playerHealth;
         [SerializeField] private HeatSystemController heatSystemController;
         [SerializeField] private PoliceResponseController policeResponseController;
-        [SerializeField] private Rect statusRect = new Rect(16f, 96f, 360f, 92f);
+        [SerializeField] private Rect statusRect = new Rect(22f, 104f, 285f, 84f);
 
         private void OnGUI()
         {

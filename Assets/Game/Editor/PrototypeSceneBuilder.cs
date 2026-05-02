@@ -1,3 +1,5 @@
+#nullable enable annotations
+
 using MafiaTopDown.Gameplay.Runtime.Camera;
 using MafiaTopDown.Gameplay.Runtime.Combat;
 using MafiaTopDown.Gameplay.Runtime.Data;
@@ -111,7 +113,7 @@ namespace MafiaTopDown.Editor
             var warmDoor = GetOrCreateMaterial("Assets/Game/Materials/WarmDoor.mat", new Color(0.62f, 0.49f, 0.28f), 0.28f, 0f);
             var sedanPaint = GetOrCreateMaterial("Assets/Game/Materials/SedanPaint.mat", new Color(0.37f, 0.07f, 0.08f), 0.8f, 0.1f);
             var awning = GetOrCreateMaterial("Assets/Game/Materials/Awning.mat", new Color(0.1f, 0.12f, 0.14f), 0.18f, 0f);
-            var playerCoat = GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.68f, 0.67f, 0.61f), 0.15f, 0f);
+            var playerCoat = GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.42f, 0.39f, 0.31f), 0.28f, 0f);
             var enemyCoat = GetOrCreateMaterial("Assets/Game/Materials/EnemyCoat.mat", new Color(0.14f, 0.16f, 0.18f), 0.15f, 0f);
             var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.45f, 0.32f, 0.21f), 0.22f, 0f);
             var roof = GetOrCreateMaterial("Assets/Game/Materials/Roof.mat", new Color(0.055f, 0.06f, 0.07f), 0.22f, 0f);
@@ -303,10 +305,7 @@ namespace MafiaTopDown.Editor
             CreateNoirSpawnComposition("DockStart", new Vector3(0f, 0f, -12f), metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass, "MORETTI");
             CreateDocksIdentityPass(metal, windowGlow, crateWood, officeSign, water, brass);
 
-            var player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            player.name = "Player";
-            player.transform.position = new Vector3(0f, 1f, -12f);
-            AssignMaterial(player, playerCoat);
+            var player = CreateNoirActor("Player", new Vector3(0f, 1f, -12f), playerCoat, null, false);
             var characterController = player.AddComponent<CharacterController>();
             characterController.height = 1.8f;
             characterController.radius = 0.35f;
@@ -390,11 +389,7 @@ namespace MafiaTopDown.Editor
             SetObjectReference(pauseMenu, "dialogueController", dialogueController);
 
             var docksMissionRoot = new GameObject("AQuietFavorDistrictRoot");
-            var luca = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            luca.name = "LucaContact";
-            luca.transform.SetParent(docksMissionRoot.transform, false);
-            luca.transform.position = new Vector3(-3.2f, 1f, -10.4f);
-            AssignMaterial(luca, contactCoat);
+            var luca = CreateNoirActor("LucaContact", new Vector3(-3.2f, 1f, -10.4f), contactCoat, docksMissionRoot.transform);
             var lucaInteractable = luca.AddComponent<DialogueInteractable>();
             SetObjectReference(lucaInteractable, "dialogueController", dialogueController);
             SetObjectReference(lucaInteractable, "dialogueSequence", lucaBriefing);
@@ -433,6 +428,7 @@ namespace MafiaTopDown.Editor
                 new Vector3(0f, 1.05f, -4.15f),
                 new Vector3(1.3f, 0.35f, 0.12f),
                 windowGlow).transform.SetParent(car.transform, true);
+            DecorateNoirVehicle(car, "Sedan", car.transform.position, car.transform.localScale, brass, windowGlow);
 
             var building = CreatePrimitive(
                 PrimitiveType.Cube,
@@ -741,10 +737,7 @@ namespace MafiaTopDown.Editor
                 new Vector3(5.8f, 0.02f, 6.2f),
                 carpet);
 
-            var player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            player.name = "InteriorPlayer";
-            player.transform.position = new Vector3(0f, 1f, -5.5f);
-            AssignMaterial(player, officeTrim);
+            var player = CreateNoirActor("InteriorPlayer", new Vector3(0f, 1f, -5.5f), officeTrim, null, false);
             var characterController = player.AddComponent<CharacterController>();
             characterController.height = 1.8f;
             characterController.radius = 0.35f;
@@ -899,11 +892,7 @@ namespace MafiaTopDown.Editor
                 dialogueController,
                 backOfficeMissionRoot.transform);
 
-            var vincent = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            vincent.name = "VincentContact";
-            vincent.transform.SetParent(backOfficeMissionRoot.transform, false);
-            vincent.transform.position = new Vector3(0f, 1f, 3.7f);
-            AssignMaterial(vincent, contactCoat);
+            var vincent = CreateNoirActor("VincentContact", new Vector3(0f, 1f, 3.7f), contactCoat, backOfficeMissionRoot.transform);
             var vincentInteractable = vincent.AddComponent<DialogueInteractable>();
             SetObjectReference(vincentInteractable, "dialogueController", dialogueController);
             SetObjectReference(vincentInteractable, "dialogueSequence", vincentHandoff);
@@ -1083,10 +1072,7 @@ namespace MafiaTopDown.Editor
             CreatePrimitive(PrimitiveType.Cube, "BusinessLedgers", new Vector3(0.7f, 2f, 1.9f), new Vector3(0.85f, 0.22f, 0.55f), ledgerAccent);
             CreatePrimitive(PrimitiveType.Cylinder, "BusinessChandelier", new Vector3(0f, 4.3f, -0.6f), new Vector3(0.35f, 0.1f, 0.35f), brass);
 
-            var bookkeeper = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            bookkeeper.name = "NicoBelloriInterior";
-            bookkeeper.transform.position = new Vector3(0f, 1f, 3.9f);
-            AssignMaterial(bookkeeper, contactCoat);
+            var bookkeeper = CreateNoirActor("NicoBelloriInterior", new Vector3(0f, 1f, 3.9f), contactCoat);
             var bookkeeperInteractable = bookkeeper.AddComponent<DialogueInteractable>();
             SetObjectReference(bookkeeperInteractable, "dialogueController", runtime.DialogueController);
             SetObjectReference(bookkeeperInteractable, "dialogueSequence", bookkeeperDialogue);
@@ -1526,11 +1512,7 @@ namespace MafiaTopDown.Editor
             CreateEnemyGuard("BusinessWatchman", new Vector3(4.2f, 1f, 11.5f), enemyCoat, runtime.PlayerController, runtime.PlayerHealth);
 
             var unionMissionRoot = new GameObject("UnionDueMissionRoot");
-            var bookkeeper = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            bookkeeper.name = "BookkeeperContact";
-            bookkeeper.transform.SetParent(unionMissionRoot.transform, false);
-            bookkeeper.transform.position = new Vector3(-1.6f, 1f, 13.8f);
-            AssignMaterial(bookkeeper, brass);
+            var bookkeeper = CreateNoirActor("BookkeeperContact", new Vector3(-1.6f, 1f, 13.8f), brass, unionMissionRoot.transform);
             var bookkeeperInteractable = bookkeeper.AddComponent<DialogueInteractable>();
             SetObjectReference(bookkeeperInteractable, "dialogueController", runtime.DialogueController);
             SetObjectReference(bookkeeperInteractable, "dialogueSequence", bookkeeperDialogue);
@@ -1747,11 +1729,7 @@ namespace MafiaTopDown.Editor
             CreateEnemyGuard("QuarterCollector", new Vector3(2.6f, 1f, 9.2f), enemyCoat, runtime.PlayerController, runtime.PlayerHealth);
 
             var chapelMissionRoot = new GameObject("ChapelDebtMissionRoot");
-            var debtor = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            debtor.name = "DebtorContact";
-            debtor.transform.SetParent(chapelMissionRoot.transform, false);
-            debtor.transform.position = new Vector3(-5.8f, 1f, 10.2f);
-            AssignMaterial(debtor, sign);
+            var debtor = CreateNoirActor("DebtorContact", new Vector3(-5.8f, 1f, 10.2f), sign, chapelMissionRoot.transform);
             var debtorInteractable = debtor.AddComponent<DialogueInteractable>();
             SetObjectReference(debtorInteractable, "dialogueController", runtime.DialogueController);
             SetObjectReference(debtorInteractable, "dialogueSequence", debtorDialogue);
@@ -2086,6 +2064,13 @@ namespace MafiaTopDown.Editor
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        private static void SetColorValue(UnityEngine.Object target, string propertyName, Color value)
+        {
+            var serializedObject = new SerializedObject(target);
+            serializedObject.FindProperty(propertyName).colorValue = value;
+            serializedObject.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         private static void SetIntValue(UnityEngine.Object target, string propertyName, int value)
         {
             var serializedObject = new SerializedObject(target);
@@ -2193,10 +2178,12 @@ namespace MafiaTopDown.Editor
             CampaignDatabaseAsset campaignDatabase,
             CampaignChapterAsset bootstrapChapter)
         {
-            var player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            player.name = "InteriorPlayer";
-            player.transform.position = playerPosition;
-            AssignMaterial(player, GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.68f, 0.67f, 0.61f), 0.15f, 0f));
+            var player = CreateNoirActor(
+                "InteriorPlayer",
+                playerPosition,
+                GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.42f, 0.39f, 0.31f), 0.28f, 0f),
+                null,
+                false);
             var characterController = player.AddComponent<CharacterController>();
             characterController.height = 1.8f;
             characterController.radius = 0.35f;
@@ -2286,10 +2273,12 @@ namespace MafiaTopDown.Editor
             CampaignDatabaseAsset campaignDatabase,
             CampaignChapterAsset bootstrapChapter)
         {
-            var player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            player.name = "Player";
-            player.transform.position = playerPosition;
-            AssignMaterial(player, GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.68f, 0.67f, 0.61f), 0.15f, 0f));
+            var player = CreateNoirActor(
+                "Player",
+                playerPosition,
+                GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.42f, 0.39f, 0.31f), 0.28f, 0f),
+                null,
+                false);
             var characterController = player.AddComponent<CharacterController>();
             characterController.height = 1.8f;
             characterController.radius = 0.35f;
@@ -2427,6 +2416,10 @@ namespace MafiaTopDown.Editor
             additionalCameraData.dithering = true;
             additionalCameraData.stopNaN = true;
 
+            var screenGrade = camera.gameObject.AddComponent<NoirScreenGradeController>();
+            SetColorValue(screenGrade, "tintColor", new Color(0.025f, 0.04f, 0.06f, 0.19f));
+            SetColorValue(screenGrade, "vignetteColor", new Color(0f, 0f, 0f, 0.68f));
+            SetFloatValue(screenGrade, "letterboxHeight", 0.052f);
             SetVector3Value(topDownCamera, "offset", offset);
             SetFloatValue(topDownCamera, "minimumHeight", minimumHeight);
             SetFloatValue(topDownCamera, "maximumHeight", maximumHeight);
@@ -2532,6 +2525,53 @@ namespace MafiaTopDown.Editor
             {
                 renderer.sharedMaterial = material;
             }
+        }
+
+        private static GameObject CreateVisualPrimitive(PrimitiveType primitiveType, string name, Vector3 position, Vector3 scale, Material material)
+        {
+            var gameObject = CreatePrimitive(primitiveType, name, position, scale, material);
+            var collider = gameObject.GetComponent<Collider>();
+            if (collider != null)
+            {
+                UnityEngine.Object.DestroyImmediate(collider);
+            }
+
+            return gameObject;
+        }
+
+        private static GameObject CreateNoirActor(string name, Vector3 position, Material coatMaterial, Transform? parent = null, bool addInteractionCollider = true)
+        {
+            var root = new GameObject(name);
+            root.transform.position = position;
+            if (parent != null)
+            {
+                root.transform.SetParent(parent, true);
+            }
+
+            var hat = GetOrCreateMaterial("Assets/Game/Materials/FedoraFelt.mat", new Color(0.045f, 0.04f, 0.035f), 0.36f, 0f);
+            var skin = GetOrCreateMaterial("Assets/Game/Materials/FaceWarm.mat", new Color(0.53f, 0.38f, 0.27f), 0.22f, 0f);
+            var shirt = GetOrCreateMaterial("Assets/Game/Materials/ShirtIvory.mat", new Color(0.72f, 0.65f, 0.52f), 0.22f, 0f);
+            var shadow = GetOrCreateMaterial("Assets/Game/Materials/ActorShadow.mat", new Color(0.005f, 0.006f, 0.008f, 0.72f), 0.04f, 0f);
+            var ground = new Vector3(position.x, position.y - 1f, position.z);
+
+            CreateVisualPrimitive(PrimitiveType.Cylinder, name + "_Shadow", ground + new Vector3(0.08f, 0.035f, -0.08f), new Vector3(0.52f, 0.025f, 0.78f), shadow).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Capsule, name + "_Coat", ground + new Vector3(0f, 0.82f, 0f), new Vector3(0.42f, 0.72f, 0.42f), coatMaterial).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_Shoulders", ground + new Vector3(0f, 1.23f, -0.03f), new Vector3(0.82f, 0.18f, 0.42f), coatMaterial).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_Shirt", ground + new Vector3(0f, 1.18f, -0.25f), new Vector3(0.26f, 0.22f, 0.08f), shirt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Sphere, name + "_Head", ground + new Vector3(0f, 1.55f, 0f), new Vector3(0.34f, 0.28f, 0.34f), skin).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, name + "_HatBrim", ground + new Vector3(0f, 1.74f, 0f), new Vector3(0.5f, 0.045f, 0.5f), hat).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, name + "_HatCrown", ground + new Vector3(0f, 1.88f, 0f), new Vector3(0.31f, 0.16f, 0.31f), hat).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_CoatTail", ground + new Vector3(0f, 0.42f, -0.24f), new Vector3(0.38f, 0.38f, 0.42f), coatMaterial).transform.SetParent(root.transform, true);
+
+            if (addInteractionCollider)
+            {
+                var capsule = root.AddComponent<CapsuleCollider>();
+                capsule.height = 1.8f;
+                capsule.radius = 0.42f;
+                capsule.center = new Vector3(0f, 0.9f, 0f);
+            }
+
+            return root;
         }
 
         private static void CreateNoirStreetDressing(
@@ -2887,15 +2927,7 @@ namespace MafiaTopDown.Editor
             DialogueController? dialogueController = null,
             Transform? parent = null)
         {
-            var guard = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            guard.name = name;
-            guard.transform.position = position;
-            if (parent != null)
-            {
-                guard.transform.SetParent(parent, true);
-            }
-
-            AssignMaterial(guard, material);
+            var guard = CreateNoirActor(name, position, material, parent);
             var health = guard.AddComponent<CombatHealth>();
             SetStringValue(health, "displayName", name);
             SetIntValue(health, "maximumHealth", 2);
@@ -2923,10 +2955,7 @@ namespace MafiaTopDown.Editor
             TopDownPlayerController targetPlayer,
             CombatHealth targetHealth)
         {
-            var officer = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            officer.name = name;
-            officer.transform.position = position;
-            AssignMaterial(officer, material);
+            var officer = CreateNoirActor(name, position, material);
 
             var health = officer.AddComponent<CombatHealth>();
             SetStringValue(health, "displayName", name);
@@ -2987,6 +3016,36 @@ namespace MafiaTopDown.Editor
                 position + new Vector3(0f, 0.45f, -bodyScale.z * 0.25f),
                 new Vector3(bodyScale.x * 0.58f, 0.22f, 0.1f),
                 glassMaterial).transform.SetParent(body.transform, true);
+            DecorateNoirVehicle(body, name, position, bodyScale, roofMaterial, glassMaterial);
+        }
+
+        private static void DecorateNoirVehicle(
+            GameObject body,
+            string name,
+            Vector3 position,
+            Vector3 bodyScale,
+            Material trimMaterial,
+            Material glowMaterial)
+        {
+            var halfWidth = bodyScale.x * 0.5f;
+            var halfLength = bodyScale.z * 0.5f;
+
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "LongHoodHighlight", position + new Vector3(0f, 0.56f, -halfLength * 0.58f), new Vector3(bodyScale.x * 0.56f, 0.035f, bodyScale.z * 0.34f), trimMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "TrunkHighlight", position + new Vector3(0f, 0.56f, halfLength * 0.58f), new Vector3(bodyScale.x * 0.58f, 0.035f, bodyScale.z * 0.26f), trimMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "LeftRunningBoard", position + new Vector3(-halfWidth - 0.08f, 0.43f, 0f), new Vector3(0.12f, 0.12f, bodyScale.z * 0.82f), trimMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "RightRunningBoard", position + new Vector3(halfWidth + 0.08f, 0.43f, 0f), new Vector3(0.12f, 0.12f, bodyScale.z * 0.82f), trimMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "FrontChrome", position + new Vector3(0f, 0.52f, -halfLength - 0.06f), new Vector3(bodyScale.x * 0.82f, 0.12f, 0.08f), trimMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "RearChrome", position + new Vector3(0f, 0.52f, halfLength + 0.06f), new Vector3(bodyScale.x * 0.78f, 0.12f, 0.08f), trimMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "LeftHeadlamp", position + new Vector3(-halfWidth * 0.42f, 0.63f, -halfLength - 0.12f), new Vector3(0.28f, 0.2f, 0.08f), glowMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "RightHeadlamp", position + new Vector3(halfWidth * 0.42f, 0.63f, -halfLength - 0.12f), new Vector3(0.28f, 0.2f, 0.08f), glowMaterial).transform.SetParent(body.transform, true);
+
+            for (var side = -1; side <= 1; side += 2)
+            {
+                CreateVisualPrimitive(PrimitiveType.Cylinder, name + "FrontWheel_" + side, position + new Vector3(side * (halfWidth + 0.16f), 0.38f, -halfLength * 0.48f), new Vector3(0.25f, 0.12f, 0.25f), trimMaterial).transform.SetParent(body.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cylinder, name + "RearWheel_" + side, position + new Vector3(side * (halfWidth + 0.16f), 0.38f, halfLength * 0.48f), new Vector3(0.25f, 0.12f, 0.25f), trimMaterial).transform.SetParent(body.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, name + "FenderFront_" + side, position + new Vector3(side * (halfWidth + 0.1f), 0.7f, -halfLength * 0.48f), new Vector3(0.18f, 0.18f, 0.72f), trimMaterial).transform.SetParent(body.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, name + "FenderRear_" + side, position + new Vector3(side * (halfWidth + 0.1f), 0.7f, halfLength * 0.48f), new Vector3(0.18f, 0.18f, 0.72f), trimMaterial).transform.SetParent(body.transform, true);
+            }
         }
 
         private static GameObject CreateObjectiveActionMissionRoot(
