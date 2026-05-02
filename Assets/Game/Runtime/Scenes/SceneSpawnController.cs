@@ -18,28 +18,41 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
 
         public void ApplySpawnFromSave()
         {
+            ResolveDependencies();
             if (saveGameFileService == null || playerController == null)
             {
                 return;
             }
 
             var save = saveGameFileService.LoadOrCreateSave();
-            if (save.LastSceneName != SceneManager.GetActiveScene().name)
-            {
-                return;
-            }
-
-            var targetSpawnId = string.IsNullOrWhiteSpace(save.LastSpawnPointId)
+            var activeSceneName = SceneManager.GetActiveScene().name;
+            var targetSpawnId = save.LastSceneName == activeSceneName && !string.IsNullOrWhiteSpace(save.LastSpawnPointId)
+                ? save.LastSpawnPointId
+                : defaultSpawnPointId;
+            targetSpawnId = string.IsNullOrWhiteSpace(targetSpawnId)
                 ? defaultSpawnPointId
-                : save.LastSpawnPointId;
+                : targetSpawnId;
             var spawnPoints = FindObjectsByType<SceneSpawnPoint>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 
             if (TryApplySpawn(spawnPoints, targetSpawnId))
             {
+                RepairSavedLocationIfNeeded(save.LastSceneName, save.LastSpawnPointId, activeSceneName, targetSpawnId);
                 return;
             }
 
-            TryApplySpawn(spawnPoints, defaultSpawnPointId);
+            if (TryApplySpawn(spawnPoints, defaultSpawnPointId))
+            {
+                RepairSavedLocationIfNeeded(save.LastSceneName, save.LastSpawnPointId, activeSceneName, defaultSpawnPointId);
+                return;
+            }
+
+            if (spawnPoints.Length > 0)
+            {
+                var fallback = spawnPoints[0];
+                playerController.transform.SetPositionAndRotation(fallback.transform.position, fallback.transform.rotation);
+                RepairSavedLocationIfNeeded(save.LastSceneName, save.LastSpawnPointId, activeSceneName, fallback.SpawnPointId);
+                Debug.LogWarning("SceneSpawnController used first available spawn because no requested/default spawn point was found in " + activeSceneName + ".");
+            }
         }
 
         private bool TryApplySpawn(SceneSpawnPoint[] spawnPoints, string spawnPointId)
@@ -58,6 +71,27 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             }
 
             return false;
+        }
+
+        private void ResolveDependencies()
+        {
+            saveGameFileService ??= FindFirstObjectByType<SaveGameFileService>();
+            playerController ??= FindFirstObjectByType<TopDownPlayerController>();
+        }
+
+        private void RepairSavedLocationIfNeeded(string savedSceneName, string savedSpawnPointId, string activeSceneName, string resolvedSpawnPointId)
+        {
+            if (saveGameFileService == null)
+            {
+                return;
+            }
+
+            if (savedSceneName == activeSceneName && savedSpawnPointId == resolvedSpawnPointId)
+            {
+                return;
+            }
+
+            saveGameFileService.UpdateSceneLocation(activeSceneName, resolvedSpawnPointId);
         }
     }
 }
