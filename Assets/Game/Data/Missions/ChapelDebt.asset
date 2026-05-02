@@ -41,7 +41,7 @@ MonoBehaviour:
     MissionStageId: find-debtor
   - Id: quarter-message-checkpoint
     SceneName: District_OldQuarter_01
-    SpawnPointId: OldQuarterStart
+    SpawnPointId: OldQuarterMessageSpawn
     MissionStageId: push-message
   failureConditions:
   - Id: debtor-escaped

@@ -39,7 +39,7 @@ MonoBehaviour:
     MissionStageId: inspect-ledgers
   - Id: bookstore-exit-checkpoint
     SceneName: Interior_BusinessBookkeeper_01
-    SpawnPointId: BusinessInteriorSpawn
+    SpawnPointId: BusinessBookstoreExitSpawn
     MissionStageId: leave-bookstore
   failureConditions:
   - Id: books-lost

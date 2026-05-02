@@ -82,6 +82,7 @@ namespace MafiaTopDown.Editor
             SetStringValue(saveGameFileService, "defaultSceneName", "District_01");
             SetStringValue(saveGameFileService, "defaultSpawnPointId", "PickupSpawn");
             var bootFlowController = bootRoot.AddComponent<BootFlowController>();
+            SetStringValue(bootFlowController, "firstPlayableSpawnPoint", "PickupSpawn");
             SetObjectReference(bootFlowController, "saveGameFileService", saveGameFileService);
 
             EditorSceneManager.SaveScene(scene);
@@ -296,6 +297,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(-4.8f, 0f, 12f), metal, windowGlow);
             CreateLampPost(new Vector3(4.8f, 0f, 18f), metal, windowGlow);
             CreateNoirStreetDressing("Dock", metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
+            CreateDocksIdentityPass(metal, windowGlow, crateWood, officeSign, water, brass);
 
             var player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             player.name = "Player";
@@ -319,6 +321,7 @@ namespace MafiaTopDown.Editor
             CreateSpawnPoint("PickupSpawnPoint", "PickupSpawn", new Vector3(0f, 1f, -12f));
             CreateSpawnPoint("DriveSpawnPoint", "DriveSpawn", new Vector3(0f, 1f, -4.2f));
             CreateSpawnPoint("ExteriorReturnSpawnPoint", "ExteriorReturn", new Vector3(0f, 1f, 12.5f));
+            CreateSpawnPoint("PierExitSpawnPoint", "PierExitSpawn", new Vector3(-3.2f, 1f, 9.8f));
             CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(0f, 1f, -12.8f));
             CreateSpawnPoint("FromRailYardGatePoint", "FromRailYardGate", new Vector3(6.8f, 1f, -1.6f));
 
@@ -757,6 +760,8 @@ namespace MafiaTopDown.Editor
             CreateSpawnPoint("InteriorDefaultSpawnPoint", "DefaultSpawn", new Vector3(0f, 1f, -5.5f));
             CreateSpawnPoint("InteriorSpawnPoint", "InteriorSpawn", new Vector3(0f, 1f, -5.5f));
             CreateSpawnPoint("LedgerDeskSpawnPoint", "LedgerDeskSpawn", new Vector3(0f, 1f, -0.8f));
+            CreateSpawnPoint("BackOfficeExitSpawnPoint", "BackOfficeExitSpawn", new Vector3(0f, 1f, -4.4f));
+            CreateSpawnPoint("BackOfficeFinalExitSpawnPoint", "BackOfficeFinalExitSpawn", new Vector3(-2.2f, 1f, -4.4f));
 
             var campaignSystems = new GameObject("CampaignSystems");
             var saveGameFileService = campaignSystems.AddComponent<SaveGameFileService>();
@@ -1049,6 +1054,7 @@ namespace MafiaTopDown.Editor
 
             CreateSpawnPoint("BusinessInteriorDefaultSpawnPoint", "DefaultSpawn", new Vector3(0f, 1f, -4.8f));
             CreateSpawnPoint("BusinessInteriorSpawnPoint", "BusinessInteriorSpawn", new Vector3(0f, 1f, -4.8f));
+            CreateSpawnPoint("BusinessBookstoreExitSpawnPoint", "BusinessBookstoreExitSpawn", new Vector3(0f, 1f, -4.2f));
 
             var light = new GameObject("BusinessInteriorLight");
             var pointLight = light.AddComponent<Light>();
@@ -1170,6 +1176,7 @@ namespace MafiaTopDown.Editor
 
             CreateSpawnPoint("ChapelInteriorDefaultSpawnPoint", "DefaultSpawn", new Vector3(0f, 1f, -5.2f));
             CreateSpawnPoint("ChapelInteriorSpawnPoint", "ChapelInteriorSpawn", new Vector3(0f, 1f, -5.2f));
+            CreateSpawnPoint("ChapelExitSpawnPoint", "ChapelExitSpawn", new Vector3(0f, 1f, -4.4f));
 
             var light = new GameObject("ChapelInteriorLight");
             var pointLight = light.AddComponent<Light>();
@@ -1284,6 +1291,7 @@ namespace MafiaTopDown.Editor
 
             CreateSpawnPoint("GarageInteriorDefaultSpawnPoint", "DefaultSpawn", new Vector3(0f, 1f, -5.2f));
             CreateSpawnPoint("GarageInteriorSpawnPoint", "GarageInteriorSpawn", new Vector3(0f, 1f, -5.2f));
+            CreateSpawnPoint("GarageExitSpawnPoint", "GarageExitSpawn", new Vector3(0f, 1f, -4.4f));
 
             var light = new GameObject("GarageInteriorLight");
             var pointLight = light.AddComponent<Light>();
@@ -1434,6 +1442,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(-4.8f, 0f, 9f), metal, windowGlow);
             CreateLampPost(new Vector3(4.8f, 0f, 16f), metal, windowGlow);
             CreateNoirStreetDressing("Business", metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
+            CreateBusinessCoreIdentityPass(metal, windowGlow, stone, officeSign, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
                 "District_BusinessCore_01",
@@ -1456,6 +1465,8 @@ namespace MafiaTopDown.Editor
             CreateSceneObjectiveHud("BusinessCoreObjectiveHud", missionSystem, runtime.SaveGameFileService, campaignDatabase);
 
             CreateSpawnPoint("BusinessCoreStartPoint", "BusinessCoreStart", new Vector3(0f, 1f, -15f));
+            CreateSpawnPoint("BusinessSquareExitSpawnPoint", "BusinessSquareExitSpawn", new Vector3(-1.4f, 1f, 11.8f));
+            CreateSpawnPoint("BusinessDowntownExitSpawnPoint", "BusinessDowntownExitSpawn", new Vector3(7.8f, 1f, 4.2f));
             CreateSpawnPoint("FromDocksGatePoint", "FromDocksGate", new Vector3(0f, 1f, -14f));
             CreateSpawnPoint("FromOldQuarterGatePoint", "FromOldQuarterGate", new Vector3(12f, 1f, 0f));
             CreateSpawnPoint("FromBookkeeperInteriorPoint", "FromBookkeeperInterior", new Vector3(5.4f, 1f, -3.2f));
@@ -1652,6 +1663,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(4.2f, 0f, 4f), metal, windowGlow);
             CreateLampPost(new Vector3(-4.2f, 0f, 12f), metal, windowGlow);
             CreateNoirStreetDressing("Quarter", metal, windowGlow, crateWood, sign, sidewalk, puddle, brass);
+            CreateOldQuarterIdentityPass(metal, windowGlow, churchStone, tenement, laundry, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
                 "District_OldQuarter_01",
@@ -1674,6 +1686,8 @@ namespace MafiaTopDown.Editor
             CreateSceneObjectiveHud("OldQuarterObjectiveHud", missionSystem, runtime.SaveGameFileService, campaignDatabase);
 
             CreateSpawnPoint("OldQuarterStartPoint", "OldQuarterStart", new Vector3(0f, 1f, -12.8f));
+            CreateSpawnPoint("OldQuarterMessageSpawnPoint", "OldQuarterMessageSpawn", new Vector3(-2.8f, 1f, 6.8f));
+            CreateSpawnPoint("OldQuarterExitSpawnPoint", "OldQuarterExitSpawn", new Vector3(8.2f, 1f, -2.6f));
             CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(12.2f, 1f, 0f));
             CreateSpawnPoint("FromChapelInteriorPoint", "FromChapelInterior", new Vector3(-5.2f, 1f, 8.4f));
 
@@ -1840,6 +1854,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(4.6f, 0f, -4f), metal, windowGlow);
             CreateLampPost(new Vector3(4.6f, 0f, 11f), metal, windowGlow);
             CreateNoirStreetDressing("Rail", metal, windowGlow, crateWood, sign, gravel, puddle, brass);
+            CreateRailYardIdentityPass(metal, windowGlow, rustMetal, tankMetal, crateWood, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
                 "District_RailYard_01",
@@ -1862,6 +1877,9 @@ namespace MafiaTopDown.Editor
             CreateSceneObjectiveHud("RailYardObjectiveHud", missionSystem, runtime.SaveGameFileService, campaignDatabase);
 
             CreateSpawnPoint("RailYardStartPoint", "RailYardStart", new Vector3(0f, 1f, -13.5f));
+            CreateSpawnPoint("RailYardWatchmenSpawnPoint", "RailYardWatchmenSpawn", new Vector3(2.8f, 1f, -2.4f));
+            CreateSpawnPoint("RailYardBetrayalSpawnPoint", "RailYardBetrayalSpawn", new Vector3(-1.6f, 1f, 8.4f));
+            CreateSpawnPoint("RailYardExitSpawnPoint", "RailYardExitSpawn", new Vector3(4.8f, 1f, -10.8f));
             CreateSpawnPoint("FromDocksGatePoint", "FromDocksGate", new Vector3(0f, 1f, -12.2f));
             CreateSpawnPoint("FromOldQuarterGatePoint", "FromOldQuarterGate", new Vector3(-2.6f, 1f, -12.2f));
             CreateSpawnPoint("FromGarageInteriorPoint", "FromGarageInterior", new Vector3(-5.2f, 1f, -6.8f));
@@ -2430,6 +2448,105 @@ namespace MafiaTopDown.Editor
             CreatePrimitive(PrimitiveType.Cube, prefix + "KioskSign", new Vector3(5.9f, 1.55f, 13.8f), new Vector3(1.28f, 0.22f, 1f), brass);
             CreateSteamVent(prefix + "SteamVentA", new Vector3(-3.8f, 0.12f, 11.2f), metal, glow);
             CreateSteamVent(prefix + "SteamVentB", new Vector3(3.5f, 0.12f, -10.6f), metal, glow);
+        }
+
+        private static void CreateDocksIdentityPass(
+            Material metal,
+            Material glow,
+            Material wood,
+            Material sign,
+            Material water,
+            Material brass)
+        {
+            CreatePrimitive(PrimitiveType.Cube, "HarborCraneMast", new Vector3(-14.8f, 3.3f, -5.8f), new Vector3(0.55f, 6.6f, 0.55f), metal);
+            CreatePrimitive(PrimitiveType.Cube, "HarborCraneBoom", new Vector3(-12.3f, 6.2f, -5.8f), new Vector3(5.4f, 0.25f, 0.25f), metal);
+            CreatePrimitive(PrimitiveType.Cube, "HarborCraneHookLine", new Vector3(-10.4f, 4.85f, -5.8f), new Vector3(0.05f, 2.4f, 0.05f), brass);
+            CreatePrimitive(PrimitiveType.Cube, "HarborCraneHook", new Vector3(-10.4f, 3.55f, -5.8f), new Vector3(0.35f, 0.28f, 0.35f), brass);
+            CreatePrimitive(PrimitiveType.Cube, "MooredTugHull", new Vector3(-17.8f, 0.45f, 6.2f), new Vector3(2.6f, 0.8f, 7.2f), sign);
+            CreatePrimitive(PrimitiveType.Cube, "MooredTugCabin", new Vector3(-17.8f, 1.28f, 5.1f), new Vector3(1.35f, 1.1f, 1.9f), wood);
+            CreatePrimitive(PrimitiveType.Cube, "TugWindowGlow", new Vector3(-16.45f, 1.42f, 5.1f), new Vector3(0.06f, 0.42f, 1.1f), glow);
+            CreatePrimitive(PrimitiveType.Cube, "WetHarborWake", new Vector3(-16.2f, 0.02f, 10.2f), new Vector3(2.8f, 0.01f, 1.2f), water);
+            CreatePrimitive(PrimitiveType.Cube, "WarehouseFamilySign", new Vector3(8.05f, 4.35f, 15.2f), new Vector3(0.18f, 0.82f, 4.2f), sign);
+            CreatePrimitive(PrimitiveType.Cube, "WarehouseFamilySignGlow", new Vector3(7.92f, 4.37f, 15.2f), new Vector3(0.08f, 0.5f, 3.5f), glow);
+
+            for (var index = 0; index < 3; index += 1)
+            {
+                CreatePrimitive(PrimitiveType.Cylinder, "DockRopeCoil_" + index, new Vector3(-13.2f, 0.34f, -0.8f + (index * 2.8f)), new Vector3(0.55f, 0.1f, 0.55f), brass);
+                CreatePrimitive(PrimitiveType.Cube, "DockCargoStack_" + index, new Vector3(-11.35f, 0.75f, -9.2f + (index * 1.1f)), new Vector3(1.1f, 1.2f, 0.9f), wood);
+            }
+        }
+
+        private static void CreateBusinessCoreIdentityPass(
+            Material metal,
+            Material glow,
+            Material stone,
+            Material sign,
+            Material brass)
+        {
+            CreatePrimitive(PrimitiveType.Cube, "BankStepLower", new Vector3(-7.1f, 0.22f, 6.6f), new Vector3(1.4f, 0.22f, 6.2f), stone);
+            CreatePrimitive(PrimitiveType.Cube, "BankStepUpper", new Vector3(-7.55f, 0.46f, 6.6f), new Vector3(0.85f, 0.2f, 5.2f), stone);
+
+            for (var index = 0; index < 4; index += 1)
+            {
+                CreatePrimitive(PrimitiveType.Cylinder, "BankColumn_" + index, new Vector3(-7.7f, 2.8f, 2.4f + (index * 2.7f)), new Vector3(0.32f, 2.8f, 0.32f), stone);
+                CreatePrimitive(PrimitiveType.Cube, "BankColumnCap_" + index, new Vector3(-7.7f, 5.7f, 2.4f + (index * 2.7f)), new Vector3(0.85f, 0.25f, 0.85f), brass);
+            }
+
+            CreatePrimitive(PrimitiveType.Cube, "TheatreMarquee", new Vector3(7.42f, 2.7f, -9.6f), new Vector3(0.45f, 0.75f, 4.8f), sign);
+            CreatePrimitive(PrimitiveType.Cube, "TheatreMarqueeGlow", new Vector3(7.18f, 2.7f, -9.6f), new Vector3(0.08f, 0.42f, 4.4f), glow);
+            CreatePrimitive(PrimitiveType.Cube, "StreetcarShelterRoof", new Vector3(2.95f, 2f, 1.2f), new Vector3(2.4f, 0.18f, 1.3f), metal);
+            CreatePrimitive(PrimitiveType.Cube, "StreetcarShelterBack", new Vector3(2.95f, 1.05f, 1.75f), new Vector3(2.2f, 1.5f, 0.08f), glow);
+            CreatePrimitive(PrimitiveType.Cube, "UnionSquareExitMarker", new Vector3(-1.4f, 0.14f, 11.8f), new Vector3(1.6f, 0.035f, 0.55f), brass);
+        }
+
+        private static void CreateOldQuarterIdentityPass(
+            Material metal,
+            Material glow,
+            Material churchStone,
+            Material tenement,
+            Material laundry,
+            Material brass)
+        {
+            CreatePrimitive(PrimitiveType.Cube, "ChapelStairLower", new Vector3(-6.1f, 0.22f, 8.4f), new Vector3(1.4f, 0.22f, 2.6f), churchStone);
+            CreatePrimitive(PrimitiveType.Cube, "ChapelStairUpper", new Vector3(-6.65f, 0.46f, 8.4f), new Vector3(0.8f, 0.2f, 2.1f), churchStone);
+            CreatePrimitive(PrimitiveType.Cube, "ChapelRoseWindow", new Vector3(-6.08f, 4.6f, 14.9f), new Vector3(0.08f, 1.4f, 1.4f), glow);
+            CreatePrimitive(PrimitiveType.Cube, "QuarterArchLeft", new Vector3(-1.9f, 1.9f, -9.4f), new Vector3(0.45f, 3.6f, 0.6f), tenement);
+            CreatePrimitive(PrimitiveType.Cube, "QuarterArchRight", new Vector3(1.9f, 1.9f, -9.4f), new Vector3(0.45f, 3.6f, 0.6f), tenement);
+            CreatePrimitive(PrimitiveType.Cube, "QuarterArchTop", new Vector3(0f, 3.75f, -9.4f), new Vector3(4.3f, 0.45f, 0.6f), tenement);
+            CreatePrimitive(PrimitiveType.Cube, "StreetShrineBase", new Vector3(5.9f, 0.8f, 6.8f), new Vector3(0.8f, 1.2f, 0.55f), churchStone);
+            CreatePrimitive(PrimitiveType.Cube, "StreetShrineCandles", new Vector3(5.9f, 1.55f, 6.8f), new Vector3(0.62f, 0.1f, 0.36f), glow);
+
+            for (var index = 0; index < 4; index += 1)
+            {
+                CreatePrimitive(PrimitiveType.Cube, "MarketStallRoof_" + index, new Vector3(5.9f, 1.9f, -6.8f + (index * 1.7f)), new Vector3(1.25f, 0.18f, 1.1f), laundry);
+                CreatePrimitive(PrimitiveType.Cube, "MarketStallCounter_" + index, new Vector3(5.9f, 0.82f, -6.8f + (index * 1.7f)), new Vector3(1.05f, 0.55f, 0.85f), brass);
+                CreatePrimitive(PrimitiveType.Cube, "ClotheslineLayer_" + index, new Vector3(0f, 6.25f + (index * 0.18f), -5.5f + (index * 2.3f)), new Vector3(10.8f, 0.035f, 0.035f), metal);
+            }
+        }
+
+        private static void CreateRailYardIdentityPass(
+            Material metal,
+            Material glow,
+            Material rust,
+            Material tank,
+            Material wood,
+            Material brass)
+        {
+            CreatePrimitive(PrimitiveType.Cube, "RailGantryLeft", new Vector3(-4.8f, 3.2f, 5.6f), new Vector3(0.45f, 6.4f, 0.45f), metal);
+            CreatePrimitive(PrimitiveType.Cube, "RailGantryRight", new Vector3(4.8f, 3.2f, 5.6f), new Vector3(0.45f, 6.4f, 0.45f), metal);
+            CreatePrimitive(PrimitiveType.Cube, "RailGantryBeam", new Vector3(0f, 6.3f, 5.6f), new Vector3(10.4f, 0.35f, 0.35f), metal);
+            CreatePrimitive(PrimitiveType.Cube, "RailGantryHookLine", new Vector3(1.8f, 4.7f, 5.6f), new Vector3(0.06f, 2.8f, 0.06f), brass);
+            CreatePrimitive(PrimitiveType.Cube, "SignalTowerBase", new Vector3(7.8f, 2.7f, 10.4f), new Vector3(1.4f, 5.2f, 1.4f), rust);
+            CreatePrimitive(PrimitiveType.Cube, "SignalTowerCabin", new Vector3(7.8f, 5.7f, 10.4f), new Vector3(2.2f, 1.3f, 2f), tank);
+            CreatePrimitive(PrimitiveType.Cube, "SignalTowerGlow", new Vector3(7.8f, 5.75f, 9.35f), new Vector3(1.6f, 0.45f, 0.08f), glow);
+            CreatePrimitive(PrimitiveType.Cube, "LocomotiveNose", new Vector3(-1.8f, 1.65f, 14.8f), new Vector3(3.6f, 2.6f, 3.2f), tank);
+            CreatePrimitive(PrimitiveType.Cylinder, "LocomotiveLamp", new Vector3(-1.8f, 2.1f, 13.05f), new Vector3(0.32f, 0.12f, 0.32f), glow);
+
+            for (var index = 0; index < 5; index += 1)
+            {
+                CreatePrimitive(PrimitiveType.Cube, "RailPalletStack_" + index, new Vector3(-7.2f, 0.55f, 1f + (index * 1.35f)), new Vector3(1.15f, 0.8f, 0.95f), wood);
+                CreatePrimitive(PrimitiveType.Cube, "TrackSwitchLamp_" + index, new Vector3(3.4f, 0.72f, 0.8f + (index * 2.2f)), new Vector3(0.28f, 0.9f, 0.28f), glow);
+            }
         }
 
         private static void CreateSteamVent(string name, Vector3 position, Material metal, Material glow)

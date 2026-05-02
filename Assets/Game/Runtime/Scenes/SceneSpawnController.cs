@@ -34,9 +34,19 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
                 : save.LastSpawnPointId;
             var spawnPoints = FindObjectsByType<SceneSpawnPoint>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 
+            if (TryApplySpawn(spawnPoints, targetSpawnId))
+            {
+                return;
+            }
+
+            TryApplySpawn(spawnPoints, defaultSpawnPointId);
+        }
+
+        private bool TryApplySpawn(SceneSpawnPoint[] spawnPoints, string spawnPointId)
+        {
             foreach (var spawnPoint in spawnPoints)
             {
-                if (spawnPoint.SpawnPointId != targetSpawnId)
+                if (spawnPoint.SpawnPointId != spawnPointId)
                 {
                     continue;
                 }
@@ -44,8 +54,10 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
                 playerController.transform.SetPositionAndRotation(
                     spawnPoint.transform.position,
                     spawnPoint.transform.rotation);
-                return;
+                return true;
             }
+
+            return false;
         }
     }
 }

@@ -39,7 +39,7 @@ MonoBehaviour:
     MissionStageId: search-vestry
   - Id: chapel-exit-checkpoint
     SceneName: Interior_OldQuarter_Chapel_01
-    SpawnPointId: ChapelInteriorSpawn
+    SpawnPointId: ChapelExitSpawn
     MissionStageId: leave-chapel
   failureConditions:
   - Id: vestry-raised-alarm

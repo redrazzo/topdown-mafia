@@ -35,7 +35,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Interaction
                     return true;
                 }
 
-                return objectiveSystem.CurrentObjectiveId == requiredObjectiveId;
+                return objectiveSystem.CurrentObjectiveId == requiredObjectiveId || IsCurrentMissionCheckpointBehindDoor();
             }
         }
 
@@ -79,6 +79,23 @@ namespace MafiaTopDown.Gameplay.Runtime.Interaction
             }
 
             sceneTransitionController.TransitionToExteriorInteriorPair(sourceScene, resolvedTargetScene, resolvedSpawnPointId);
+        }
+
+        private bool IsCurrentMissionCheckpointBehindDoor()
+        {
+            if (campaignProgressionController == null || missionAsset == null)
+            {
+                return false;
+            }
+
+            var currentStageId = campaignProgressionController.GetCurrentStageId(missionAsset);
+            if (string.IsNullOrWhiteSpace(currentStageId))
+            {
+                return false;
+            }
+
+            var checkpoint = missionAsset.ToDefinition().GetCheckpointForStage(currentStageId);
+            return checkpoint != null && checkpoint.SceneName == targetScene;
         }
     }
 }

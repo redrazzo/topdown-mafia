@@ -41,7 +41,7 @@ MonoBehaviour:
     MissionStageId: meet-bookkeeper
   - Id: square-exit-checkpoint
     SceneName: District_BusinessCore_01
-    SpawnPointId: BusinessCoreStart
+    SpawnPointId: BusinessSquareExitSpawn
     MissionStageId: leave-square
   failureConditions:
   - Id: caught-in-square

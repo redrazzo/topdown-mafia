@@ -39,7 +39,7 @@ MonoBehaviour:
     MissionStageId: read-ledger
   - Id: blood-ledger-exit-checkpoint
     SceneName: Interior_BackOffice_01
-    SpawnPointId: LedgerDeskSpawn
+    SpawnPointId: BackOfficeExitSpawn
     MissionStageId: leave-office
   failureConditions:
   - Id: ledger-read-wrong

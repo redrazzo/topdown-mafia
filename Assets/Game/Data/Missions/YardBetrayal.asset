@@ -35,11 +35,11 @@ MonoBehaviour:
   checkpoints:
   - Id: betrayal-checkpoint
     SceneName: District_RailYard_01
-    SpawnPointId: RailYardStart
+    SpawnPointId: RailYardBetrayalSpawn
     MissionStageId: inspect-yard
   - Id: yard-exit-checkpoint
     SceneName: District_RailYard_01
-    SpawnPointId: FromGarageInterior
+    SpawnPointId: RailYardExitSpawn
     MissionStageId: leave-yard
   failureConditions:
   - Id: yard-ambush

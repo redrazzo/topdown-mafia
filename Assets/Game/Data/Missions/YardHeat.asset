@@ -39,7 +39,7 @@ MonoBehaviour:
     MissionStageId: check-garage
   - Id: yard-fight-checkpoint
     SceneName: District_RailYard_01
-    SpawnPointId: RailYardStart
+    SpawnPointId: RailYardWatchmenSpawn
     MissionStageId: clear-watchmen
   failureConditions:
   - Id: yard-overrun

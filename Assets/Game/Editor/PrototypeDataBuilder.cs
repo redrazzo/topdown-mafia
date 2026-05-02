@@ -104,7 +104,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("bookkeeper-checkpoint", "District_BusinessCore_01", "BusinessCoreStart", "meet-bookkeeper"),
-                    ("square-exit-checkpoint", "District_BusinessCore_01", "BusinessCoreStart", "leave-square")
+                    ("square-exit-checkpoint", "District_BusinessCore_01", "BusinessSquareExitSpawn", "leave-square")
                 },
                 "caught-in-square",
                 4,
@@ -127,7 +127,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("quarter-start-checkpoint", "District_OldQuarter_01", "OldQuarterStart", "find-debtor"),
-                    ("quarter-message-checkpoint", "District_OldQuarter_01", "OldQuarterStart", "push-message")
+                    ("quarter-message-checkpoint", "District_OldQuarter_01", "OldQuarterMessageSpawn", "push-message")
                 },
                 "debtor-escaped",
                 3,
@@ -150,7 +150,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("yard-start-checkpoint", "District_RailYard_01", "RailYardStart", "check-garage"),
-                    ("yard-fight-checkpoint", "District_RailYard_01", "RailYardStart", "clear-watchmen")
+                    ("yard-fight-checkpoint", "District_RailYard_01", "RailYardWatchmenSpawn", "clear-watchmen")
                 },
                 "yard-overrun",
                 2,
@@ -173,7 +173,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("bookshelf-checkpoint", "Interior_BusinessBookkeeper_01", "BusinessInteriorSpawn", "inspect-ledgers"),
-                    ("bookstore-exit-checkpoint", "Interior_BusinessBookkeeper_01", "BusinessInteriorSpawn", "leave-bookstore")
+                    ("bookstore-exit-checkpoint", "Interior_BusinessBookkeeper_01", "BusinessBookstoreExitSpawn", "leave-bookstore")
                 },
                 "books-lost",
                 3,
@@ -196,7 +196,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("vestry-checkpoint", "Interior_OldQuarter_Chapel_01", "ChapelInteriorSpawn", "search-vestry"),
-                    ("chapel-exit-checkpoint", "Interior_OldQuarter_Chapel_01", "ChapelInteriorSpawn", "leave-chapel")
+                    ("chapel-exit-checkpoint", "Interior_OldQuarter_Chapel_01", "ChapelExitSpawn", "leave-chapel")
                 },
                 "vestry-raised-alarm",
                 2,
@@ -219,7 +219,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("pier-checkpoint", "District_01", "ExteriorReturn", "check-pier"),
-                    ("harbor-exit-checkpoint", "District_01", "ExteriorReturn", "leave-harbor")
+                    ("harbor-exit-checkpoint", "District_01", "PierExitSpawn", "leave-harbor")
                 },
                 "caught-by-watch",
                 4,
@@ -242,7 +242,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("garage-ledger-checkpoint", "Interior_RailYard_Garage_01", "GarageInteriorSpawn", "inspect-garage-ledger"),
-                    ("garage-exit-checkpoint", "Interior_RailYard_Garage_01", "GarageInteriorSpawn", "leave-garage")
+                    ("garage-exit-checkpoint", "Interior_RailYard_Garage_01", "GarageExitSpawn", "leave-garage")
                 },
                 "ledger-burned",
                 3,
@@ -265,7 +265,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("blood-ledger-checkpoint", "Interior_BackOffice_01", "LedgerDeskSpawn", "read-ledger"),
-                    ("blood-ledger-exit-checkpoint", "Interior_BackOffice_01", "LedgerDeskSpawn", "leave-office")
+                    ("blood-ledger-exit-checkpoint", "Interior_BackOffice_01", "BackOfficeExitSpawn", "leave-office")
                 },
                 "ledger-read-wrong",
                 1,
@@ -288,7 +288,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("survey-square-checkpoint", "District_BusinessCore_01", "BusinessCoreStart", "survey-square"),
-                    ("downtown-exit-checkpoint", "District_BusinessCore_01", "BusinessCoreStart", "leave-downtown")
+                    ("downtown-exit-checkpoint", "District_BusinessCore_01", "BusinessDowntownExitSpawn", "leave-downtown")
                 },
                 "square-locked-down",
                 4,
@@ -311,7 +311,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("courtyard-checkpoint", "District_OldQuarter_01", "FromChapelInterior", "investigate-courtyard"),
-                    ("quarter-exit-checkpoint", "District_OldQuarter_01", "OldQuarterStart", "leave-quarter")
+                    ("quarter-exit-checkpoint", "District_OldQuarter_01", "OldQuarterExitSpawn", "leave-quarter")
                 },
                 "crowd-turned",
                 2,
@@ -333,8 +333,8 @@ namespace MafiaTopDown.Editor
                 },
                 new[]
                 {
-                    ("betrayal-checkpoint", "District_RailYard_01", "RailYardStart", "inspect-yard"),
-                    ("yard-exit-checkpoint", "District_RailYard_01", "FromGarageInterior", "leave-yard")
+                    ("betrayal-checkpoint", "District_RailYard_01", "RailYardBetrayalSpawn", "inspect-yard"),
+                    ("yard-exit-checkpoint", "District_RailYard_01", "RailYardExitSpawn", "leave-yard")
                 },
                 "yard-ambush",
                 4,
@@ -357,7 +357,7 @@ namespace MafiaTopDown.Editor
                 new[]
                 {
                     ("final-orders-checkpoint", "Interior_BackOffice_01", "InteriorSpawn", "hear-orders"),
-                    ("final-leave-checkpoint", "Interior_BackOffice_01", "InteriorSpawn", "leave-for-harbor")
+                    ("final-leave-checkpoint", "Interior_BackOffice_01", "BackOfficeFinalExitSpawn", "leave-for-harbor")
                 },
                 "final-order-missed",
                 1,

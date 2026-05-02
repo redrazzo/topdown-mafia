@@ -39,7 +39,7 @@ MonoBehaviour:
     MissionStageId: inspect-garage-ledger
   - Id: garage-exit-checkpoint
     SceneName: Interior_RailYard_Garage_01
-    SpawnPointId: GarageInteriorSpawn
+    SpawnPointId: GarageExitSpawn
     MissionStageId: leave-garage
   failureConditions:
   - Id: ledger-burned

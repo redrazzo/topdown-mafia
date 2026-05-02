@@ -39,7 +39,7 @@ MonoBehaviour:
     MissionStageId: survey-square
   - Id: downtown-exit-checkpoint
     SceneName: District_BusinessCore_01
-    SpawnPointId: BusinessCoreStart
+    SpawnPointId: BusinessDowntownExitSpawn
     MissionStageId: leave-downtown
   failureConditions:
   - Id: square-locked-down

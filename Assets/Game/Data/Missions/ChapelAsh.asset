@@ -39,7 +39,7 @@ MonoBehaviour:
     MissionStageId: investigate-courtyard
   - Id: quarter-exit-checkpoint
     SceneName: District_OldQuarter_01
-    SpawnPointId: OldQuarterStart
+    SpawnPointId: OldQuarterExitSpawn
     MissionStageId: leave-quarter
   failureConditions:
   - Id: crowd-turned

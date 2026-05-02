@@ -39,7 +39,7 @@ MonoBehaviour:
     MissionStageId: check-pier
   - Id: harbor-exit-checkpoint
     SceneName: District_01
-    SpawnPointId: ExteriorReturn
+    SpawnPointId: PierExitSpawn
     MissionStageId: leave-harbor
   failureConditions:
   - Id: caught-by-watch

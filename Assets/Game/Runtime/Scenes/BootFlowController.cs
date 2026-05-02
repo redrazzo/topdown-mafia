@@ -1,3 +1,4 @@
+using MafiaTopDown.Gameplay.Domain.Progression;
 using MafiaTopDown.Gameplay.Runtime.Progression;
 using MafiaTopDown.Gameplay.Runtime.UI;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
     public sealed class BootFlowController : MonoBehaviour
     {
         [SerializeField] private string firstPlayableScene = "District_01";
+        [SerializeField] private string firstPlayableSpawnPoint = "PickupSpawn";
         [SerializeField] private SaveGameFileService saveGameFileService;
         [SerializeField] private bool loadLastSceneFromSave = true;
         [SerializeField] private Rect menuRect = new Rect(24f, 24f, 460f, 260f);
@@ -141,12 +143,17 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             }
 
             var targetScene = firstPlayableScene;
+            var targetSpawnPoint = firstPlayableSpawnPoint;
             if (loadLastSceneFromSave)
             {
                 var save = saveGameFileService.LoadOrCreateSave();
-                if (!string.IsNullOrWhiteSpace(save.LastSceneName))
+                var resumeLocation = ResumeLocationResolver.Resolve(save, firstPlayableScene, firstPlayableSpawnPoint);
+                targetScene = resumeLocation.SceneName;
+                targetSpawnPoint = resumeLocation.SpawnPointId;
+
+                if (save.LastSceneName != targetScene || save.LastSpawnPointId != targetSpawnPoint)
                 {
-                    targetScene = save.LastSceneName;
+                    saveGameFileService.UpdateSceneLocation(targetScene, targetSpawnPoint);
                 }
             }
 

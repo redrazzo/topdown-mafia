@@ -39,7 +39,7 @@ MonoBehaviour:
     MissionStageId: hear-orders
   - Id: final-leave-checkpoint
     SceneName: Interior_BackOffice_01
-    SpawnPointId: InteriorSpawn
+    SpawnPointId: BackOfficeFinalExitSpawn
     MissionStageId: leave-for-harbor
   failureConditions:
   - Id: final-order-missed
