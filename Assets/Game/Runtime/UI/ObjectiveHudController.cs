@@ -10,7 +10,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
         [SerializeField] private SimpleObjectiveSystem objectiveSystem;
         [SerializeField] private SaveGameFileService? saveGameFileService;
         [SerializeField] private CampaignDatabaseAsset? campaignDatabase;
-        [SerializeField] private Rect objectiveRect = new Rect(24f, 24f, 410f, 62f);
+        [SerializeField] private Rect objectiveRect = new Rect(24f, 22f, 500f, 74f);
 
         private void OnGUI()
         {
@@ -21,7 +21,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
 
             HudStyleUtility.DrawPanel(
                 objectiveRect,
-                ResolveHeading(),
+                "Case File - " + ResolveHeading(),
                 objectiveSystem.CurrentObjectiveTitle);
         }
 

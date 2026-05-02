@@ -10,7 +10,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
         [SerializeField] private TopDownPlayerController? playerController;
         [SerializeField] private DialogueController? dialogueController;
         [SerializeField] private KeyCode toggleKey = KeyCode.Escape;
-        [SerializeField] private Rect menuRect = new Rect(24f, 24f, 420f, 250f);
+        [SerializeField] private Rect menuRect = new Rect(0f, 0f, 460f, 315f);
 
         private GameSettingsData? _settings;
         private bool _showMenu;
@@ -57,11 +57,13 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
                 _settings = GameSettingsFileService.LoadOrCreate();
             }
 
-            GUI.Box(menuRect, string.Empty);
-            GUILayout.BeginArea(menuRect);
-            GUILayout.Space(12f);
-            GUILayout.Label("Paused");
-            GUILayout.Space(12f);
+            var rect = HudStyleUtility.CenteredRect(menuRect.width, _showSettings ? 390f : menuRect.height);
+            HudStyleUtility.DrawMenuFrame(
+                rect,
+                _showSettings ? "Settings" : "Paused",
+                _showSettings ? "Tune the picture, sound, and readability before you step back into the street." : "The city keeps breathing. Choose your next move.");
+
+            GUILayout.BeginArea(new Rect(rect.x + 22f, rect.y + 102f, rect.width - 44f, rect.height - 124f));
 
             if (_showSettings)
             {
@@ -69,17 +71,19 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
             }
             else
             {
-                if (GUILayout.Button("Resume", GUILayout.Height(34f)))
+                if (GUILayout.Button("Resume", HudStyleUtility.ButtonStyle, GUILayout.Height(36f)))
                 {
                     ToggleMenu(forceOpen: false);
                 }
 
-                if (GUILayout.Button("Settings", GUILayout.Height(34f)))
+                GUILayout.Space(8f);
+                if (GUILayout.Button("Settings", HudStyleUtility.ButtonStyle, GUILayout.Height(36f)))
                 {
                     _showSettings = true;
                 }
 
-                if (GUILayout.Button("Return To Harbor Menu", GUILayout.Height(34f)))
+                GUILayout.Space(8f);
+                if (GUILayout.Button("Return To Harbor Menu", HudStyleUtility.ButtonStyle, GUILayout.Height(36f)))
                 {
                     Time.timeScale = 1f;
                     if (playerController != null)
@@ -101,16 +105,18 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
                 return;
             }
 
-            GUILayout.Label("Master Volume");
+            GUILayout.Label("Master Volume", HudStyleUtility.MenuBodyStyle);
             var updatedVolume = GUILayout.HorizontalSlider(_settings.MasterVolume, 0f, 1f);
-            GUILayout.Label(Mathf.RoundToInt(updatedVolume * 100f) + "%");
+            GUILayout.Label(Mathf.RoundToInt(updatedVolume * 100f) + "%", HudStyleUtility.MenuBodyStyle);
 
-            var updatedFullscreen = GUILayout.Toggle(_settings.Fullscreen, "Fullscreen");
-            var updatedSubtitles = GUILayout.Toggle(_settings.Subtitles, "Subtitles");
+            GUILayout.Space(8f);
+            var updatedFullscreen = GUILayout.Toggle(_settings.Fullscreen, "Fullscreen", HudStyleUtility.MenuBodyStyle);
+            var updatedSubtitles = GUILayout.Toggle(_settings.Subtitles, "Subtitles", HudStyleUtility.MenuBodyStyle);
 
-            GUILayout.Label("HUD Scale");
+            GUILayout.Space(8f);
+            GUILayout.Label("HUD Scale", HudStyleUtility.MenuBodyStyle);
             var updatedHudScale = GUILayout.HorizontalSlider(_settings.HudScale, 0.85f, 1.35f);
-            GUILayout.Label(updatedHudScale.ToString("0.00") + "x");
+            GUILayout.Label(updatedHudScale.ToString("0.00") + "x", HudStyleUtility.MenuBodyStyle);
 
             var changed =
                 !Mathf.Approximately(updatedVolume, _settings.MasterVolume) ||
@@ -128,7 +134,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
             }
 
             GUILayout.Space(12f);
-            if (GUILayout.Button("Back", GUILayout.Height(34f)))
+            if (GUILayout.Button("Back", HudStyleUtility.ButtonStyle, GUILayout.Height(36f)))
             {
                 _showSettings = false;
             }

@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &702931150
+--- !u!1 &1044670304
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,9 +127,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 702931153}
-  - component: {fileID: 702931152}
-  - component: {fileID: 702931151}
+  - component: {fileID: 1044670307}
+  - component: {fileID: 1044670306}
+  - component: {fileID: 1044670305}
   m_Layer: 0
   m_Name: BootFlow
   m_TagString: Untagged
@@ -137,13 +137,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &702931151
+--- !u!114 &1044670305
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 702931150}
+  m_GameObject: {fileID: 1044670304}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d0864d48f7c98a49aace52aa19b7ba1, type: 3}
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: MafiaTopDown.Runtime::MafiaTopDown.Gameplay.Runtime.Scenes.BootFlowController
   firstPlayableScene: District_01
   firstPlayableSpawnPoint: PickupSpawn
-  saveGameFileService: {fileID: 702931152}
+  saveGameFileService: {fileID: 1044670306}
   loadLastSceneFromSave: 1
   menuRect:
     serializedVersion: 2
@@ -161,13 +161,13 @@ MonoBehaviour:
     height: 610
   title: Mafia Topdown City
   subtitle: A quiet favor starts the fall.
---- !u!114 &702931152
+--- !u!114 &1044670306
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 702931150}
+  m_GameObject: {fileID: 1044670304}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dd850b114d1d6674eba14e5771b4e344, type: 3}
@@ -176,13 +176,13 @@ MonoBehaviour:
   saveFileName: savegame.json
   defaultSceneName: District_01
   defaultSpawnPointId: PickupSpawn
---- !u!4 &702931153
+--- !u!4 &1044670307
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 702931150}
+  m_GameObject: {fileID: 1044670304}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -195,4 +195,4 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 702931153}
+  - {fileID: 1044670307}

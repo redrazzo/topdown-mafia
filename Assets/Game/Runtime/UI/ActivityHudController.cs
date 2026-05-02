@@ -6,7 +6,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
     public sealed class ActivityHudController : MonoBehaviour
     {
         [SerializeField] private ActivityProgressionController activityProgressionController;
-        [SerializeField] private Rect activityRect = new Rect(22f, 198f, 285f, 58f);
+        [SerializeField] private Rect activityRect = new Rect(24f, 210f, 320f, 62f);
 
         private void OnGUI()
         {
@@ -17,7 +17,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
 
             HudStyleUtility.DrawPanel(
                 activityRect,
-                "Side Job",
+                "Side Ledger",
                 activityProgressionController.CurrentActivityDisplayName);
         }
     }
