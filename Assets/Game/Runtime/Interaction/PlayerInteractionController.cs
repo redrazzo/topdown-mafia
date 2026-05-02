@@ -12,7 +12,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Interaction
         [SerializeField] private TopDownPlayerController playerController;
         [SerializeField] private float interactionRadius = 2.5f;
         [SerializeField] private KeyCode interactKey = KeyCode.E;
-        [SerializeField] private Rect promptRect = new Rect(16f, 72f, 420f, 36f);
+        [SerializeField] private Rect promptRect = new Rect(0f, 0f, 360f, 38f);
 
         private VehicleSeatController _currentVehicleCandidate;
         private IInteractable _currentInteractableCandidate;
@@ -62,7 +62,13 @@ namespace MafiaTopDown.Gameplay.Runtime.Interaction
                 ? "[" + interactKey + "] " + _currentPrompt.PromptText
                 : _currentPrompt.PromptText + " (" + _currentPrompt.DisabledReason + ")";
 
-            HudStyleUtility.DrawPrompt(promptRect, text);
+            var resolvedPromptRect = new Rect(
+                Mathf.Max(20f, (Screen.width - promptRect.width) * 0.5f),
+                Mathf.Max(20f, Screen.height - 78f),
+                promptRect.width,
+                promptRect.height);
+
+            HudStyleUtility.DrawPrompt(resolvedPromptRect, text);
         }
 
         private void RefreshCandidates()

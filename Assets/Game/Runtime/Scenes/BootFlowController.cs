@@ -32,24 +32,32 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
         private Texture2D? _buttonHoverTexture;
         private Texture2D? _buttonActiveTexture;
         private Texture2D? _goldTexture;
+        private Texture2D? _noirBackdropTexture;
+        private float _menuInputReadyAtTime;
 
         private void Start()
         {
             _settings = GameSettingsFileService.LoadOrCreate();
             GameSettingsFileService.Apply(_settings);
+            _menuInputReadyAtTime = Time.unscaledTime + 0.65f;
 
-            if (saveGameFileService == null)
+            ResolveSaveGameFileService();
+            _saveExists = saveGameFileService != null && saveGameFileService.SaveExists();
+
+            if (ShouldSkipBoot())
             {
-                BeginLoad(firstPlayableScene);
-                return;
+                StartNewGame();
             }
-
-            _saveExists = saveGameFileService.SaveExists();
         }
 
         private void Update()
         {
             if (_isLoading)
+            {
+                return;
+            }
+
+            if (!CanAcceptMenuInput())
             {
                 return;
             }
@@ -71,6 +79,17 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             else if (Input.GetKeyDown(KeyCode.N))
             {
                 StartNewGame();
+            }
+            else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            {
+                if (_saveExists)
+                {
+                    ContinueGame();
+                }
+                else
+                {
+                    StartNewGame();
+                }
             }
             else if (Input.GetKeyDown(KeyCode.S))
             {
@@ -145,7 +164,51 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             }
 
             _isLoading = true;
+            Debug.Log("BootFlow loading scene: " + targetScene);
             SceneManager.LoadScene(targetScene);
+        }
+
+        private void ResolveSaveGameFileService()
+        {
+            if (saveGameFileService != null)
+            {
+                return;
+            }
+
+            saveGameFileService = GetComponent<SaveGameFileService>();
+            if (saveGameFileService != null)
+            {
+                return;
+            }
+
+            saveGameFileService = FindFirstObjectByType<SaveGameFileService>();
+            if (saveGameFileService == null)
+            {
+                Debug.LogWarning("BootFlowController could not find SaveGameFileService; menu will start games without save persistence.");
+            }
+        }
+
+        private bool CanAcceptMenuInput()
+        {
+            return Time.unscaledTime >= _menuInputReadyAtTime;
+        }
+
+        private static bool ShouldSkipBoot()
+        {
+            var args = System.Environment.GetCommandLineArgs();
+            for (var index = 0; index < args.Length; index += 1)
+            {
+                var arg = args[index];
+                if (string.Equals(arg, "-skipBoot", System.StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(arg, "--skip-boot", System.StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(arg, "-quickStart", System.StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(arg, "--quick-start", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void DrawMainMenu(Rect panel)
@@ -282,8 +345,9 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
 
         private bool DrawMenuButton(Rect rect, string label, string hotkey)
         {
+            var acceptsInput = CanAcceptMenuInput();
             var mousePosition = Event.current.mousePosition;
-            var hovering = rect.Contains(mousePosition);
+            var hovering = acceptsInput && rect.Contains(mousePosition);
             var pressed = hovering && Event.current.type == EventType.MouseDown && Event.current.button == 0;
 
             GUI.DrawTexture(new Rect(rect.x + 5f, rect.y + 6f, rect.width, rect.height), _clearTexture);
@@ -293,7 +357,14 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
 
             GUI.Label(new Rect(rect.x + 18f, rect.y + 11f, rect.width - 86f, rect.height - 12f), label.ToUpperInvariant(), _buttonTextStyle);
             GUI.Label(new Rect(rect.x + rect.width - 70f, rect.y + 11f, 52f, rect.height - 12f), hotkey.ToUpperInvariant(), _hintStyle);
-            return GUI.Button(rect, GUIContent.none, GUIStyle.none);
+
+            if (acceptsInput && hovering && Event.current.type == EventType.MouseUp && Event.current.button == 0)
+            {
+                Event.current.Use();
+                return true;
+            }
+
+            return acceptsInput && GUI.Button(rect, GUIContent.none, GUIStyle.none);
         }
 
         private void DrawRule(Rect rect)
@@ -364,163 +435,111 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             };
         }
 
-        private static void DrawBackdrop()
+        private void DrawBackdrop()
         {
-            var width = Screen.width;
-            var height = Screen.height;
+            // Keep the menu in the same noir world as gameplay without adding a
+            // screen-space pixel filter over the player's view.
+            _noirBackdropTexture ??= CreateNoirBackdropTexture();
+            GUI.DrawTexture(
+                new Rect(0f, 0f, Screen.width, Screen.height),
+                _noirBackdropTexture,
+                ScaleMode.StretchToFill,
+                false);
 
-            for (var band = 0; band < 18; band += 1)
-            {
-                var t = band / 17f;
-                var color = Color.Lerp(new Color(0.018f, 0.024f, 0.03f, 1f), new Color(0.075f, 0.053f, 0.041f, 1f), t);
-                DrawRect(new Rect(0f, height * t, width, height / 17f + 2f), color);
-            }
-
-            DrawSkyline(width, height);
-            DrawWetStreet(width, height);
-            DrawMarquee(width, height);
-            DrawStreetLamp(width, height);
-            DrawCarSilhouette(width, height);
-            DrawFedoraSilhouette(width, height);
-            DrawRain(width, height);
-            DrawVignette(width, height);
+            DrawRect(new Rect(0f, 0f, Screen.width, 36f), new Color(0f, 0f, 0f, 0.54f));
+            DrawRect(new Rect(0f, Screen.height - 54f, Screen.width, 54f), new Color(0f, 0f, 0f, 0.64f));
+            DrawRect(new Rect(0f, 0f, Screen.width * 0.08f, Screen.height), new Color(0f, 0f, 0f, 0.42f));
+            DrawRect(new Rect(Screen.width * 0.92f, 0f, Screen.width * 0.08f, Screen.height), new Color(0f, 0f, 0f, 0.48f));
         }
 
-        private static void DrawSkyline(float width, float height)
+        private static Texture2D CreateNoirBackdropTexture()
         {
-            var baseY = height * 0.18f;
-            for (var index = 0; index < 16; index += 1)
+            const int width = 384;
+            const int height = 216;
+            var pixels = new Color[width * height];
+
+            for (var y = 0; y < height; y += 1)
             {
-                var x = width * 0.34f + index * width * 0.045f;
-                var buildingWidth = width * (0.032f + (index % 3) * 0.009f);
-                var buildingHeight = height * (0.14f + (index % 5) * 0.025f);
-                DrawRect(new Rect(x, baseY - buildingHeight, buildingWidth, height), new Color(0.01f, 0.013f, 0.017f, 0.82f));
+                var t = y / (float)(height - 1);
+                for (var x = 0; x < width; x += 1)
+                {
+                    var noise = Hash01(x, y) - 0.5f;
+                    var baseColor = Color.Lerp(
+                        new Color(0.010f, 0.014f, 0.018f, 1f),
+                        new Color(0.070f, 0.044f, 0.030f, 1f),
+                        Mathf.Pow(t, 1.35f));
+                    var surfaceVariation = noise * 0.012f;
+                    pixels[y * width + x] = new Color(baseColor.r + surfaceVariation, baseColor.g + surfaceVariation, baseColor.b + surfaceVariation, 1f);
+                }
+            }
+
+            FillRect(pixels, width, height, 182, 0, 78, 216, new Color(0.012f, 0.014f, 0.015f, 0.88f));
+            FillRect(pixels, width, height, 248, 0, 2, 216, new Color(0.74f, 0.52f, 0.24f, 0.38f));
+            FillRect(pixels, width, height, 144, 171, 240, 45, new Color(0.040f, 0.035f, 0.029f, 0.66f));
+
+            for (var i = 0; i < 15; i += 1)
+            {
+                var x = 128 + i * 16;
+                var buildingWidth = 11 + (i % 4) * 3;
+                var buildingHeight = 48 + (i % 5) * 9;
+                FillRect(pixels, width, height, x, 38, buildingWidth, buildingHeight, new Color(0.004f, 0.006f, 0.008f, 0.84f));
 
                 for (var window = 0; window < 5; window += 1)
                 {
-                    if ((window + index) % 3 == 0)
+                    if ((window + i) % 3 == 0)
                     {
-                        DrawRect(
-                            new Rect(x + buildingWidth * 0.22f, baseY - buildingHeight + 18f + window * 30f, buildingWidth * 0.18f, 7f),
-                            new Color(0.87f, 0.62f, 0.28f, 0.34f));
+                        FillRect(pixels, width, height, x + 3, 48 + window * 12, 4, 2, new Color(0.82f, 0.55f, 0.24f, 0.30f));
                     }
                 }
             }
-        }
 
-        private static void DrawWetStreet(float width, float height)
-        {
-            DrawRect(new Rect(width * 0.58f, 0f, width * 0.18f, height), new Color(0.02f, 0.022f, 0.023f, 0.92f));
-            DrawRect(new Rect(width * 0.66f, 0f, 4f, height), new Color(0.76f, 0.56f, 0.26f, 0.46f));
-            DrawRect(new Rect(width * 0.585f, 0f, 2f, height), new Color(0.72f, 0.57f, 0.32f, 0.16f));
-            DrawRect(new Rect(width * 0.755f, 0f, 2f, height), new Color(0.72f, 0.57f, 0.32f, 0.14f));
-
-            for (var index = 0; index < 11; index += 1)
+            for (var i = 0; i < 10; i += 1)
             {
-                var y = height * 0.07f + index * height * 0.082f;
-                DrawRect(new Rect(width * 0.78f, y, 58f, 14f), new Color(0.91f, 0.7f, 0.36f, 0.35f));
-                DrawRect(new Rect(width * 0.46f, y + 24f, 38f, 8f), new Color(0.75f, 0.63f, 0.45f, 0.13f));
+                FillRect(pixels, width, height, 294, 16 + i * 20, 14, 4, new Color(0.82f, 0.58f, 0.28f, 0.42f));
+                FillRect(pixels, width, height, 92, 30 + i * 18, 8, 2, new Color(0.75f, 0.58f, 0.36f, 0.16f));
             }
 
-            DrawRect(new Rect(0f, height * 0.79f, width, height * 0.22f), new Color(0.045f, 0.04f, 0.034f, 0.72f));
-            for (var index = 0; index < 8; index += 1)
+            FillRect(pixels, width, height, 276, 52, 72, 24, new Color(0.16f, 0.054f, 0.034f, 0.88f));
+            FillRect(pixels, width, height, 276, 52, 72, 2, new Color(0.92f, 0.58f, 0.22f, 0.82f));
+            for (var i = 0; i < 7; i += 1)
             {
-                var x = width * 0.35f + index * width * 0.075f;
-                DrawRect(new Rect(x, height * 0.82f + (index % 2) * 18f, width * 0.05f, 4f), new Color(0.85f, 0.68f, 0.38f, 0.16f));
-            }
-        }
-
-        private static void DrawMarquee(float width, float height)
-        {
-            var sign = new Rect(width * 0.69f, height * 0.18f, width * 0.22f, 74f);
-            DrawRect(new Rect(sign.x + 8f, sign.y + 10f, sign.width, sign.height), new Color(0f, 0f, 0f, 0.34f));
-            DrawRect(sign, new Color(0.18f, 0.075f, 0.052f, 0.88f));
-            DrawRect(new Rect(sign.x, sign.y, sign.width, 4f), new Color(0.9f, 0.62f, 0.24f, 0.82f));
-            DrawRect(new Rect(sign.x + 18f, sign.y + 26f, sign.width - 36f, 3f), new Color(1f, 0.72f, 0.28f, 0.55f));
-            DrawRect(new Rect(sign.x + 18f, sign.y + 45f, sign.width - 72f, 3f), new Color(1f, 0.72f, 0.28f, 0.3f));
-
-            for (var bulb = 0; bulb < 9; bulb += 1)
-            {
-                DrawRect(new Rect(sign.x + 18f + bulb * 34f, sign.y + 10f, 7f, 7f), new Color(1f, 0.72f, 0.32f, 0.92f));
+                FillRect(pixels, width, height, 283 + i * 10, 57, 2, 2, new Color(1f, 0.66f, 0.26f, 0.90f));
             }
 
-            DrawGlow(new Vector2(sign.x + sign.width * 0.58f, sign.y + sign.height + 24f), 92f, new Color(0.94f, 0.58f, 0.22f, 0.22f));
-        }
+            FillGlow(pixels, width, height, 306, 82, 42, new Color(0.96f, 0.58f, 0.22f, 0.18f));
+            FillGlow(pixels, width, height, 330, 156, 54, new Color(0.96f, 0.70f, 0.36f, 0.20f));
+            FillRect(pixels, width, height, 258, 132, 90, 9, new Color(0.004f, 0.005f, 0.006f, 0.97f));
+            FillRect(pixels, width, height, 282, 121, 36, 12, new Color(0.004f, 0.005f, 0.006f, 0.97f));
+            FillRect(pixels, width, height, 328, 135, 9, 2, new Color(1f, 0.76f, 0.44f, 0.95f));
+            FillRect(pixels, width, height, 337, 136, 42, 1, new Color(1f, 0.76f, 0.44f, 0.25f));
 
-        private static void DrawCarSilhouette(float width, float height)
-        {
-            var x = width * 0.665f;
-            var y = height * 0.70f;
-            DrawGlow(new Vector2(x + 220f, y - 4f), 220f, new Color(0.96f, 0.76f, 0.42f, 0.22f));
-            DrawRect(new Rect(x - 40f, y + 39f, 390f, 4f), new Color(0.94f, 0.72f, 0.38f, 0.14f));
-            DrawRect(new Rect(x, y, 330f, 38f), new Color(0.006f, 0.007f, 0.008f, 0.96f));
-            DrawRect(new Rect(x + 72f, y - 42f, 142f, 48f), new Color(0.008f, 0.009f, 0.01f, 0.96f));
-            DrawRect(new Rect(x + 24f, y + 27f, 58f, 24f), new Color(0f, 0f, 0f, 0.9f));
-            DrawRect(new Rect(x + 238f, y + 27f, 58f, 24f), new Color(0f, 0f, 0f, 0.9f));
-            DrawRect(new Rect(x + 272f, y + 10f, 32f, 9f), new Color(1f, 0.8f, 0.48f, 0.98f));
-            DrawRect(new Rect(x + 302f, y + 12f, 118f, 4f), new Color(1f, 0.8f, 0.48f, 0.24f));
-            DrawRect(new Rect(x - 116f, y + 12f, 116f, 5f), new Color(1f, 0.78f, 0.45f, 0.2f));
-        }
+            FillGlow(pixels, width, height, 257, 130, 52, new Color(0.90f, 0.42f, 0.14f, 0.10f));
+            FillRect(pixels, width, height, 238, 106, 52, 8, new Color(0.005f, 0.004f, 0.004f, 0.99f));
+            FillRect(pixels, width, height, 250, 92, 20, 17, new Color(0.005f, 0.004f, 0.004f, 0.98f));
+            FillRect(pixels, width, height, 244, 114, 32, 67, new Color(0.006f, 0.005f, 0.004f, 0.99f));
+            FillRect(pixels, width, height, 276, 118, 2, 62, new Color(0.78f, 0.43f, 0.16f, 0.22f));
+            FillRect(pixels, width, height, 238, 106, 52, 1, new Color(0.85f, 0.52f, 0.20f, 0.38f));
+            FillRect(pixels, width, height, 278, 133, 21, 1, new Color(0.95f, 0.67f, 0.32f, 0.50f));
+            FillRect(pixels, width, height, 298, 132, 2, 2, new Color(1f, 0.45f, 0.12f, 0.94f));
 
-        private static void DrawStreetLamp(float width, float height)
-        {
-            var poleX = width * 0.82f;
-            var poleY = height * 0.22f;
-            DrawGlow(new Vector2(poleX - 26f, poleY + 12f), 155f, new Color(1f, 0.68f, 0.28f, 0.18f));
-            DrawRect(new Rect(poleX, poleY, 5f, height * 0.64f), new Color(0.025f, 0.019f, 0.014f, 0.92f));
-            DrawRect(new Rect(poleX - 78f, poleY, 82f, 5f), new Color(0.025f, 0.019f, 0.014f, 0.92f));
-            DrawRect(new Rect(poleX - 92f, poleY + 3f, 28f, 12f), new Color(0.9f, 0.55f, 0.22f, 0.84f));
-            DrawRect(new Rect(poleX - 136f, poleY + height * 0.62f, 260f, 5f), new Color(0.94f, 0.72f, 0.38f, 0.17f));
-        }
-
-        private static void DrawFedoraSilhouette(float width, float height)
-        {
-            var x = width * 0.66f;
-            var y = height * 0.38f;
-            DrawGlow(new Vector2(x + 36f, y + 178f), 175f, new Color(0.85f, 0.48f, 0.18f, 0.1f));
-            DrawRect(new Rect(x - 92f, y + 336f, 248f, 6f), new Color(0f, 0f, 0f, 0.56f));
-            DrawRect(new Rect(x - 34f, y + 12f, 70f, 64f), new Color(0.014f, 0.011f, 0.009f, 0.98f));
-            DrawRect(new Rect(x + 34f, y + 16f, 3f, 58f), new Color(0.82f, 0.52f, 0.23f, 0.28f));
-            DrawRect(new Rect(x - 98f, y + 72f, 196f, 34f), new Color(0.011f, 0.009f, 0.008f, 0.99f));
-            DrawRect(new Rect(x - 98f, y + 72f, 196f, 3f), new Color(0.82f, 0.52f, 0.23f, 0.34f));
-            DrawRect(new Rect(x - 58f, y + 98f, 116f, 248f), new Color(0.009f, 0.008f, 0.007f, 0.99f));
-            DrawRect(new Rect(x + 54f, y + 102f, 5f, 236f), new Color(0.76f, 0.45f, 0.18f, 0.2f));
-            DrawRect(new Rect(x - 104f, y + 124f, 56f, 204f), new Color(0.007f, 0.006f, 0.005f, 0.97f));
-            DrawRect(new Rect(x + 48f, y + 124f, 56f, 204f), new Color(0.007f, 0.006f, 0.005f, 0.97f));
-            DrawRect(new Rect(x - 20f, y + 124f, 40f, 206f), new Color(0.1f, 0.058f, 0.028f, 0.42f));
-            DrawRect(new Rect(x - 58f, y + 118f, 116f, 4f), new Color(0.87f, 0.58f, 0.25f, 0.2f));
-            DrawRect(new Rect(x + 62f, y + 184f, 62f, 4f), new Color(0.95f, 0.72f, 0.34f, 0.46f));
-            DrawRect(new Rect(x + 120f, y + 180f, 6f, 6f), new Color(1f, 0.55f, 0.18f, 0.92f));
-            DrawRect(new Rect(x + 126f, y + 180f, 36f, 2f), new Color(1f, 0.55f, 0.18f, 0.16f));
-        }
-
-        private static void DrawRain(float width, float height)
-        {
-            for (var index = 0; index < 80; index += 1)
+            for (var i = 0; i < 90; i += 1)
             {
-                var x = Mathf.Repeat(index * 97f, width);
-                var y = Mathf.Repeat(index * 53f, height);
-                var length = 12f + (index % 5) * 5f;
-                DrawRect(new Rect(x, y, 1f, length), new Color(0.62f, 0.7f, 0.76f, 0.08f));
+                var x = Mathf.FloorToInt(Hash01(i * 31, i * 17) * width);
+                var y = Mathf.FloorToInt(Hash01(i * 47, i * 13) * height);
+                var rainLength = 2 + (i % 5);
+                FillRect(pixels, width, height, x, y, 1, rainLength, new Color(0.42f, 0.50f, 0.56f, 0.15f));
             }
-        }
 
-        private static void DrawVignette(float width, float height)
-        {
-            DrawRect(new Rect(0f, 0f, width, 34f), new Color(0f, 0f, 0f, 0.62f));
-            DrawRect(new Rect(0f, height - 48f, width, 48f), new Color(0f, 0f, 0f, 0.68f));
-            DrawRect(new Rect(0f, 0f, width * 0.11f, height), new Color(0f, 0f, 0f, 0.46f));
-            DrawRect(new Rect(width * 0.89f, 0f, width * 0.11f, height), new Color(0f, 0f, 0f, 0.52f));
-        }
-
-        private static void DrawGlow(Vector2 center, float radius, Color color)
-        {
-            for (var layer = 5; layer >= 1; layer -= 1)
+            var texture = new Texture2D(width, height, TextureFormat.RGBA32, false)
             {
-                var t = layer / 5f;
-                var size = radius * t;
-                DrawRect(new Rect(center.x - size, center.y - size * 0.35f, size * 2f, size * 0.7f), new Color(color.r, color.g, color.b, color.a * (1f - t * 0.55f)));
-            }
+                name = "NoirBootPlate",
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp,
+                hideFlags = HideFlags.HideAndDontSave
+            };
+            texture.SetPixels(pixels);
+            texture.Apply(false, true);
+            return texture;
         }
 
         private static void DrawRect(Rect rect, Color color)
@@ -541,6 +560,64 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             texture.SetPixel(0, 0, color);
             texture.Apply();
             return texture;
+        }
+
+        private static void FillRect(Color[] pixels, int textureWidth, int textureHeight, int x, int y, int width, int height, Color color)
+        {
+            var minX = Mathf.Clamp(x, 0, textureWidth);
+            var maxX = Mathf.Clamp(x + width, 0, textureWidth);
+            var minY = Mathf.Clamp(y, 0, textureHeight);
+            var maxY = Mathf.Clamp(y + height, 0, textureHeight);
+
+            for (var py = minY; py < maxY; py += 1)
+            {
+                for (var px = minX; px < maxX; px += 1)
+                {
+                    var index = py * textureWidth + px;
+                    pixels[index] = Blend(pixels[index], color);
+                }
+            }
+        }
+
+        private static void FillGlow(Color[] pixels, int textureWidth, int textureHeight, int centerX, int centerY, int radius, Color color)
+        {
+            var radiusSquared = radius * radius;
+            for (var y = Mathf.Max(0, centerY - radius); y < Mathf.Min(textureHeight, centerY + radius); y += 1)
+            {
+                for (var x = Mathf.Max(0, centerX - radius); x < Mathf.Min(textureWidth, centerX + radius); x += 1)
+                {
+                    var dx = x - centerX;
+                    var dy = (y - centerY) * 1.6f;
+                    var distanceSquared = dx * dx + dy * dy;
+                    if (distanceSquared > radiusSquared)
+                    {
+                        continue;
+                    }
+
+                    var intensity = 1f - Mathf.Sqrt(distanceSquared / radiusSquared);
+                    pixels[y * textureWidth + x] = Blend(pixels[y * textureWidth + x], new Color(color.r, color.g, color.b, color.a * intensity));
+                }
+            }
+        }
+
+        private static Color Blend(Color destination, Color source)
+        {
+            var alpha = Mathf.Clamp01(source.a);
+            return new Color(
+                Mathf.Lerp(destination.r, source.r, alpha),
+                Mathf.Lerp(destination.g, source.g, alpha),
+                Mathf.Lerp(destination.b, source.b, alpha),
+                1f);
+        }
+
+        private static float Hash01(int x, int y)
+        {
+            unchecked
+            {
+                var value = x * 374761393 + y * 668265263;
+                value = (value ^ (value >> 13)) * 1274126177;
+                return ((value ^ (value >> 16)) & 0x00FFFFFF) / 16777215f;
+            }
         }
     }
 }

@@ -130,17 +130,17 @@ namespace MafiaTopDown.Editor
             var lightComponent = light.AddComponent<Light>();
             lightComponent.type = LightType.Directional;
             lightComponent.color = new Color(1f, 0.88f, 0.73f);
-            lightComponent.intensity = 0.58f;
+            lightComponent.intensity = 0.68f;
             lightComponent.shadows = LightShadows.Soft;
             light.transform.rotation = Quaternion.Euler(36f, -38f, 0f);
 
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.075f, 0.085f, 0.105f);
+            RenderSettings.ambientLight = new Color(0.095f, 0.105f, 0.125f);
             RenderSettings.fog = true;
             RenderSettings.fogColor = new Color(0.08f, 0.095f, 0.12f);
             RenderSettings.fogMode = FogMode.ExponentialSquared;
             RenderSettings.fogDensity = 0.026f;
-            CreateNoirPostProcessVolume("District_01", new Color(0.78f, 0.86f, 1f), -0.38f, 46f, -24f, 2.1f, 0.48f);
+            CreateNoirPostProcessVolume("District_01", new Color(0.82f, 0.88f, 1f), -0.22f, 36f, -18f, 1.45f, 0.28f);
 
             var streetPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
             streetPlane.name = "StreetPlane";
@@ -303,9 +303,10 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(4.8f, 0f, 18f), metal, windowGlow);
             CreateNoirStreetDressing("Dock", metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
             CreateNoirSpawnComposition("DockStart", new Vector3(0f, 0f, -12f), metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass, "MORETTI");
+            CreateDockStartDetailPass(metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
             CreateDocksIdentityPass(metal, windowGlow, crateWood, officeSign, water, brass);
 
-            var player = CreateNoirActor("Player", new Vector3(0f, 1f, -12f), playerCoat, null, false);
+            var player = CreateNoirActor("Player", new Vector3(-1.7f, 1f, -15.4f), playerCoat, null, false);
             var characterController = player.AddComponent<CharacterController>();
             characterController.height = 1.8f;
             characterController.radius = 0.35f;
@@ -320,8 +321,8 @@ namespace MafiaTopDown.Editor
             SetBoolValue(playerHealth, "destroyOnDeath", false);
             SetBoolValue(playerHealth, "reloadSceneOnDeath", true);
 
-            CreateSpawnPoint("DefaultSpawnPoint", "DefaultSpawn", new Vector3(0f, 1f, -12f));
-            CreateSpawnPoint("PickupSpawnPoint", "PickupSpawn", new Vector3(0f, 1f, -12f));
+            CreateSpawnPoint("DefaultSpawnPoint", "DefaultSpawn", new Vector3(-1.7f, 1f, -15.4f));
+            CreateSpawnPoint("PickupSpawnPoint", "PickupSpawn", new Vector3(-1.7f, 1f, -15.4f));
             CreateSpawnPoint("DriveSpawnPoint", "DriveSpawn", new Vector3(0f, 1f, -4.2f));
             CreateSpawnPoint("ExteriorReturnSpawnPoint", "ExteriorReturn", new Vector3(0f, 1f, 12.5f));
             CreateSpawnPoint("PierExitSpawnPoint", "PierExitSpawn", new Vector3(-3.2f, 1f, 9.8f));
@@ -360,10 +361,10 @@ namespace MafiaTopDown.Editor
             camera.fieldOfView = 42f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 100f;
-            cameraRoot.transform.position = player.transform.position + new Vector3(-0.9f, 13.2f, -8.1f);
+            cameraRoot.transform.position = player.transform.position + new Vector3(-0.45f, 13.8f, -7.8f);
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            ConfigureNoirCamera(camera, topDownCamera, new Vector3(-0.9f, 13.2f, -8.1f), 61f, -3f, 9.5f, 18f);
+            ConfigureNoirCamera(camera, topDownCamera, new Vector3(-0.45f, 13.8f, -7.8f), 59f, -2f, 10.5f, 19f);
 
             var sceneTransitionControllerObject = new GameObject("SceneTransitionController");
             var sceneTransitionController = sceneTransitionControllerObject.AddComponent<SceneTransitionController>();
@@ -389,7 +390,7 @@ namespace MafiaTopDown.Editor
             SetObjectReference(pauseMenu, "dialogueController", dialogueController);
 
             var docksMissionRoot = new GameObject("AQuietFavorDistrictRoot");
-            var luca = CreateNoirActor("LucaContact", new Vector3(-3.2f, 1f, -10.4f), contactCoat, docksMissionRoot.transform);
+            var luca = CreateNoirActor("LucaContact", new Vector3(-5.05f, 1f, -12.75f), contactCoat, docksMissionRoot.transform);
             var lucaInteractable = luca.AddComponent<DialogueInteractable>();
             SetObjectReference(lucaInteractable, "dialogueController", dialogueController);
             SetObjectReference(lucaInteractable, "dialogueSequence", lucaBriefing);
@@ -2413,13 +2414,11 @@ namespace MafiaTopDown.Editor
 
             additionalCameraData.renderPostProcessing = true;
             additionalCameraData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
-            additionalCameraData.dithering = true;
+            additionalCameraData.dithering = false;
             additionalCameraData.stopNaN = true;
 
-            var screenGrade = camera.gameObject.AddComponent<NoirScreenGradeController>();
-            SetColorValue(screenGrade, "tintColor", new Color(0.025f, 0.04f, 0.06f, 0.19f));
-            SetColorValue(screenGrade, "vignetteColor", new Color(0f, 0f, 0f, 0.68f));
-            SetFloatValue(screenGrade, "letterboxHeight", 0.052f);
+            // Keep gameplay readable: the noir look comes from authored lighting and geometry,
+            // not screen-wide pixel/grain overlays.
             SetVector3Value(topDownCamera, "offset", offset);
             SetFloatValue(topDownCamera, "minimumHeight", minimumHeight);
             SetFloatValue(topDownCamera, "maximumHeight", maximumHeight);
@@ -2453,12 +2452,13 @@ namespace MafiaTopDown.Editor
             SetVolumeParameter(bloom.tint, new Color(1f, 0.72f, 0.38f));
 
             var vignette = GetOrAddVolumeComponent<Vignette>(profile);
-            SetVolumeParameter(vignette.intensity, vignetteIntensity);
-            SetVolumeParameter(vignette.smoothness, 0.72f);
+            SetVolumeParameter(vignette.intensity, Mathf.Min(vignetteIntensity, 0.16f));
+            SetVolumeParameter(vignette.smoothness, 0.66f);
 
             var grain = GetOrAddVolumeComponent<FilmGrain>(profile);
+            grain.active = false;
             SetVolumeParameter(grain.type, FilmGrainLookup.Thin1);
-            SetVolumeParameter(grain.intensity, 0.22f);
+            SetVolumeParameter(grain.intensity, 0f);
             SetVolumeParameter(grain.response, 0.72f);
 
             EditorUtility.SetDirty(profile);
@@ -2595,7 +2595,8 @@ namespace MafiaTopDown.Editor
 
                 CreatePrimitive(PrimitiveType.Cube, prefix + "PosterBoardL_" + index, new Vector3(leftX, 1.45f, z), new Vector3(0.12f, 1.05f, 1.1f), sign);
                 CreatePrimitive(PrimitiveType.Cube, prefix + "PosterTrimL_" + index, new Vector3(leftX + 0.02f, 1.98f, z), new Vector3(0.14f, 0.08f, 1.16f), brass);
-                CreatePrimitive(PrimitiveType.Cube, prefix + "NeonSlashR_" + index, new Vector3(rightX, 2.2f, z + 2.6f), new Vector3(0.12f, 0.18f, 1.45f), glow);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "SignBoxR_" + index, new Vector3(rightX, 2.2f, z + 2.6f), new Vector3(0.16f, 0.56f, 1.1f), sign);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "SignWarmTrimR_" + index, new Vector3(rightX - 0.02f, 2.48f, z + 2.6f), new Vector3(0.08f, 0.08f, 0.82f), glow);
                 CreatePrimitive(PrimitiveType.Cube, prefix + "Awning_" + index, new Vector3(rightX, 2.05f, z + 0.7f), new Vector3(1.25f, 0.18f, 1.5f), sign);
             }
 
@@ -2647,8 +2648,10 @@ namespace MafiaTopDown.Editor
             for (var index = 0; index < 4; index += 1)
             {
                 var z = anchor.z - 2.8f + (index * 1.85f);
-                CreatePrimitive(PrimitiveType.Cube, prefix + "LeftWindowGlow_" + index, new Vector3(-5.95f, 3.0f, z), new Vector3(0.08f, 0.72f, 0.74f), glow);
-                CreatePrimitive(PrimitiveType.Cube, prefix + "RightWindowGlow_" + index, new Vector3(5.95f, 3.2f, z + 0.7f), new Vector3(0.08f, 0.68f, 0.8f), glow);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "LeftWindowFrame_" + index, new Vector3(-5.98f, 3.0f, z), new Vector3(0.11f, 0.9f, 1.0f), sign);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "LeftWindowGlow_" + index, new Vector3(-6.04f, 3.0f, z), new Vector3(0.045f, 0.52f, 0.48f), glow);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "RightWindowFrame_" + index, new Vector3(5.98f, 3.2f, z + 0.7f), new Vector3(0.11f, 0.86f, 1.04f), sign);
+                CreatePrimitive(PrimitiveType.Cube, prefix + "RightWindowGlow_" + index, new Vector3(6.04f, 3.2f, z + 0.7f), new Vector3(0.045f, 0.5f, 0.5f), glow);
                 CreatePrimitive(PrimitiveType.Cube, prefix + "WetReflection_" + index, new Vector3(index % 2 == 0 ? -1.8f : 2.0f, 0.13f, z + 0.45f), new Vector3(1.6f, 0.018f, 0.42f), puddle);
             }
 
@@ -2656,7 +2659,8 @@ namespace MafiaTopDown.Editor
             CreatePrimitive(PrimitiveType.Cube, prefix + "MarqueeGlow", anchor + new Vector3(0f, 3.86f, streetZ - 0.18f), new Vector3(5.2f, 0.16f, 0.08f), glow);
             CreatePrimitive(PrimitiveType.Cube, prefix + "MarqueeBulbLeft", anchor + new Vector3(-2.55f, 3.9f, streetZ - 0.26f), new Vector3(0.22f, 0.22f, 0.06f), glow);
             CreatePrimitive(PrimitiveType.Cube, prefix + "MarqueeBulbRight", anchor + new Vector3(2.55f, 3.9f, streetZ - 0.26f), new Vector3(0.22f, 0.22f, 0.06f), glow);
-            CreateNoirWorldLabel(prefix + "MarqueeText", marqueeText, anchor + new Vector3(0f, 4.25f, streetZ - 0.38f), 0.2f, new Color(1f, 0.74f, 0.38f));
+            CreatePrimitive(PrimitiveType.Cube, prefix + "MarqueeTextHintA", anchor + new Vector3(-1.15f, 4.18f, streetZ - 0.38f), new Vector3(1.2f, 0.08f, 0.06f), brass);
+            CreatePrimitive(PrimitiveType.Cube, prefix + "MarqueeTextHintB", anchor + new Vector3(0.65f, 4.18f, streetZ - 0.38f), new Vector3(1.65f, 0.08f, 0.06f), brass);
 
             CreatePrimitive(PrimitiveType.Cube, prefix + "CrosswalkA", anchor + new Vector3(0f, 0.135f, 1.7f), new Vector3(7.2f, 0.035f, 0.22f), brass);
             CreatePrimitive(PrimitiveType.Cube, prefix + "CrosswalkB", anchor + new Vector3(0f, 0.135f, 2.45f), new Vector3(7.2f, 0.035f, 0.22f), brass);
@@ -2668,11 +2672,64 @@ namespace MafiaTopDown.Editor
             lightObject.transform.position = anchor + new Vector3(0f, 3.6f, streetZ - 0.6f);
             var light = lightObject.AddComponent<Light>();
             light.type = LightType.Point;
-            light.range = 8.5f;
-            light.intensity = 3.4f;
+            light.range = 7.25f;
+            light.intensity = 2.15f;
             light.color = new Color(1f, 0.66f, 0.28f);
         }
 
+        private static void CreateDockStartDetailPass(
+            Material metal,
+            Material glow,
+            Material wood,
+            Material sign,
+            Material masonry,
+            Material puddle,
+            Material brass)
+        {
+            CreatePrimitive(PrimitiveType.Cube, "StartLeftStorefrontBase", new Vector3(-7.58f, 1.16f, -11.4f), new Vector3(0.28f, 2.25f, 5.8f), sign);
+            CreatePrimitive(PrimitiveType.Cube, "StartLeftStorefrontTrimA", new Vector3(-7.38f, 2.32f, -11.4f), new Vector3(0.14f, 0.16f, 5.55f), brass);
+            CreatePrimitive(PrimitiveType.Cube, "StartLeftStorefrontTrimB", new Vector3(-7.38f, 0.42f, -11.4f), new Vector3(0.14f, 0.16f, 5.55f), brass);
+            CreatePrimitive(PrimitiveType.Cube, "StartCafeAwning", new Vector3(-5.72f, 2.08f, -10.1f), new Vector3(2.05f, 0.22f, 2.4f), sign);
+            CreatePrimitive(PrimitiveType.Cube, "StartCafeAwningLip", new Vector3(-4.7f, 1.86f, -10.1f), new Vector3(0.16f, 0.18f, 2.4f), brass);
+            CreatePrimitive(PrimitiveType.Cube, "StartCafeDoor", new Vector3(-5.08f, 1.02f, -12.8f), new Vector3(0.14f, 1.8f, 0.78f), wood);
+            CreatePrimitive(PrimitiveType.Cube, "StartCafeDoorGlow", new Vector3(-4.98f, 1.28f, -12.8f), new Vector3(0.045f, 0.62f, 0.42f), glow);
+            CreatePrimitive(PrimitiveType.Cube, "StartDoorStepA", new Vector3(-4.72f, 0.23f, -12.8f), new Vector3(0.92f, 0.12f, 1.1f), masonry);
+            CreatePrimitive(PrimitiveType.Cube, "StartDoorStepB", new Vector3(-4.44f, 0.32f, -12.8f), new Vector3(0.58f, 0.12f, 0.82f), masonry);
+
+            for (var level = 0; level < 3; level += 1)
+            {
+                var y = 2.65f + (level * 0.78f);
+                CreatePrimitive(PrimitiveType.Cube, "StartFireEscapeRail_" + level, new Vector3(-5.58f, y, -14.1f), new Vector3(0.08f, 0.07f, 2.8f), metal);
+                CreatePrimitive(PrimitiveType.Cube, "StartFireEscapeDeck_" + level, new Vector3(-5.72f, y - 0.22f, -14.1f), new Vector3(0.7f, 0.08f, 2.6f), metal);
+            }
+
+            for (var rung = 0; rung < 7; rung += 1)
+            {
+                CreatePrimitive(PrimitiveType.Cube, "StartFireEscapeLadder_" + rung, new Vector3(-5.48f, 1.72f + (rung * 0.34f), -12.9f), new Vector3(0.07f, 0.06f, 0.76f), metal);
+            }
+
+            for (var seam = 0; seam < 5; seam += 1)
+            {
+                var z = -16.8f + (seam * 2.4f);
+                CreatePrimitive(PrimitiveType.Cube, "StartSidewalkSeamL_" + seam, new Vector3(-6.2f, 0.205f, z), new Vector3(2.72f, 0.024f, 0.045f), sign);
+                CreatePrimitive(PrimitiveType.Cube, "StartSidewalkSeamR_" + seam, new Vector3(6.2f, 0.205f, z + 0.8f), new Vector3(2.72f, 0.024f, 0.045f), sign);
+            }
+
+            CreateStaticVehicle("StartParkedBlackSedan", new Vector3(2.28f, 0.72f, -12.25f), new Vector3(1.62f, 0.92f, 3.65f), new Color(0.055f, 0.058f, 0.064f), metal, glow);
+            CreatePrimitive(PrimitiveType.Cube, "StartSedanRoadShadow", new Vector3(2.28f, 0.122f, -12.25f), new Vector3(1.92f, 0.018f, 4.1f), sign);
+            CreatePrimitive(PrimitiveType.Cube, "StartWetGutterLeft", new Vector3(-4.72f, 0.13f, -11.6f), new Vector3(0.38f, 0.018f, 6.6f), puddle);
+            CreatePrimitive(PrimitiveType.Cube, "StartWetGutterRight", new Vector3(4.72f, 0.13f, -12.2f), new Vector3(0.38f, 0.018f, 4.2f), puddle);
+            CreatePrimitive(PrimitiveType.Cylinder, "StartTrashCanA", new Vector3(-5.48f, 0.56f, -8.35f), new Vector3(0.32f, 0.52f, 0.32f), metal);
+            CreatePrimitive(PrimitiveType.Cylinder, "StartTrashCanB", new Vector3(-5.95f, 0.52f, -8.1f), new Vector3(0.28f, 0.46f, 0.28f), metal);
+            CreatePrimitive(PrimitiveType.Cube, "StartNewspaperBundle", new Vector3(-5.28f, 0.36f, -9.15f), new Vector3(0.72f, 0.22f, 0.48f), masonry);
+            CreatePrimitive(PrimitiveType.Cube, "StartShopSignBack", new Vector3(-5.12f, 2.65f, -10.1f), new Vector3(0.12f, 0.62f, 1.82f), sign);
+            CreatePrimitive(PrimitiveType.Cube, "StartShopSignWarmLine", new Vector3(-5.04f, 2.78f, -10.1f), new Vector3(0.045f, 0.08f, 1.42f), glow);
+            CreatePrimitive(PrimitiveType.Cube, "StartShopSignLetterHintA", new Vector3(-5.0f, 3.03f, -10.55f), new Vector3(0.045f, 0.42f, 0.06f), brass);
+            CreatePrimitive(PrimitiveType.Cube, "StartShopSignLetterHintB", new Vector3(-5.0f, 3.03f, -10.18f), new Vector3(0.045f, 0.42f, 0.06f), brass);
+            CreatePrimitive(PrimitiveType.Cube, "StartShopSignLetterHintC", new Vector3(-5.0f, 3.03f, -9.8f), new Vector3(0.045f, 0.42f, 0.06f), brass);
+        }
+
+        [System.Obsolete("Use physical sign geometry instead of camera-facing text in gameplay scenes.")]
         private static void CreateNoirWorldLabel(string name, string text, Vector3 position, float characterSize, Color color)
         {
             var labelObject = new GameObject(name);
@@ -2788,9 +2845,10 @@ namespace MafiaTopDown.Editor
 
         private static void CreateSteamVent(string name, Vector3 position, Material metal, Material glow)
         {
+            var steam = GetOrCreateMaterial("Assets/Game/Materials/SteamHaze.mat", new Color(0.36f, 0.39f, 0.41f), 0.08f, 0f);
             CreatePrimitive(PrimitiveType.Cylinder, name + "Grate", position, new Vector3(0.45f, 0.04f, 0.45f), metal);
-            CreatePrimitive(PrimitiveType.Cube, name + "VaporA", position + new Vector3(0f, 0.55f, 0f), new Vector3(0.28f, 0.75f, 0.28f), glow);
-            CreatePrimitive(PrimitiveType.Cube, name + "VaporB", position + new Vector3(0.24f, 1f, 0.12f), new Vector3(0.2f, 0.8f, 0.2f), glow);
+            CreatePrimitive(PrimitiveType.Cube, name + "VaporA", position + new Vector3(0f, 0.48f, 0f), new Vector3(0.12f, 0.58f, 0.12f), steam);
+            CreatePrimitive(PrimitiveType.Cube, name + "VaporB", position + new Vector3(0.22f, 0.86f, 0.12f), new Vector3(0.09f, 0.62f, 0.09f), steam);
         }
 
         private static void CreateLampPost(Vector3 basePosition, Material poleMaterial, Material glowMaterial)
@@ -2806,16 +2864,16 @@ namespace MafiaTopDown.Editor
                 PrimitiveType.Cube,
                 "LampHead",
                 basePosition + new Vector3(0f, 4.25f, 0.2f),
-                new Vector3(0.45f, 0.3f, 0.45f),
+                new Vector3(0.28f, 0.2f, 0.28f),
                 glowMaterial);
 
             var pointLightObject = new GameObject("LampLight");
             pointLightObject.transform.position = basePosition + new Vector3(0f, 3.8f, 0.2f);
             var pointLight = pointLightObject.AddComponent<Light>();
             pointLight.type = LightType.Point;
-            pointLight.range = 9f;
-            pointLight.intensity = 2.4f;
-            pointLight.color = new Color(1f, 0.8f, 0.55f);
+            pointLight.range = 6.4f;
+            pointLight.intensity = 1.55f;
+            pointLight.color = new Color(1f, 0.72f, 0.42f);
         }
 
         private static void ApplyExteriorAtmosphere(
@@ -2849,6 +2907,8 @@ namespace MafiaTopDown.Editor
             float metallic = 0f,
             Color? emissionColor = null)
         {
+            var materialColor = ResolveMaterialColor(assetPath, color);
+            var materialEmission = ResolveMaterialEmission(assetPath, emissionColor);
             var material = AssetDatabase.LoadAssetAtPath<Material>(assetPath);
             if (material == null)
             {
@@ -2875,12 +2935,12 @@ namespace MafiaTopDown.Editor
 
             if (material.HasProperty("_BaseColor"))
             {
-                material.SetColor("_BaseColor", color);
+                material.SetColor("_BaseColor", materialColor);
             }
 
             if (material.HasProperty("_Color"))
             {
-                material.SetColor("_Color", color);
+                material.SetColor("_Color", materialColor);
             }
 
             if (material.HasProperty("_Smoothness"))
@@ -2898,16 +2958,261 @@ namespace MafiaTopDown.Editor
                 material.SetFloat("_Metallic", metallic);
             }
 
-            if (emissionColor.HasValue)
+            var surfaceTexture = GetOrCreateSurfaceTexture(assetPath, materialColor);
+            if (surfaceTexture != null)
+            {
+                var textureScale = ResolveSurfaceTextureScale(assetPath);
+                if (material.HasProperty("_BaseMap"))
+                {
+                    material.SetTexture("_BaseMap", surfaceTexture);
+                    material.SetTextureScale("_BaseMap", textureScale);
+                }
+
+                if (material.HasProperty("_MainTex"))
+                {
+                    material.SetTexture("_MainTex", surfaceTexture);
+                    material.SetTextureScale("_MainTex", textureScale);
+                }
+            }
+
+            if (materialEmission.HasValue)
             {
                 material.EnableKeyword("_EMISSION");
                 if (material.HasProperty("_EmissionColor"))
                 {
-                    material.SetColor("_EmissionColor", emissionColor.Value);
+                    material.SetColor("_EmissionColor", materialEmission.Value);
+                }
+            }
+            else
+            {
+                material.DisableKeyword("_EMISSION");
+            }
+
+            EditorUtility.SetDirty(material);
+
+            return material;
+        }
+
+        private static Texture2D? GetOrCreateSurfaceTexture(string assetPath, Color baseColor)
+        {
+            var surfaceKind = ResolveSurfaceKind(assetPath);
+            if (surfaceKind == null)
+            {
+                return null;
+            }
+
+            const int size = 256;
+            var texturePath = "Assets/Game/Materials/GeneratedSurfaces/" +
+                System.IO.Path.GetFileNameWithoutExtension(assetPath) +
+                "_Surface.asset";
+
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (texture != null && texture.width == size && texture.height == size)
+            {
+                return texture;
+            }
+
+            var directory = System.IO.Path.GetDirectoryName(texturePath);
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                EnsureFolder(directory.Replace('\\', '/'));
+            }
+
+            texture = new Texture2D(size, size, TextureFormat.RGBA32, false)
+            {
+                name = System.IO.Path.GetFileNameWithoutExtension(texturePath),
+                wrapMode = TextureWrapMode.Repeat,
+                filterMode = FilterMode.Bilinear
+            };
+
+            var pixels = new Color[size * size];
+            for (var y = 0; y < size; y += 1)
+            {
+                for (var x = 0; x < size; x += 1)
+                {
+                    pixels[(y * size) + x] = ResolveSurfacePixel(surfaceKind, baseColor, x, y, size);
                 }
             }
 
-            return material;
+            texture.SetPixels(pixels);
+            texture.Apply(false, false);
+            AssetDatabase.CreateAsset(texture, texturePath);
+            return texture;
+        }
+
+        private static string? ResolveSurfaceKind(string assetPath)
+        {
+            if (assetPath.Contains("Asphalt", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "asphalt";
+            }
+
+            if (assetPath.Contains("Brick", System.StringComparison.OrdinalIgnoreCase) ||
+                assetPath.Contains("Tenement", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "brick";
+            }
+
+            if (assetPath.Contains("Sidewalk", System.StringComparison.OrdinalIgnoreCase) ||
+                assetPath.Contains("Stone", System.StringComparison.OrdinalIgnoreCase) ||
+                assetPath.Contains("ChurchStone", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "stone";
+            }
+
+            if (assetPath.Contains("Roof", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "roof";
+            }
+
+            if (assetPath.Contains("CrateWood", System.StringComparison.OrdinalIgnoreCase) ||
+                assetPath.Contains("WarmDoor", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "wood";
+            }
+
+            if (assetPath.Contains("Metal", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "metal";
+            }
+
+            return null;
+        }
+
+        private static Vector2 ResolveSurfaceTextureScale(string assetPath)
+        {
+            if (assetPath.Contains("Asphalt", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new Vector2(4f, 7f);
+            }
+
+            if (assetPath.Contains("Brick", System.StringComparison.OrdinalIgnoreCase) ||
+                assetPath.Contains("Tenement", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new Vector2(3f, 6f);
+            }
+
+            if (assetPath.Contains("Sidewalk", System.StringComparison.OrdinalIgnoreCase) ||
+                assetPath.Contains("Stone", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new Vector2(2.5f, 4.5f);
+            }
+
+            return new Vector2(2f, 2f);
+        }
+
+        private static Color ResolveSurfacePixel(string surfaceKind, Color baseColor, int x, int y, int size)
+        {
+            var u = x / (float)size;
+            var v = y / (float)size;
+            var noise = (Mathf.PerlinNoise((u * 16f) + 13.7f, (v * 16f) + 2.9f) - 0.5f) * 0.12f;
+            var fineNoise = (StableNoise(x, y) - 0.5f) * 0.055f;
+            var color = ShiftColor(baseColor, noise + fineNoise);
+
+            if (surfaceKind == "asphalt")
+            {
+                var crack = Mathf.Abs(Mathf.PerlinNoise(u * 5.5f, (v * 13f) + 9f) - 0.5f) < 0.018f;
+                if (crack)
+                {
+                    return ShiftColor(baseColor, -0.11f);
+                }
+
+                return color;
+            }
+
+            if (surfaceKind == "brick")
+            {
+                var brickWidth = 42;
+                var brickHeight = 18;
+                var row = y / brickHeight;
+                var staggeredX = x + ((row % 2) * (brickWidth / 2));
+                var mortar = (staggeredX % brickWidth) < 3 || (y % brickHeight) < 3;
+                if (mortar)
+                {
+                    return ShiftColor(baseColor, -0.16f);
+                }
+
+                return ShiftColor(color, ((row % 3) - 1) * 0.025f);
+            }
+
+            if (surfaceKind == "stone")
+            {
+                var slab = (x % 64) < 3 || (y % 64) < 3;
+                return slab ? ShiftColor(baseColor, -0.13f) : color;
+            }
+
+            if (surfaceKind == "roof")
+            {
+                var seam = (y % 34) < 2;
+                return seam ? ShiftColor(baseColor, -0.08f) : ShiftColor(color, -0.02f);
+            }
+
+            if (surfaceKind == "wood")
+            {
+                var grain = Mathf.Sin((u * 58f) + (Mathf.PerlinNoise(v * 3f, u * 5f) * 5f)) * 0.045f;
+                return ShiftColor(baseColor, grain + fineNoise);
+            }
+
+            if (surfaceKind == "metal")
+            {
+                var streak = (x % 48) < 2 ? -0.07f : 0f;
+                return ShiftColor(baseColor, streak + (fineNoise * 0.8f));
+            }
+
+            return color;
+        }
+
+        private static float StableNoise(int x, int y)
+        {
+            unchecked
+            {
+                var hash = (uint)((x * 73856093) ^ (y * 19349663) ^ 0x9E3779B9);
+                hash ^= hash >> 16;
+                hash *= 0x7FEB352D;
+                hash ^= hash >> 15;
+                hash *= 0x846CA68B;
+                hash ^= hash >> 16;
+                return (hash & 0xFFFFFF) / 16777215f;
+            }
+        }
+
+        private static Color ShiftColor(Color color, float delta)
+        {
+            return new Color(
+                Mathf.Clamp01(color.r + delta),
+                Mathf.Clamp01(color.g + delta),
+                Mathf.Clamp01(color.b + delta),
+                color.a);
+        }
+
+        private static Color ResolveMaterialColor(string assetPath, Color color)
+        {
+            if (assetPath.Contains("WindowGlow", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new Color(0.86f, 0.58f, 0.30f, color.a);
+            }
+
+            if (assetPath.Contains("LanePaint", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new Color(0.68f, 0.54f, 0.27f, color.a);
+            }
+
+            return color;
+        }
+
+        private static Color? ResolveMaterialEmission(string assetPath, Color? emissionColor)
+        {
+            if (!emissionColor.HasValue)
+            {
+                return null;
+            }
+
+            if (assetPath.Contains("WindowGlow", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new Color(1f, 0.56f, 0.22f) * 1.25f;
+            }
+
+            return emissionColor.Value;
         }
 
         private static void CreateSpawnPoint(string name, string spawnPointId, Vector3 position)

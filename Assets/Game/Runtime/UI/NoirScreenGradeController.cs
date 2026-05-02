@@ -6,9 +6,9 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
     [DisallowMultipleComponent]
     public sealed class NoirScreenGradeController : MonoBehaviour
     {
-        [SerializeField] private Color tintColor = new Color(0.03f, 0.045f, 0.065f, 0.18f);
-        [SerializeField] private Color vignetteColor = new Color(0f, 0f, 0f, 0.62f);
-        [SerializeField] private float letterboxHeight = 0.055f;
+        [SerializeField] private Color tintColor = new Color(0.03f, 0.045f, 0.065f, 0.08f);
+        [SerializeField] private Color vignetteColor = new Color(0f, 0f, 0f, 0.30f);
+        [SerializeField] private float letterboxHeight;
         [SerializeField] private int vignetteTextureSize = 256;
 
         private void Start()
@@ -26,8 +26,11 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
 
             AddPanel(canvas.transform, "BlueSmokeTint", tintColor, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             AddImage(canvas.transform, "NoirVignette", CreateVignetteSprite(), Color.white, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            AddPanel(canvas.transform, "TopLetterbox", new Color(0f, 0f, 0f, 0.72f), new Vector2(0f, 1f - letterboxHeight), Vector2.one, Vector2.zero, Vector2.zero);
-            AddPanel(canvas.transform, "BottomLetterbox", new Color(0f, 0f, 0f, 0.72f), Vector2.zero, new Vector2(1f, letterboxHeight), Vector2.zero, Vector2.zero);
+            if (letterboxHeight > 0.001f)
+            {
+                AddPanel(canvas.transform, "TopLetterbox", new Color(0f, 0f, 0f, 0.72f), new Vector2(0f, 1f - letterboxHeight), Vector2.one, Vector2.zero, Vector2.zero);
+                AddPanel(canvas.transform, "BottomLetterbox", new Color(0f, 0f, 0f, 0.72f), Vector2.zero, new Vector2(1f, letterboxHeight), Vector2.zero, Vector2.zero);
+            }
         }
 
         private static void AddPanel(
@@ -45,7 +48,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
         private static void AddImage(
             Transform parent,
             string name,
-            Sprite sprite,
+            Sprite? sprite,
             Color color,
             Vector2 anchorMin,
             Vector2 anchorMax,

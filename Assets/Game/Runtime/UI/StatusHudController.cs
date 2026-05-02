@@ -9,7 +9,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
         [SerializeField] private CombatHealth playerHealth;
         [SerializeField] private HeatSystemController heatSystemController;
         [SerializeField] private PoliceResponseController policeResponseController;
-        [SerializeField] private Rect statusRect = new Rect(22f, 104f, 285f, 84f);
+        [SerializeField] private Rect statusRect = new Rect(24f, 96f, 210f, 66f);
 
         private void OnGUI()
         {
@@ -25,8 +25,8 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
 
             HudStyleUtility.DrawPanel(
                 statusRect,
-                "Status",
-                "Health: " + healthText + "\nHeat: " + heatText + "\nResponse: " + policeText);
+                "Vitals",
+                "HP " + healthText + "\nHeat " + heatText + "\nLaw " + policeText);
         }
     }
 }

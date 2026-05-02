@@ -10,7 +10,7 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
         [SerializeField] private SimpleObjectiveSystem objectiveSystem;
         [SerializeField] private SaveGameFileService? saveGameFileService;
         [SerializeField] private CampaignDatabaseAsset? campaignDatabase;
-        [SerializeField] private Rect objectiveRect = new Rect(22f, 22f, 460f, 68f);
+        [SerializeField] private Rect objectiveRect = new Rect(24f, 24f, 410f, 62f);
 
         private void OnGUI()
         {
