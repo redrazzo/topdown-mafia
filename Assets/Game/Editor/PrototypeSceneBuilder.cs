@@ -304,6 +304,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(4.8f, 0f, 18f), metal, windowGlow);
             CreateNoirStreetDressing("Dock", metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
             CreateNoirSpawnComposition("DockStart", new Vector3(0f, 0f, -12f), metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass, "MORETTI");
+            CreateFinishedCityBlockPass("Dock", asphalt, brick, roof, metal, windowGlow, officeSign, sidewalk, puddle, brass);
             CreateDistrictRooftopDetailPass("Dock", -10.6f, 10.6f, metal, windowGlow, roof, officeSign, brass);
             CreateDockStartDetailPass(metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
             CreateDocksIdentityPass(metal, windowGlow, crateWood, officeSign, water, brass);
@@ -361,13 +362,13 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.28f, 0.29f, 0.33f);
             camera.orthographic = false;
-            camera.fieldOfView = 42f;
+            camera.fieldOfView = 38f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 100f;
-            cameraRoot.transform.position = player.transform.position + new Vector3(0f, 21.5f, -2.6f);
+            cameraRoot.transform.position = player.transform.position + new Vector3(0f, 17.2f, -8.4f);
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            ConfigureNoirCamera(camera, topDownCamera, new Vector3(0f, 21.5f, -2.6f), 82f, -2f, 15f, 26f);
+            ConfigureNoirCamera(camera, topDownCamera, new Vector3(0f, 17.2f, -8.4f), 66f, -4f, 12f, 22f);
 
             var sceneTransitionControllerObject = new GameObject("SceneTransitionController");
             var sceneTransitionController = sceneTransitionControllerObject.AddComponent<SceneTransitionController>();
@@ -1434,6 +1435,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(4.8f, 0f, 16f), metal, windowGlow);
             CreateNoirStreetDressing("Business", metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
             CreateNoirSpawnComposition("BusinessStart", new Vector3(0f, 0f, -15f), metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass, "UNION SQ");
+            CreateFinishedCityBlockPass("Business", asphalt, stone, stone, metal, windowGlow, officeSign, sidewalk, puddle, brass);
             CreateDistrictRooftopDetailPass("Business", -10.6f, 10.6f, metal, windowGlow, stone, officeSign, brass);
             CreateBusinessCoreIdentityPass(metal, windowGlow, stone, officeSign, brass);
             CreateKenneyDistrictAssetPass("Business");
@@ -1654,6 +1656,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(-4.2f, 0f, 12f), metal, windowGlow);
             CreateNoirStreetDressing("Quarter", metal, windowGlow, crateWood, sign, sidewalk, puddle, brass);
             CreateNoirSpawnComposition("QuarterStart", new Vector3(0f, 0f, -12.8f), metal, windowGlow, crateWood, sign, sidewalk, puddle, brass, "ST VERA");
+            CreateFinishedCityBlockPass("Quarter", asphalt, tenement, churchStone, metal, windowGlow, sign, sidewalk, puddle, brass);
             CreateDistrictRooftopDetailPass("Quarter", -10.6f, 10.6f, metal, windowGlow, tenement, sign, brass);
             CreateOldQuarterIdentityPass(metal, windowGlow, churchStone, tenement, laundry, brass);
             CreateKenneyDistrictAssetPass("OldQuarter");
@@ -1844,6 +1847,7 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(4.6f, 0f, 11f), metal, windowGlow);
             CreateNoirStreetDressing("Rail", metal, windowGlow, crateWood, sign, gravel, puddle, brass);
             CreateNoirSpawnComposition("RailStart", new Vector3(0f, 0f, -13.5f), metal, windowGlow, crateWood, sign, gravel, puddle, brass, "IRONLINE");
+            CreateFinishedCityBlockPass("Rail", asphalt, rustMetal, tankMetal, metal, windowGlow, sign, gravel, puddle, brass);
             CreateDistrictRooftopDetailPass("Rail", -10.6f, 10.6f, metal, windowGlow, rustMetal, sign, brass);
             CreateRailYardIdentityPass(metal, windowGlow, rustMetal, tankMetal, crateWood, brass);
             CreateKenneyDistrictAssetPass("RailYard");
@@ -2337,14 +2341,14 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = backgroundColor;
             camera.orthographic = false;
-            camera.fieldOfView = 42f;
+            camera.fieldOfView = 38f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 100f;
-            var tunedDistrictCameraOffset = new Vector3(cameraOffset.x - 0.15f, Mathf.Min(cameraOffset.y + 5.2f, 20.6f), -3.2f);
+            var tunedDistrictCameraOffset = new Vector3(cameraOffset.x - 0.1f, Mathf.Clamp(cameraOffset.y, 15.5f, 18.8f), Mathf.Min(cameraOffset.z, -8.2f));
             cameraRoot.transform.position = playerPosition + tunedDistrictCameraOffset;
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            ConfigureNoirCamera(camera, topDownCamera, tunedDistrictCameraOffset, 80f, -3f, 14f, 26f);
+            ConfigureNoirCamera(camera, topDownCamera, tunedDistrictCameraOffset, 66f, -4f, 12f, 22f);
             CreateNoirPostProcessVolume(sceneName, ResolveDistrictColorFilter(sceneName), 0.02f, 28f, -8f, 1.25f, 0.2f);
 
             var transitionRoot = new GameObject("SceneTransitionController");
@@ -2557,9 +2561,12 @@ namespace MafiaTopDown.Editor
                 case "Docks":
                     CreateKenneyModel("CityKitIndustrial", "building-f", "KenneyDockWarehouseA", new Vector3(-11.1f, 0.08f, -1.5f), new Vector3(0f, 90f, 0f), new Vector3(1.32f, 1.26f, 1.32f), root.transform);
                     CreateKenneyModel("CityKitIndustrial", "building-k", "KenneyDockWarehouseB", new Vector3(10.9f, 0.08f, 13.6f), new Vector3(0f, -90f, 0f), new Vector3(1.28f, 1.22f, 1.28f), root.transform);
+                    CreateKenneyModel("CityKitIndustrial", "building-h", "KenneyDockColdStorage", new Vector3(-11.8f, 0.08f, 9.6f), new Vector3(0f, 90f, 0f), new Vector3(1.22f, 1.18f, 1.22f), root.transform);
+                    CreateKenneyModel("CityKitIndustrial", "building-m", "KenneyDockMachineShop", new Vector3(11.6f, 0.08f, -7.6f), new Vector3(0f, -90f, 0f), new Vector3(1.18f, 1.12f, 1.18f), root.transform);
                     CreateKenneyModel("CityKitIndustrial", "detail-tank", "KenneyDockFuelTank", new Vector3(-13.5f, 0.04f, 13.2f), Vector3.zero, new Vector3(1.35f, 1.35f, 1.35f), root.transform);
                     CreateKenneyModel("CityKitRoads", "construction-barrier", "KenneyDockBarrierA", new Vector3(3.35f, 0.08f, -13.5f), Vector3.zero, new Vector3(1.25f, 1.25f, 1.25f), root.transform);
                     CreateKenneyModel("CityKitRoads", "construction-cone", "KenneyDockConeA", new Vector3(4.6f, 0.08f, -12.8f), Vector3.zero, new Vector3(1.05f, 1.05f, 1.05f), root.transform);
+                    CreateKenneyModel("CityKitRoads", "construction-light", "KenneyDockWorkLight", new Vector3(-4.8f, 0.08f, 15.6f), new Vector3(0f, 45f, 0f), new Vector3(1.15f, 1.15f, 1.15f), root.transform);
                     CreateKenneyModel("CityKitRoads", "light-curved", "KenneyDockStreetLightA", new Vector3(-4.85f, 0.08f, -8.9f), new Vector3(0f, 90f, 0f), new Vector3(1.25f, 1.25f, 1.25f), root.transform);
                     CreateKenneyModel("CityKitRoads", "light-curved", "KenneyDockStreetLightB", new Vector3(4.85f, 0.08f, 8.6f), new Vector3(0f, -90f, 0f), new Vector3(1.25f, 1.25f, 1.25f), root.transform);
                     break;
@@ -2568,6 +2575,9 @@ namespace MafiaTopDown.Editor
                     CreateKenneyModel("CityKitCommercial", "building-skyscraper-a", "KenneyBusinessTowerA", new Vector3(-10.5f, 0.08f, 0.8f), new Vector3(0f, 90f, 0f), new Vector3(2.2f, 2.35f, 2.2f), root.transform);
                     CreateKenneyModel("CityKitCommercial", "building-d", "KenneyBusinessBlockA", new Vector3(10.2f, 0.08f, -9.2f), new Vector3(0f, -90f, 0f), new Vector3(2.45f, 2.3f, 2.45f), root.transform);
                     CreateKenneyModel("CityKitCommercial", "building-h", "KenneyBusinessBlockB", new Vector3(10.2f, 0.08f, 6.8f), new Vector3(0f, -90f, 0f), new Vector3(2.3f, 2.25f, 2.3f), root.transform);
+                    CreateKenneyModel("CityKitCommercial", "building-skyscraper-c", "KenneyBusinessTowerB", new Vector3(-11.9f, 0.08f, 12.4f), new Vector3(0f, 90f, 0f), new Vector3(1.95f, 2.1f, 1.95f), root.transform);
+                    CreateKenneyModel("CityKitCommercial", "building-k", "KenneyBusinessCornerHotel", new Vector3(11.4f, 0.08f, 15.2f), new Vector3(0f, -90f, 0f), new Vector3(2.05f, 2f, 2.05f), root.transform);
+                    CreateKenneyModel("CityKitCommercial", "low-detail-building-wide-a", "KenneyBusinessBackgroundBlock", new Vector3(-12.2f, 0.08f, -13.8f), new Vector3(0f, 90f, 0f), new Vector3(2.3f, 2.1f, 2.3f), root.transform);
                     CreateKenneyModel("CityKitCommercial", "detail-awning-wide", "KenneyBelloriAwning", new Vector3(6.95f, 1.85f, -3.2f), new Vector3(0f, -90f, 0f), new Vector3(2.2f, 2.2f, 2.2f), root.transform);
                     CreateKenneyModel("CityKitCommercial", "detail-parasol-a", "KenneySquareParasolA", new Vector3(-3.9f, 0.08f, 12.2f), Vector3.zero, new Vector3(1.65f, 1.65f, 1.65f), root.transform);
                     CreateKenneyModel("CityKitRoads", "light-square-double", "KenneyBusinessLightA", new Vector3(-4.5f, 0.08f, -6.2f), Vector3.zero, new Vector3(1.8f, 1.8f, 1.8f), root.transform);
@@ -2577,8 +2587,12 @@ namespace MafiaTopDown.Editor
                 case "OldQuarter":
                     CreateKenneyModel("CityKitSuburban", "building-type-g", "KenneyQuarterTenementA", new Vector3(-9.1f, 0.08f, -4.4f), new Vector3(0f, 90f, 0f), new Vector3(2.35f, 2.2f, 2.35f), root.transform);
                     CreateKenneyModel("CityKitSuburban", "building-type-r", "KenneyQuarterTenementB", new Vector3(9.1f, 0.08f, 5.4f), new Vector3(0f, -90f, 0f), new Vector3(2.35f, 2.2f, 2.35f), root.transform);
+                    CreateKenneyModel("CityKitSuburban", "building-type-l", "KenneyQuarterRowHouseA", new Vector3(-9.6f, 0.08f, 10.8f), new Vector3(0f, 90f, 0f), new Vector3(2.15f, 2.05f, 2.15f), root.transform);
+                    CreateKenneyModel("CityKitSuburban", "building-type-q", "KenneyQuarterRowHouseB", new Vector3(9.8f, 0.08f, -10.4f), new Vector3(0f, -90f, 0f), new Vector3(2.12f, 2.02f, 2.12f), root.transform);
                     CreateKenneyModel("CityKitSuburban", "fence-1x4", "KenneyChapelFenceA", new Vector3(-5.8f, 0.08f, 12.2f), new Vector3(0f, 90f, 0f), new Vector3(2f, 2f, 2f), root.transform);
+                    CreateKenneyModel("CityKitSuburban", "fence-1x3", "KenneyChapelFenceB", new Vector3(-5.8f, 0.08f, 14.6f), new Vector3(0f, 90f, 0f), new Vector3(2f, 2f, 2f), root.transform);
                     CreateKenneyModel("CityKitSuburban", "planter", "KenneyQuarterPlanterA", new Vector3(4.5f, 0.08f, -6.4f), Vector3.zero, new Vector3(1.9f, 1.9f, 1.9f), root.transform);
+                    CreateKenneyModel("CityKitSuburban", "planter", "KenneyQuarterPlanterB", new Vector3(-4.8f, 0.08f, 7.6f), Vector3.zero, new Vector3(1.75f, 1.75f, 1.75f), root.transform);
                     CreateKenneyModel("CityKitSuburban", "tree-small", "KenneyQuarterTreeA", new Vector3(6.2f, 0.08f, -9.8f), Vector3.zero, new Vector3(1.9f, 1.9f, 1.9f), root.transform);
                     CreateKenneyModel("CityKitCommercial", "detail-awning", "KenneyQuarterShopAwning", new Vector3(6.95f, 1.75f, -2.2f), new Vector3(0f, -90f, 0f), new Vector3(2f, 2f, 2f), root.transform);
                     CreateKenneyModel("CityKitRoads", "light-square", "KenneyQuarterLightA", new Vector3(-4.2f, 0.08f, -4.2f), Vector3.zero, new Vector3(1.75f, 1.75f, 1.75f), root.transform);
@@ -2587,8 +2601,12 @@ namespace MafiaTopDown.Editor
                 case "RailYard":
                     CreateKenneyModel("CityKitIndustrial", "building-a", "KenneyRailFactoryA", new Vector3(-9.7f, 0.08f, -3.4f), new Vector3(0f, 90f, 0f), new Vector3(2.6f, 2.35f, 2.6f), root.transform);
                     CreateKenneyModel("CityKitIndustrial", "building-q", "KenneyRailFactoryB", new Vector3(9.6f, 0.08f, 3.8f), new Vector3(0f, -90f, 0f), new Vector3(2.55f, 2.35f, 2.55f), root.transform);
+                    CreateKenneyModel("CityKitIndustrial", "building-p", "KenneyRailFoundry", new Vector3(-10.8f, 0.08f, 12.4f), new Vector3(0f, 90f, 0f), new Vector3(2.25f, 2.15f, 2.25f), root.transform);
+                    CreateKenneyModel("CityKitIndustrial", "building-t", "KenneyRailWarehouse", new Vector3(10.8f, 0.08f, -11.2f), new Vector3(0f, -90f, 0f), new Vector3(2.2f, 2.05f, 2.2f), root.transform);
                     CreateKenneyModel("CityKitIndustrial", "chimney-large", "KenneyRailChimneyA", new Vector3(-8.8f, 0.08f, 7.8f), Vector3.zero, new Vector3(2.1f, 2.1f, 2.1f), root.transform);
+                    CreateKenneyModel("CityKitIndustrial", "chimney-medium", "KenneyRailChimneyB", new Vector3(8.2f, 0.08f, 8.9f), Vector3.zero, new Vector3(2f, 2f, 2f), root.transform);
                     CreateKenneyModel("CityKitIndustrial", "detail-tank", "KenneyRailTankA", new Vector3(8.6f, 0.08f, -5.8f), Vector3.zero, new Vector3(2.2f, 2.2f, 2.2f), root.transform);
+                    CreateKenneyModel("CityKitIndustrial", "detail-tank", "KenneyRailTankB", new Vector3(-8.4f, 0.08f, -9.4f), Vector3.zero, new Vector3(1.85f, 1.85f, 1.85f), root.transform);
                     CreateKenneyModel("CityKitRoads", "construction-barrier", "KenneyRailBarrierA", new Vector3(5.2f, 0.08f, -11.8f), Vector3.zero, new Vector3(2.1f, 2.1f, 2.1f), root.transform);
                     CreateKenneyModel("CityKitRoads", "light-curved-double", "KenneyRailLightA", new Vector3(-4.7f, 0.08f, -10.8f), new Vector3(0f, 90f, 0f), new Vector3(1.85f, 1.85f, 1.85f), root.transform);
                     break;
@@ -2725,6 +2743,115 @@ namespace MafiaTopDown.Editor
             CreatePrimitive(PrimitiveType.Cube, prefix + "KioskSign", new Vector3(5.9f, 1.55f, 13.8f), new Vector3(1.28f, 0.22f, 1f), brass);
             CreateSteamVent(prefix + "SteamVentA", new Vector3(-3.8f, 0.12f, 11.2f), metal, glow);
             CreateSteamVent(prefix + "SteamVentB", new Vector3(3.5f, 0.12f, -10.6f), metal, glow);
+        }
+
+        private static void CreateFinishedCityBlockPass(
+            string prefix,
+            Material asphalt,
+            Material facade,
+            Material roof,
+            Material metal,
+            Material glow,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            for (var index = 0; index < 4; index += 1)
+            {
+                var z = -12.8f + (index * 8.2f);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftAlleyMouth_" + index, new Vector3(-6.95f, 0.145f, z), new Vector3(2.15f, 0.035f, 1.1f), sign);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightAlleyMouth_" + index, new Vector3(6.95f, 0.145f, z + 2.15f), new Vector3(2.15f, 0.035f, 1.1f), sign);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftAlleyWetEdge_" + index, new Vector3(-5.35f, 0.15f, z), new Vector3(0.42f, 0.018f, 1.06f), puddle);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightAlleyWetEdge_" + index, new Vector3(5.35f, 0.15f, z + 2.15f), new Vector3(0.42f, 0.018f, 1.06f), puddle);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CrosswalkSliceA_" + index, new Vector3(-1.85f, 0.145f, z + 0.55f), new Vector3(1.55f, 0.025f, 0.12f), brass);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CrosswalkSliceB_" + index, new Vector3(1.85f, 0.145f, z + 0.55f), new Vector3(1.55f, 0.025f, 0.12f), brass);
+            }
+
+            for (var block = 0; block < 2; block += 1)
+            {
+                var z = block == 0 ? -5.6f : 8.6f;
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CrossStreetAsphalt_" + block, new Vector3(0f, 0.126f, z), new Vector3(31.5f, 0.032f, 4.4f), asphalt);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CrossStreetNearCurb_" + block, new Vector3(0f, 0.152f, z - 2.34f), new Vector3(31.5f, 0.035f, 0.16f), sign);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CrossStreetFarCurb_" + block, new Vector3(0f, 0.152f, z + 2.34f), new Vector3(31.5f, 0.035f, 0.16f), sign);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CrossStreetLeftWalk_" + block, new Vector3(-12.4f, 0.154f, z), new Vector3(3.8f, 0.036f, 4.8f), sidewalk);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CrossStreetRightWalk_" + block, new Vector3(12.4f, 0.154f, z), new Vector3(3.8f, 0.036f, 4.8f), sidewalk);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CrossStreetWetMiddle_" + block, new Vector3(block == 0 ? -2.4f : 2.2f, 0.158f, z - 0.55f), new Vector3(3.2f, 0.018f, 0.48f), puddle);
+
+                for (var stripe = 0; stripe < 4; stripe += 1)
+                {
+                    CreateVisualPrimitive(
+                        PrimitiveType.Cube,
+                        prefix + "IntersectionStripe_" + block + "_" + stripe,
+                        new Vector3(-3.0f + (stripe * 2.0f), 0.165f, z - 2.02f),
+                        new Vector3(0.95f, 0.018f, 0.18f),
+                        brass);
+                }
+            }
+
+            for (var index = 0; index < 8; index += 1)
+            {
+                var z = -15.4f + (index * 4.35f);
+                var leftZ = z;
+                var rightZ = z + 1.35f;
+
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftStorefrontBay_" + index, new Vector3(-7.64f, 1.58f, leftZ), new Vector3(0.14f, 2.35f, 2.34f), facade);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightStorefrontBay_" + index, new Vector3(7.64f, 1.58f, rightZ), new Vector3(0.14f, 2.35f, 2.34f), facade);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftWindowPocket_" + index, new Vector3(-7.55f, 1.86f, leftZ - 0.48f), new Vector3(0.055f, 0.72f, 0.55f), glow);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftDoorPocket_" + index, new Vector3(-7.54f, 1.02f, leftZ + 0.58f), new Vector3(0.06f, 1.42f, 0.45f), sign);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightWindowPocket_" + index, new Vector3(7.55f, 1.86f, rightZ + 0.48f), new Vector3(0.055f, 0.72f, 0.55f), glow);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightDoorPocket_" + index, new Vector3(7.54f, 1.02f, rightZ - 0.58f), new Vector3(0.06f, 1.42f, 0.45f), sign);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftAwningRib_" + index, new Vector3(-6.72f, 2.42f, leftZ), new Vector3(1.55f, 0.16f, 1.62f), roof);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightAwningRib_" + index, new Vector3(6.72f, 2.42f, rightZ), new Vector3(1.55f, 0.16f, 1.62f), roof);
+
+                if (index % 2 == 0)
+                {
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HangingSignLeft_" + index, new Vector3(-6.74f, 2.92f, leftZ + 0.92f), new Vector3(0.9f, 0.44f, 0.08f), sign);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HangingSignRight_" + index, new Vector3(6.74f, 2.92f, rightZ - 0.92f), new Vector3(0.9f, 0.44f, 0.08f), sign);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SignBulbLeft_" + index, new Vector3(-6.28f, 2.95f, leftZ + 0.92f), new Vector3(0.12f, 0.12f, 0.055f), glow);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SignBulbRight_" + index, new Vector3(6.28f, 2.95f, rightZ - 0.92f), new Vector3(0.12f, 0.12f, 0.055f), glow);
+                }
+                else
+                {
+                    CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "DownspoutLeft_" + index, new Vector3(-7.36f, 1.75f, leftZ + 1.08f), new Vector3(0.055f, 1.62f, 0.055f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "DownspoutRight_" + index, new Vector3(7.36f, 1.75f, rightZ - 1.08f), new Vector3(0.055f, 1.62f, 0.055f), metal);
+                }
+
+                for (var level = 0; level < 3; level += 1)
+                {
+                    var y = 2.82f + (level * 0.86f);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftUpperWindowA_" + index + "_" + level, new Vector3(-7.52f, y, leftZ - 0.82f), new Vector3(0.06f, 0.46f, 0.36f), glow);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftUpperWindowB_" + index + "_" + level, new Vector3(-7.52f, y, leftZ + 0.18f), new Vector3(0.06f, 0.46f, 0.36f), level == 1 ? sign : glow);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightUpperWindowA_" + index + "_" + level, new Vector3(7.52f, y, rightZ + 0.82f), new Vector3(0.06f, 0.46f, 0.36f), glow);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightUpperWindowB_" + index + "_" + level, new Vector3(7.52f, y, rightZ - 0.18f), new Vector3(0.06f, 0.46f, 0.36f), level == 1 ? sign : glow);
+                }
+
+                if (index % 3 == 0)
+                {
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftFireEscapeDeck_" + index, new Vector3(-6.95f, 3.28f, leftZ - 0.28f), new Vector3(0.82f, 0.07f, 1.85f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftFireEscapeRail_" + index, new Vector3(-6.55f, 3.55f, leftZ - 0.28f), new Vector3(0.055f, 0.46f, 1.85f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightFireEscapeDeck_" + index, new Vector3(6.95f, 3.28f, rightZ + 0.28f), new Vector3(0.82f, 0.07f, 1.85f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightFireEscapeRail_" + index, new Vector3(6.55f, 3.55f, rightZ + 0.28f), new Vector3(0.055f, 0.46f, 1.85f), metal);
+                }
+            }
+
+            for (var index = 0; index < 6; index += 1)
+            {
+                var z = -14.6f + (index * 5.7f);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftRoofPatch_" + index, new Vector3(-10.35f, 6.94f, z), new Vector3(3.2f, 0.03f, 1.35f), roof);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightRoofPatch_" + index, new Vector3(10.35f, 6.94f, z + 1.7f), new Vector3(3.2f, 0.03f, 1.35f), roof);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftParapetBreak_" + index, new Vector3(-7.94f, 6.98f, z), new Vector3(0.18f, 0.16f, 1.45f), brass);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RightParapetBreak_" + index, new Vector3(7.94f, 6.98f, z + 1.7f), new Vector3(0.18f, 0.16f, 1.45f), brass);
+                CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "RoofPipeLeft_" + index, new Vector3(-11.45f, 7.28f, z - 0.8f), new Vector3(0.16f, 0.42f, 0.16f), metal);
+                CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "RoofPipeRight_" + index, new Vector3(11.45f, 7.28f, z + 0.9f), new Vector3(0.16f, 0.42f, 0.16f), metal);
+            }
+
+            for (var cover = 0; cover < 4; cover += 1)
+            {
+                var z = -13.2f + (cover * 8.2f);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "ManholeCover_" + cover, new Vector3(cover % 2 == 0 ? -1.45f : 1.35f, 0.162f, z), new Vector3(0.46f, 0.02f, 0.46f), metal);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "WornLanePaint_" + cover, new Vector3(0f, 0.164f, z + 2.2f), new Vector3(0.22f, 0.018f, 1.4f), brass);
+            }
         }
 
         private static void CreateDistrictRooftopDetailPass(
