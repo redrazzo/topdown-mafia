@@ -425,13 +425,86 @@ namespace MafiaTopDown.Editor
             switch (district)
             {
                 case DistrictArtStyle.BusinessCore:
-                    return GetOrCreateNoirMaterial("NoirReadyBusinessStone", new Color(0.25f, 0.235f, 0.205f), 0.28f, 0f);
+                    return ResolveFacadeVariantMaterial(district, instanceName, sourceMaterialName);
                 case DistrictArtStyle.OldQuarter:
-                    return GetOrCreateNoirMaterial("NoirReadyOldQuarterBrick", new Color(0.205f, 0.12f, 0.09f), 0.2f, 0f);
+                    return ResolveFacadeVariantMaterial(district, instanceName, sourceMaterialName);
                 case DistrictArtStyle.RailYard:
-                    return GetOrCreateNoirMaterial("NoirReadyRailCorrugated", new Color(0.17f, 0.155f, 0.135f), 0.46f, 0.32f);
+                    return ResolveFacadeVariantMaterial(district, instanceName, sourceMaterialName);
                 default:
-                    return GetOrCreateNoirMaterial("NoirReadyDockBrick", new Color(0.18f, 0.095f, 0.075f), 0.2f, 0f);
+                    return ResolveFacadeVariantMaterial(district, instanceName, sourceMaterialName);
+            }
+        }
+
+        private static Material ResolveFacadeVariantMaterial(DistrictArtStyle district, string instanceName, string sourceMaterialName)
+        {
+            var variant = StableVariant(instanceName + sourceMaterialName, 6);
+            var color = ResolveFacadeColor(district, variant);
+            var smoothness = district == DistrictArtStyle.RailYard ? 0.42f : 0.24f;
+            var metallic = district == DistrictArtStyle.RailYard && variant % 3 == 0 ? 0.18f : 0f;
+            return GetOrCreateNoirMaterial("NoirReady" + district + "FacadeV" + variant, color, smoothness, metallic);
+        }
+
+        private static Color ResolveFacadeColor(DistrictArtStyle district, int variant)
+        {
+            switch (district)
+            {
+                case DistrictArtStyle.BusinessCore:
+                    return variant switch
+                    {
+                        0 => new Color(0.28f, 0.265f, 0.23f),
+                        1 => new Color(0.22f, 0.225f, 0.225f),
+                        2 => new Color(0.30f, 0.285f, 0.24f),
+                        3 => new Color(0.20f, 0.205f, 0.22f),
+                        4 => new Color(0.26f, 0.235f, 0.19f),
+                        _ => new Color(0.18f, 0.19f, 0.195f)
+                    };
+
+                case DistrictArtStyle.OldQuarter:
+                    return variant switch
+                    {
+                        0 => new Color(0.205f, 0.12f, 0.09f),
+                        1 => new Color(0.24f, 0.155f, 0.105f),
+                        2 => new Color(0.17f, 0.105f, 0.085f),
+                        3 => new Color(0.25f, 0.22f, 0.17f),
+                        4 => new Color(0.16f, 0.145f, 0.12f),
+                        _ => new Color(0.12f, 0.15f, 0.13f)
+                    };
+
+                case DistrictArtStyle.RailYard:
+                    return variant switch
+                    {
+                        0 => new Color(0.17f, 0.155f, 0.135f),
+                        1 => new Color(0.19f, 0.12f, 0.08f),
+                        2 => new Color(0.13f, 0.15f, 0.16f),
+                        3 => new Color(0.12f, 0.115f, 0.105f),
+                        4 => new Color(0.21f, 0.18f, 0.13f),
+                        _ => new Color(0.15f, 0.17f, 0.16f)
+                    };
+
+                default:
+                    return variant switch
+                    {
+                        0 => new Color(0.18f, 0.095f, 0.075f),
+                        1 => new Color(0.22f, 0.125f, 0.085f),
+                        2 => new Color(0.14f, 0.13f, 0.12f),
+                        3 => new Color(0.19f, 0.16f, 0.115f),
+                        4 => new Color(0.12f, 0.15f, 0.16f),
+                        _ => new Color(0.23f, 0.19f, 0.145f)
+                    };
+            }
+        }
+
+        private static int StableVariant(string key, int count)
+        {
+            unchecked
+            {
+                var hash = 17;
+                for (var index = 0; index < key.Length; index += 1)
+                {
+                    hash = (hash * 31) + key[index];
+                }
+
+                return Mathf.Abs(hash) % count;
             }
         }
 

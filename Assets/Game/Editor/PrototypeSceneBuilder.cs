@@ -140,17 +140,17 @@ namespace MafiaTopDown.Editor
             var lightComponent = light.AddComponent<Light>();
             lightComponent.type = LightType.Directional;
             lightComponent.color = new Color(1f, 0.88f, 0.73f);
-            lightComponent.intensity = 1.05f;
+            lightComponent.intensity = 1.22f;
             lightComponent.shadows = LightShadows.Soft;
             light.transform.rotation = Quaternion.Euler(36f, -38f, 0f);
 
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.18f, 0.19f, 0.21f);
+            RenderSettings.ambientLight = new Color(0.22f, 0.22f, 0.23f);
             RenderSettings.fog = true;
-            RenderSettings.fogColor = new Color(0.08f, 0.095f, 0.12f);
+            RenderSettings.fogColor = new Color(0.09f, 0.105f, 0.13f);
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogDensity = 0.012f;
-            CreateNoirPostProcessVolume("District_01", new Color(0.9f, 0.94f, 1f), 0.15f, 24f, -6f, 1.25f, 0.18f);
+            RenderSettings.fogDensity = 0.009f;
+            CreateNoirPostProcessVolume("District_01", new Color(0.92f, 0.96f, 1f), 0.26f, 21f, -4f, 1.4f, 0.14f);
 
             var streetPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
             streetPlane.name = "StreetPlane";
@@ -201,13 +201,13 @@ namespace MafiaTopDown.Editor
 
             CreateColliderBlock(
                 "LeftBuildingCollision",
-                new Vector3(-10.6f, 3.1f, 2f),
-                new Vector3(5.5f, 6.2f, 34f));
+                new Vector3(-10.95f, 3.1f, 2f),
+                new Vector3(3.55f, 6.2f, 34f));
 
             CreateColliderBlock(
                 "RightBuildingCollision",
-                new Vector3(10.6f, 3.1f, 2f),
-                new Vector3(5.5f, 6.2f, 34f));
+                new Vector3(10.95f, 3.1f, 2f),
+                new Vector3(3.55f, 6.2f, 34f));
 
             for (var index = 0; index < 7; index += 1)
             {
@@ -288,8 +288,9 @@ namespace MafiaTopDown.Editor
             CreateDockStartDetailPass(metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
             CreateDocksIdentityPass(metal, windowGlow, crateWood, officeSign, water, brass);
             CreateKenneyDistrictAssetPass("Docks");
+            CreateMafiaDistrictProductionPass(DistrictArtStyle.Docks, "Dock", asphalt, brick, roof, metal, windowGlow, officeSign, sidewalk, puddle, brass);
 
-            var openingSpawn = new Vector3(0f, 1f, -14.85f);
+            var openingSpawn = new Vector3(-2.2f, 1f, -10.8f);
             var player = CreateNoirActor("Player", openingSpawn, playerCoat, null, false);
             var characterController = player.AddComponent<CharacterController>();
             characterController.height = 1.8f;
@@ -334,7 +335,7 @@ namespace MafiaTopDown.Editor
             var sceneSpawnController = campaignSystems.AddComponent<SceneSpawnController>();
             SetObjectReference(sceneSpawnController, "saveGameFileService", saveGameFileService);
             SetObjectReference(sceneSpawnController, "playerController", playerController);
-            SetStringValue(sceneSpawnController, "defaultSpawnPointId", "PickupSpawn");
+            SetStringValue(sceneSpawnController, "defaultSpawnPointId", "DefaultSpawn");
             var dialogueController = campaignSystems.AddComponent<DialogueController>();
             SetObjectReference(dialogueController, "playerController", playerController);
 
@@ -344,13 +345,13 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.28f, 0.29f, 0.33f);
             camera.orthographic = false;
-            camera.fieldOfView = 38f;
+            camera.fieldOfView = 42f;
             camera.nearClipPlane = 0.1f;
-            camera.farClipPlane = 100f;
-            cameraRoot.transform.position = player.transform.position + new Vector3(0f, 17.2f, -8.4f);
+            camera.farClipPlane = 140f;
+            cameraRoot.transform.position = player.transform.position + new Vector3(0f, 20.5f, -7.4f);
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            ConfigureNoirCamera(camera, topDownCamera, new Vector3(0f, 17.2f, -8.4f), 66f, -4f, 12f, 22f);
+            ConfigureNoirCamera(camera, topDownCamera, new Vector3(0f, 20.5f, -7.4f), 66f, -3f, 16f, 27f);
 
             var sceneTransitionControllerObject = new GameObject("SceneTransitionController");
             var sceneTransitionController = sceneTransitionControllerObject.AddComponent<SceneTransitionController>();
@@ -385,9 +386,10 @@ namespace MafiaTopDown.Editor
             var car = GameObject.CreatePrimitive(PrimitiveType.Cube);
             car.name = "Sedan";
             car.transform.SetParent(docksMissionRoot.transform, false);
-            car.transform.position = new Vector3(0f, 0.75f, -3f);
+            car.transform.position = new Vector3(1.8f, 0.75f, -5.8f);
             car.transform.localScale = new Vector3(2.2f, 1f, 4.6f);
             AssignMaterial(car, sedanPaint);
+            HideRenderer(car);
             var seatController = car.AddComponent<VehicleSeatController>();
             var vehicleDriver = car.AddComponent<SimpleVehicleDriver>();
             var driverAnchor = new GameObject("DriverAnchor").transform;
@@ -402,20 +404,7 @@ namespace MafiaTopDown.Editor
             SetObjectReference(seatController, "campaignProgressionController", campaignProgressionController);
             SetObjectReference(seatController, "missionAsset", missionAsset);
             SetStringValue(seatController, "missionStageIdOnEnter", "pickup");
-            CreateVisualPrimitive(
-                PrimitiveType.Cube,
-                "SedanRoof",
-                new Vector3(0f, 1.3f, -3f),
-                new Vector3(1.4f, 0.4f, 2.2f),
-                roof).transform.SetParent(car.transform, true);
-
-            CreateVisualPrimitive(
-                PrimitiveType.Cube,
-                "SedanWindshield",
-                new Vector3(0f, 1.05f, -4.15f),
-                new Vector3(1.3f, 0.35f, 0.12f),
-                windowGlow).transform.SetParent(car.transform, true);
-            DecorateNoirVehicle(car, "Sedan", car.transform.position, car.transform.localScale, brass, windowGlow);
+            BuildNoirVehicleVisual(car, "Sedan", car.transform.position, car.transform.localScale, sedanPaint, roof, brass, windowGlow);
 
             var backOfficeRoot = new GameObject("BackOfficeReadyAssetRoot");
             PlaceDistrictBuilding(
@@ -488,8 +477,8 @@ namespace MafiaTopDown.Editor
 
             CreateTravelGate(
                 "ToRailYardGate",
-                new Vector3(12.8f, 1.05f, -1.8f),
-                new Vector3(0.4f, 2.1f, 5.2f),
+                new Vector3(6.95f, 1.05f, -1.8f),
+                new Vector3(0.55f, 2.1f, 5.2f),
                 officeSign,
                 "Cut through to the rail yard",
                 "rail-yard",
@@ -1785,7 +1774,7 @@ namespace MafiaTopDown.Editor
             var crateWood = GetOrCreateMaterial("Assets/Game/Materials/CrateWood.mat", new Color(0.44f, 0.29f, 0.18f), 0.18f, 0f);
             var puddle = GetOrCreateMaterial("Assets/Game/Materials/Puddle.mat", new Color(0.12f, 0.14f, 0.15f), 0.96f, 0.02f);
 
-            ApplyExteriorAtmosphere(new Color(0.08f, 0.085f, 0.105f), new Color(0.075f, 0.085f, 0.105f), 0.024f, new Color(1f, 0.82f, 0.58f), 0.62f, Quaternion.Euler(38f, -24f, 0f));
+            ApplyExteriorAtmosphere(new Color(0.16f, 0.15f, 0.16f), new Color(0.09f, 0.1f, 0.12f), 0.014f, new Color(1f, 0.82f, 0.58f), 0.9f, Quaternion.Euler(38f, -24f, 0f));
 
             var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.name = "BusinessGround";
@@ -1795,9 +1784,9 @@ namespace MafiaTopDown.Editor
             CreatePrimitive(PrimitiveType.Cube, "BusinessRoad", new Vector3(0f, 0.05f, 0f), new Vector3(10f, 0.1f, 36f), asphalt);
             CreatePrimitive(PrimitiveType.Cube, "BusinessLeftWalk", new Vector3(-6.2f, 0.1f, 0f), new Vector3(3f, 0.2f, 36f), sidewalk);
             CreatePrimitive(PrimitiveType.Cube, "BusinessRightWalk", new Vector3(6.2f, 0.1f, 0f), new Vector3(3f, 0.2f, 36f), sidewalk);
-            CreateColliderBlock("BankFacadeCollision", new Vector3(-10.4f, 3.4f, 6.6f), new Vector3(6f, 6.8f, 13f));
-            CreateColliderBlock("StoneRowCollision", new Vector3(10.5f, 3.2f, 0f), new Vector3(5.7f, 6.4f, 33f));
-            CreateColliderBlock("BrickCornerCollision", new Vector3(-10.7f, 2.7f, -11f), new Vector3(5.3f, 5.4f, 8.5f));
+            CreateColliderBlock("BankFacadeCollision", new Vector3(-10.85f, 3.4f, 6.6f), new Vector3(3.7f, 6.8f, 13f));
+            CreateColliderBlock("StoneRowCollision", new Vector3(10.85f, 3.2f, 0f), new Vector3(3.7f, 6.4f, 33f));
+            CreateColliderBlock("BrickCornerCollision", new Vector3(-10.95f, 2.7f, -11f), new Vector3(3.65f, 5.4f, 8.5f));
             CreateVisualPrimitive(PrimitiveType.Cube, "SquarePlaza", new Vector3(-2.7f, 0.08f, 13.5f), new Vector3(5.5f, 0.04f, 6f), stone);
             CreateVisualPrimitive(PrimitiveType.Cube, "StatueBase", new Vector3(-2.7f, 0.8f, 13.5f), new Vector3(1.2f, 1.2f, 1.2f), stone);
             CreateVisualPrimitive(PrimitiveType.Cylinder, "StatueColumn", new Vector3(-2.7f, 2.3f, 13.5f), new Vector3(0.25f, 1.2f, 0.25f), brass);
@@ -1833,13 +1822,14 @@ namespace MafiaTopDown.Editor
             CreateDistrictRooftopDetailPass("Business", -10.6f, 10.6f, metal, windowGlow, stone, officeSign, brass);
             CreateBusinessCoreIdentityPass(metal, windowGlow, stone, officeSign, brass);
             CreateKenneyDistrictAssetPass("Business");
+            CreateMafiaDistrictProductionPass(DistrictArtStyle.BusinessCore, "Business", asphalt, stone, stone, metal, windowGlow, officeSign, sidewalk, puddle, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
                 "District_BusinessCore_01",
                 "BusinessCoreStart",
-                new Vector3(0f, 1f, -15f),
+                new Vector3(-1.4f, 1f, -10.4f),
                 new Color(0.16f, 0.17f, 0.21f),
-                new Vector3(0f, 18f, -13f),
+                new Vector3(0f, 17.6f, -7.8f),
                 campaignDatabase,
                 chapterAsset);
             ConfigurePoliceResponse(
@@ -1877,8 +1867,8 @@ namespace MafiaTopDown.Editor
 
             CreateTravelGate(
                 "ToOldQuarterGate",
-                new Vector3(13.8f, 1.1f, 0f),
-                new Vector3(0.4f, 2.2f, 6.4f),
+                new Vector3(6.95f, 1.1f, 0f),
+                new Vector3(0.55f, 2.2f, 6.4f),
                 officeSign,
                 "Head into the old quarter",
                 "old-quarter",
@@ -2077,7 +2067,7 @@ namespace MafiaTopDown.Editor
             var puddle = GetOrCreateMaterial("Assets/Game/Materials/Puddle.mat", new Color(0.12f, 0.14f, 0.15f), 0.96f, 0.02f);
             var brass = GetOrCreateMaterial("Assets/Game/Materials/Brass.mat", new Color(0.63f, 0.47f, 0.21f), 0.8f, 0.88f);
 
-            ApplyExteriorAtmosphere(new Color(0.07f, 0.075f, 0.09f), new Color(0.075f, 0.075f, 0.085f), 0.026f, new Color(1f, 0.78f, 0.52f), 0.56f, Quaternion.Euler(32f, -34f, 0f));
+            ApplyExteriorAtmosphere(new Color(0.15f, 0.13f, 0.12f), new Color(0.095f, 0.085f, 0.08f), 0.015f, new Color(1f, 0.78f, 0.52f), 0.88f, Quaternion.Euler(32f, -34f, 0f));
 
             var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.name = "QuarterGround";
@@ -2087,10 +2077,10 @@ namespace MafiaTopDown.Editor
             CreatePrimitive(PrimitiveType.Cube, "QuarterRoad", new Vector3(0f, 0.05f, 0f), new Vector3(8.4f, 0.1f, 32f), asphalt);
             CreatePrimitive(PrimitiveType.Cube, "QuarterLeftWalk", new Vector3(-5.5f, 0.1f, 0f), new Vector3(2.6f, 0.2f, 32f), sidewalk);
             CreatePrimitive(PrimitiveType.Cube, "QuarterRightWalk", new Vector3(5.5f, 0.1f, 0f), new Vector3(2.6f, 0.2f, 32f), sidewalk);
-            CreateColliderBlock("TenementRowLeftCollision", new Vector3(-9.2f, 3f, 0f), new Vector3(4.8f, 6f, 30f));
-            CreateColliderBlock("TenementRowRightCollision", new Vector3(9.2f, 3f, 0f), new Vector3(4.8f, 6f, 30f));
-            CreateColliderBlock("ChurchBodyCollision", new Vector3(-9.2f, 4.2f, 11.5f), new Vector3(6f, 8.4f, 9.4f));
-            CreateColliderBlock("ChurchTowerCollision", new Vector3(-9.2f, 7.3f, 16.2f), new Vector3(2.2f, 14f, 2.2f));
+            CreateColliderBlock("TenementRowLeftCollision", new Vector3(-10.2f, 3f, 0f), new Vector3(3.05f, 6f, 30f));
+            CreateColliderBlock("TenementRowRightCollision", new Vector3(10.2f, 3f, 0f), new Vector3(3.05f, 6f, 30f));
+            CreateColliderBlock("ChurchBodyCollision", new Vector3(-10.4f, 4.2f, 11.5f), new Vector3(3.5f, 8.4f, 9.4f));
+            CreateColliderBlock("ChurchTowerCollision", new Vector3(-10.4f, 7.3f, 16.2f), new Vector3(1.8f, 14f, 2.2f));
             CreateVisualPrimitive(PrimitiveType.Cube, "NarrowAlley", new Vector3(0f, 0.06f, -9.4f), new Vector3(3.4f, 0.04f, 7f), sidewalk);
 
             for (var index = 0; index < 5; index += 1)
@@ -2113,13 +2103,14 @@ namespace MafiaTopDown.Editor
             CreateDistrictRooftopDetailPass("Quarter", -10.6f, 10.6f, metal, windowGlow, tenement, sign, brass);
             CreateOldQuarterIdentityPass(metal, windowGlow, churchStone, tenement, laundry, brass);
             CreateKenneyDistrictAssetPass("OldQuarter");
+            CreateMafiaDistrictProductionPass(DistrictArtStyle.OldQuarter, "Quarter", asphalt, tenement, churchStone, metal, windowGlow, sign, sidewalk, puddle, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
                 "District_OldQuarter_01",
                 "OldQuarterStart",
-                new Vector3(0f, 1f, -12.8f),
+                new Vector3(-1.2f, 1f, -9.8f),
                 new Color(0.14f, 0.15f, 0.18f),
-                new Vector3(0f, 17f, -12f),
+                new Vector3(0f, 17.2f, -7.4f),
                 campaignDatabase,
                 chapterAsset);
             ConfigurePoliceResponse(
@@ -2134,7 +2125,7 @@ namespace MafiaTopDown.Editor
             var missionSystem = CreateSceneObjectiveSystem("OldQuarterObjectiveSystem");
             CreateSceneObjectiveHud("OldQuarterObjectiveHud", missionSystem, runtime.SaveGameFileService, campaignDatabase);
 
-            CreateSpawnPoint("OldQuarterStartPoint", "OldQuarterStart", new Vector3(0f, 1f, -12.8f));
+            CreateSpawnPoint("OldQuarterStartPoint", "OldQuarterStart", new Vector3(-1.2f, 1f, -9.8f));
             CreateSpawnPoint("OldQuarterMessageSpawnPoint", "OldQuarterMessageSpawn", new Vector3(-2.8f, 1f, 6.8f));
             CreateSpawnPoint("OldQuarterExitSpawnPoint", "OldQuarterExitSpawn", new Vector3(8.2f, 1f, -2.6f));
             CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(12.2f, 1f, 0f));
@@ -2156,8 +2147,8 @@ namespace MafiaTopDown.Editor
 
             CreateTravelGate(
                 "ToRailYardGate",
-                new Vector3(-13.1f, 1.1f, 6.5f),
-                new Vector3(0.4f, 2.2f, 6.2f),
+                new Vector3(-6.95f, 1.1f, 6.5f),
+                new Vector3(0.55f, 2.2f, 6.2f),
                 sign,
                 "Cut through to the rail yard",
                 "rail-yard",
@@ -2331,7 +2322,7 @@ namespace MafiaTopDown.Editor
             var puddle = GetOrCreateMaterial("Assets/Game/Materials/Puddle.mat", new Color(0.12f, 0.14f, 0.15f), 0.96f, 0.02f);
             var brass = GetOrCreateMaterial("Assets/Game/Materials/Brass.mat", new Color(0.63f, 0.47f, 0.21f), 0.8f, 0.88f);
 
-            ApplyExteriorAtmosphere(new Color(0.06f, 0.07f, 0.085f), new Color(0.065f, 0.075f, 0.09f), 0.03f, new Color(0.92f, 0.78f, 0.58f), 0.52f, Quaternion.Euler(28f, -40f, 0f));
+            ApplyExteriorAtmosphere(new Color(0.13f, 0.14f, 0.15f), new Color(0.075f, 0.085f, 0.095f), 0.017f, new Color(0.92f, 0.78f, 0.58f), 0.82f, Quaternion.Euler(28f, -40f, 0f));
 
             var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.name = "RailGround";
@@ -2342,7 +2333,7 @@ namespace MafiaTopDown.Editor
             CreateVisualPrimitive(PrimitiveType.Cube, "TrackA", new Vector3(-2.2f, 0.07f, 8f), new Vector3(0.08f, 0.02f, 26f), metal);
             CreateVisualPrimitive(PrimitiveType.Cube, "TrackB", new Vector3(2.2f, 0.07f, 8f), new Vector3(0.08f, 0.02f, 26f), metal);
             CreateVisualPrimitive(PrimitiveType.Cube, "Sleepers", new Vector3(0f, 0.05f, 8f), new Vector3(5.4f, 0.02f, 26f), rustMetal);
-            CreateColliderBlock("GarageHallCollision", new Vector3(-9.8f, 2.9f, -2f), new Vector3(6f, 5.8f, 16f));
+            CreateColliderBlock("GarageHallCollision", new Vector3(-10.4f, 2.9f, -2f), new Vector3(4.1f, 5.8f, 16f));
             CreateVisualPrimitive(PrimitiveType.Cube, "TrainCar", new Vector3(2.2f, 1.55f, 10.5f), new Vector3(2.8f, 3f, 8.2f), rustMetal);
             CreateVisualPrimitive(PrimitiveType.Cylinder, "FuelTankA", new Vector3(9.6f, 2.2f, -2.5f), new Vector3(1.3f, 2.2f, 1.3f), tankMetal);
             CreateVisualPrimitive(PrimitiveType.Cylinder, "FuelTankB", new Vector3(9.6f, 2.2f, 4.2f), new Vector3(1.1f, 2.2f, 1.1f), tankMetal);
@@ -2363,13 +2354,14 @@ namespace MafiaTopDown.Editor
             CreateDistrictRooftopDetailPass("Rail", -10.6f, 10.6f, metal, windowGlow, rustMetal, sign, brass);
             CreateRailYardIdentityPass(metal, windowGlow, rustMetal, tankMetal, crateWood, brass);
             CreateKenneyDistrictAssetPass("RailYard");
+            CreateMafiaDistrictProductionPass(DistrictArtStyle.RailYard, "Rail", asphalt, rustMetal, tankMetal, metal, windowGlow, sign, gravel, puddle, brass);
 
             var runtime = CreateFreeRoamDistrictRuntime(
                 "District_RailYard_01",
                 "RailYardStart",
-                new Vector3(0f, 1f, -13.5f),
+                new Vector3(1.2f, 1f, -9.6f),
                 new Color(0.13f, 0.14f, 0.17f),
-                new Vector3(0f, 17f, -12f),
+                new Vector3(0f, 17.2f, -7.4f),
                 campaignDatabase,
                 chapterAsset);
             ConfigurePoliceResponse(
@@ -2384,7 +2376,7 @@ namespace MafiaTopDown.Editor
             var missionSystem = CreateSceneObjectiveSystem("RailYardObjectiveSystem");
             CreateSceneObjectiveHud("RailYardObjectiveHud", missionSystem, runtime.SaveGameFileService, campaignDatabase);
 
-            CreateSpawnPoint("RailYardStartPoint", "RailYardStart", new Vector3(0f, 1f, -13.5f));
+            CreateSpawnPoint("RailYardStartPoint", "RailYardStart", new Vector3(1.2f, 1f, -9.6f));
             CreateSpawnPoint("RailYardWatchmenSpawnPoint", "RailYardWatchmenSpawn", new Vector3(2.8f, 1f, -2.4f));
             CreateSpawnPoint("RailYardBetrayalSpawnPoint", "RailYardBetrayalSpawn", new Vector3(-1.6f, 1f, 8.4f));
             CreateSpawnPoint("RailYardExitSpawnPoint", "RailYardExitSpawn", new Vector3(4.8f, 1f, -10.8f));
@@ -2917,15 +2909,15 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = backgroundColor;
             camera.orthographic = false;
-            camera.fieldOfView = 38f;
+            camera.fieldOfView = 43f;
             camera.nearClipPlane = 0.1f;
-            camera.farClipPlane = 100f;
-            var tunedDistrictCameraOffset = new Vector3(cameraOffset.x - 0.1f, Mathf.Clamp(cameraOffset.y, 15.5f, 18.8f), Mathf.Min(cameraOffset.z, -8.2f));
+            camera.farClipPlane = 160f;
+            var tunedDistrictCameraOffset = new Vector3(cameraOffset.x - 0.1f, Mathf.Clamp(cameraOffset.y + 2.8f, 19.2f, 23.5f), Mathf.Min(cameraOffset.z - 0.8f, -8.2f));
             cameraRoot.transform.position = playerPosition + tunedDistrictCameraOffset;
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            ConfigureNoirCamera(camera, topDownCamera, tunedDistrictCameraOffset, 66f, -4f, 12f, 22f);
-            CreateNoirPostProcessVolume(sceneName, ResolveDistrictColorFilter(sceneName), 0.02f, 28f, -8f, 1.25f, 0.2f);
+            ConfigureNoirCamera(camera, topDownCamera, tunedDistrictCameraOffset, 66f, -3f, 16f, 28f);
+            CreateNoirPostProcessVolume(sceneName, ResolveDistrictColorFilter(sceneName), 0.22f, 22f, -4f, 1.4f, 0.14f);
 
             var transitionRoot = new GameObject("SceneTransitionController");
             var transitionController = transitionRoot.AddComponent<SceneTransitionController>();
@@ -3113,6 +3105,15 @@ namespace MafiaTopDown.Editor
             if (renderer != null)
             {
                 renderer.sharedMaterial = material;
+            }
+        }
+
+        private static void HideRenderer(GameObject gameObject)
+        {
+            var renderer = gameObject.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.enabled = false;
             }
         }
 
@@ -3862,6 +3863,273 @@ namespace MafiaTopDown.Editor
             }
         }
 
+        private static void CreateMafiaDistrictProductionPass(
+            DistrictArtStyle district,
+            string prefix,
+            Material asphalt,
+            Material facade,
+            Material roof,
+            Material metal,
+            Material glow,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            var root = new GameObject("LaunchArt_" + prefix + "_FinishedDistrictBlock");
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "OuterNeighborhoodAsphalt", new Vector3(0f, 0.042f, 1.5f), new Vector3(46f, 0.035f, 56f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "WestServiceLane", new Vector3(-17.4f, 0.096f, 1f), new Vector3(5.2f, 0.035f, 50f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "EastServiceLane", new Vector3(17.4f, 0.096f, 1f), new Vector3(5.2f, 0.035f, 50f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "WestBackWalk", new Vector3(-20.9f, 0.13f, 1f), new Vector3(1.4f, 0.08f, 48f), sidewalk).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "EastBackWalk", new Vector3(20.9f, 0.13f, 1f), new Vector3(1.4f, 0.08f, 48f), sidewalk).transform.SetParent(root.transform, true);
+
+            var leftRoles = new[]
+            {
+                DistrictBuildingRole.RowHouse,
+                DistrictBuildingRole.NarrowTenement,
+                DistrictBuildingRole.CornerShop,
+                DistrictBuildingRole.OfficeBlock,
+                DistrictBuildingRole.Warehouse
+            };
+            var rightRoles = new[]
+            {
+                DistrictBuildingRole.OfficeBlock,
+                DistrictBuildingRole.CornerShop,
+                DistrictBuildingRole.RowHouse,
+                DistrictBuildingRole.Warehouse,
+                DistrictBuildingRole.NarrowTenement
+            };
+
+            for (var index = 0; index < 12; index += 1)
+            {
+                var z = -25.5f + (index * 4.85f);
+                var leftX = -12.2f - ((index % 3) * 0.65f);
+                var rightX = 12.2f + (((index + 1) % 3) * 0.65f);
+                var frontScale = new Vector3(2.05f + ((index % 2) * 0.22f), 2.35f + ((index % 4) * 0.18f), 2.05f + (((index + 1) % 2) * 0.14f));
+                var backScale = new Vector3(1.7f + ((index % 3) * 0.12f), 1.9f + ((index % 2) * 0.2f), 1.75f + (((index + 1) % 3) * 0.12f));
+
+                PlaceDistrictBuilding(district, leftRoles[index % leftRoles.Length], prefix + "FinishedFrontLeft_" + index, new Vector3(leftX, 0.08f, z), new Vector3(0f, 90f, 0f), frontScale, facade, roof, glow, root.transform);
+                PlaceDistrictBuilding(district, rightRoles[index % rightRoles.Length], prefix + "FinishedFrontRight_" + index, new Vector3(rightX, 0.08f, z + 2.05f), new Vector3(0f, -90f, 0f), frontScale, facade, roof, glow, root.transform);
+                PlaceDistrictBuilding(district, leftRoles[(index + 2) % leftRoles.Length], prefix + "FinishedBackLeft_" + index, new Vector3(-21.8f, 0.04f, z + 1.2f), new Vector3(0f, 90f, 0f), backScale, facade, roof, glow, root.transform);
+                PlaceDistrictBuilding(district, rightRoles[(index + 3) % rightRoles.Length], prefix + "FinishedBackRight_" + index, new Vector3(21.8f, 0.04f, z - 0.7f), new Vector3(0f, -90f, 0f), backScale, facade, roof, glow, root.transform);
+
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "FrontLeftShadowCut_" + index, new Vector3(-8.05f, 0.18f, z + 1.1f), new Vector3(1.35f, 0.035f, 2.8f), puddle).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "FrontRightShadowCut_" + index, new Vector3(8.05f, 0.18f, z + 0.8f), new Vector3(1.35f, 0.035f, 2.8f), puddle).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "ShopSignLeft_" + index, new Vector3(-7.2f, 2.75f, z + 0.7f), new Vector3(1.05f, 0.34f, 0.08f), sign).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "ShopSignRight_" + index, new Vector3(7.2f, 2.75f, z + 1.2f), new Vector3(1.05f, 0.34f, 0.08f), sign).transform.SetParent(root.transform, true);
+
+                if (index % 3 == 0)
+                {
+                    EnvironmentArtCatalog.CreateKenneyFallback("CityKitCommercial", "detail-awning-wide", prefix + "KitAwningLeft_" + index, new Vector3(-7.15f, 1.62f, z + 0.15f), new Vector3(0f, 90f, 0f), new Vector3(1.55f, 1.55f, 1.55f), root.transform);
+                    EnvironmentArtCatalog.CreateKenneyFallback("CityKitCommercial", "detail-awning-wide", prefix + "KitAwningRight_" + index, new Vector3(7.15f, 1.62f, z + 1.65f), new Vector3(0f, -90f, 0f), new Vector3(1.55f, 1.55f, 1.55f), root.transform);
+                }
+                else if (index % 3 == 1)
+                {
+                    EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "light-curved-double", prefix + "KitLampLeft_" + index, new Vector3(-5.1f, 0.08f, z + 0.4f), new Vector3(0f, 90f, 0f), new Vector3(1.32f, 1.32f, 1.32f), root.transform);
+                    EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "light-curved-double", prefix + "KitLampRight_" + index, new Vector3(5.1f, 0.08f, z + 1.6f), new Vector3(0f, -90f, 0f), new Vector3(1.32f, 1.32f, 1.32f), root.transform);
+                }
+            }
+
+            for (var block = 0; block < 5; block += 1)
+            {
+                var z = -20f + (block * 10f);
+                EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "road-crossroad-line", prefix + "KitCrossroad_" + block, new Vector3(0f, 0.138f, z), Vector3.zero, new Vector3(3.25f, 1f, 3.25f), root.transform);
+                EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "road-side", prefix + "KitWestSideRoad_" + block, new Vector3(-9.7f, 0.136f, z), new Vector3(0f, 90f, 0f), new Vector3(2.35f, 1f, 2.35f), root.transform);
+                EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "road-side", prefix + "KitEastSideRoad_" + block, new Vector3(9.7f, 0.136f, z + 1.7f), new Vector3(0f, -90f, 0f), new Vector3(2.35f, 1f, 2.35f), root.transform);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CrossStreetPool_" + block, new Vector3(block % 2 == 0 ? -2.7f : 2.5f, 0.17f, z - 1.4f), new Vector3(3.1f, 0.02f, 0.55f), puddle).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CrossStreetOverheadWire_" + block, new Vector3(0f, 6.2f, z + 0.1f), new Vector3(35f, 0.035f, 0.035f), metal).transform.SetParent(root.transform, true);
+            }
+
+            CreateSouthNeighborhoodFill(district, prefix, root.transform, asphalt, facade, roof, metal, glow, sign, sidewalk, puddle, brass);
+            CreateDistrictLightPools(prefix, root.transform, glow, brass);
+
+            CreateStaticVehicle(prefix + "ParkedPeriodSedanA", new Vector3(-4.1f, 0.72f, -18.3f), new Vector3(1.8f, 0.95f, 4.1f), new Color(0.055f, 0.058f, 0.064f), roof, glow);
+            CreateStaticVehicle(prefix + "ParkedPeriodSedanB", new Vector3(4.1f, 0.72f, 12.2f), new Vector3(1.75f, 0.92f, 3.95f), new Color(0.18f, 0.06f, 0.055f), roof, glow);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "ReadableNorthBlockerShadow", new Vector3(0f, 0.18f, 26.2f), new Vector3(30f, 0.05f, 1.2f), sign).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "ReadableSouthBlockerShadow", new Vector3(0f, 0.18f, -27.8f), new Vector3(30f, 0.05f, 1.2f), sign).transform.SetParent(root.transform, true);
+
+            if (district == DistrictArtStyle.Docks)
+            {
+                CreateDockProductionSignature(prefix, root.transform, metal, glow, roof, sign, sidewalk, puddle, brass);
+            }
+            else if (district == DistrictArtStyle.BusinessCore)
+            {
+                CreateBusinessProductionSignature(prefix, root.transform, metal, glow, roof, sign, sidewalk, puddle, brass);
+            }
+            else if (district == DistrictArtStyle.OldQuarter)
+            {
+                CreateOldQuarterProductionSignature(prefix, root.transform, metal, glow, roof, sign, sidewalk, puddle, brass);
+            }
+            else
+            {
+                CreateRailProductionSignature(prefix, root.transform, metal, glow, roof, sign, sidewalk, puddle, brass);
+            }
+        }
+
+        private static void CreateSouthNeighborhoodFill(
+            DistrictArtStyle district,
+            string prefix,
+            Transform root,
+            Material asphalt,
+            Material facade,
+            Material roof,
+            Material metal,
+            Material glow,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthBlockAsphaltExtension", new Vector3(0f, 0.1f, -35.4f), new Vector3(42f, 0.04f, 17.8f), asphalt).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthCrosswalkNorth", new Vector3(0f, 0.176f, -28.8f), new Vector3(8.8f, 0.02f, 0.34f), brass).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthCrosswalkSouth", new Vector3(0f, 0.176f, -36.8f), new Vector3(8.8f, 0.02f, 0.34f), brass).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthLeftWalk", new Vector3(-6.25f, 0.16f, -35.4f), new Vector3(2.2f, 0.08f, 17.4f), sidewalk).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthRightWalk", new Vector3(6.25f, 0.16f, -35.4f), new Vector3(2.2f, 0.08f, 17.4f), sidewalk).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthWetStreetSheetA", new Vector3(-2.35f, 0.18f, -32.4f), new Vector3(3.4f, 0.018f, 1.2f), puddle).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthWetStreetSheetB", new Vector3(2.8f, 0.18f, -39.2f), new Vector3(3.1f, 0.018f, 1.05f), puddle).transform.SetParent(root, true);
+
+            PlaceDistrictBuilding(district, DistrictBuildingRole.Warehouse, prefix + "SouthAnchorLeftWarehouse", new Vector3(-12.7f, 0.08f, -33.6f), new Vector3(0f, 90f, 0f), new Vector3(2.65f, 2.55f, 2.35f), facade, roof, glow, root);
+            PlaceDistrictBuilding(district, DistrictBuildingRole.CornerShop, prefix + "SouthAnchorRightCorner", new Vector3(12.5f, 0.08f, -35.3f), new Vector3(0f, -90f, 0f), new Vector3(2.35f, 2.4f, 2.2f), facade, roof, glow, root);
+            PlaceDistrictBuilding(district, DistrictBuildingRole.NarrowTenement, prefix + "SouthBackLeftTenement", new Vector3(-21.4f, 0.04f, -37.8f), new Vector3(0f, 90f, 0f), new Vector3(1.9f, 2.15f, 1.8f), facade, roof, glow, root);
+            PlaceDistrictBuilding(district, DistrictBuildingRole.OfficeBlock, prefix + "SouthBackRightOffice", new Vector3(21.4f, 0.04f, -32.6f), new Vector3(0f, -90f, 0f), new Vector3(1.9f, 2.2f, 1.9f), facade, roof, glow, root);
+
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "road-crossroad-line", prefix + "SouthKitCrossroadPrimary", new Vector3(0f, 0.14f, -32.5f), Vector3.zero, new Vector3(3.15f, 1f, 3.15f), root);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "road-crossroad-line", prefix + "SouthKitCrossroadDeep", new Vector3(0f, 0.14f, -40f), Vector3.zero, new Vector3(2.75f, 1f, 2.75f), root);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "light-curved-double", prefix + "SouthReadyLampLeft", new Vector3(-5.3f, 0.08f, -31.6f), new Vector3(0f, 90f, 0f), new Vector3(1.45f, 1.45f, 1.45f), root);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "light-curved-double", prefix + "SouthReadyLampRight", new Vector3(5.3f, 0.08f, -38.6f), new Vector3(0f, -90f, 0f), new Vector3(1.45f, 1.45f, 1.45f), root);
+
+            CreateStaticVehicle(prefix + "SouthParkedLongSedan", new Vector3(-2.8f, 0.72f, -35.8f), new Vector3(1.82f, 0.92f, 4.2f), new Color(0.08f, 0.075f, 0.07f), roof, glow);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthStackedCratesA", new Vector3(8.3f, 0.58f, -31.7f), new Vector3(1.1f, 1.1f, 1.1f), facade).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthStackedCratesB", new Vector3(9.15f, 0.48f, -32.75f), new Vector3(0.84f, 0.84f, 0.84f), facade).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthOverheadWireA", new Vector3(0f, 6.0f, -31.8f), new Vector3(38f, 0.035f, 0.035f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthOverheadWireB", new Vector3(0f, 5.7f, -38.8f), new Vector3(38f, 0.035f, 0.035f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthStorefrontSignLeft", new Vector3(-7.1f, 2.75f, -33.7f), new Vector3(1.2f, 0.36f, 0.09f), sign).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "SouthStorefrontSignRight", new Vector3(7.1f, 2.75f, -35.4f), new Vector3(1.2f, 0.36f, 0.09f), sign).transform.SetParent(root, true);
+        }
+
+        private static void CreateDistrictLightPools(string prefix, Transform root, Material glow, Material brass)
+        {
+            var points = new[]
+            {
+                new Vector3(-4.9f, 0f, -30.8f),
+                new Vector3(4.9f, 0f, -24.1f),
+                new Vector3(-4.8f, 0f, -12.6f),
+                new Vector3(4.8f, 0f, -2.4f),
+                new Vector3(-4.8f, 0f, 8.8f),
+                new Vector3(4.8f, 0f, 18.2f)
+            };
+
+            for (var index = 0; index < points.Length; index += 1)
+            {
+                CreateDistrictPointLight(prefix + "WarmStreetPool_" + index, root, points[index], glow, brass);
+            }
+        }
+
+        private static void CreateDistrictPointLight(string name, Transform root, Vector3 basePosition, Material glow, Material brass)
+        {
+            CreateVisualPrimitive(PrimitiveType.Cylinder, name + "GlowPool", basePosition + new Vector3(0f, 0.18f, 0f), new Vector3(1.65f, 0.018f, 1.65f), glow).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "LampHead", basePosition + new Vector3(0f, 3.65f, 0.15f), new Vector3(0.36f, 0.22f, 0.36f), brass).transform.SetParent(root, true);
+
+            var lightObject = new GameObject(name + "PointLight");
+            lightObject.transform.SetParent(root, true);
+            lightObject.transform.position = basePosition + new Vector3(0f, 3.2f, 0.15f);
+            var light = lightObject.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.color = new Color(1f, 0.69f, 0.34f);
+            light.range = 7.8f;
+            light.intensity = 2.7f;
+            light.shadows = LightShadows.None;
+        }
+
+        private static void CreateDockProductionSignature(
+            string prefix,
+            Transform root,
+            Material metal,
+            Material glow,
+            Material roof,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LongWaterPlane", new Vector3(-25f, -0.1f, 0f), new Vector3(8f, 0.04f, 58f), puddle).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "TimberPierRun", new Vector3(-20.8f, 0.18f, -5f), new Vector3(2.8f, 0.18f, 34f), sidewalk).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "CargoCraneArm", new Vector3(-17.4f, 6.8f, 8f), new Vector3(0.28f, 0.28f, 10f), brass).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "CargoCraneMast", new Vector3(-17.4f, 3.4f, 8f), new Vector3(0.28f, 3.4f, 0.28f), metal).transform.SetParent(root, true);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitIndustrial", "detail-tank", prefix + "HarborFuelTankSignatureA", new Vector3(-18.9f, 0.08f, 18.2f), Vector3.zero, new Vector3(2.6f, 2.6f, 2.6f), root);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "construction-barrier", prefix + "HarborGateBarricade", new Vector3(-5.4f, 0.08f, -21.8f), Vector3.zero, new Vector3(1.7f, 1.7f, 1.7f), root);
+            CreateStaticVehicle(prefix + "HarborServiceTruck", new Vector3(-4.6f, 0.76f, 19.4f), new Vector3(2.25f, 1.15f, 5.2f), new Color(0.16f, 0.17f, 0.16f), roof, glow);
+        }
+
+        private static void CreateBusinessProductionSignature(
+            string prefix,
+            Transform root,
+            Material metal,
+            Material glow,
+            Material roof,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitCommercial", "building-skyscraper-b", prefix + "SkylineTowerA", new Vector3(-22.6f, 0.04f, 7.8f), new Vector3(0f, 90f, 0f), new Vector3(2.4f, 2.7f, 2.4f), root);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitCommercial", "building-skyscraper-d", prefix + "SkylineTowerB", new Vector3(22.8f, 0.04f, -8.4f), new Vector3(0f, -90f, 0f), new Vector3(2.2f, 2.55f, 2.2f), root);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "UnionSquareStoneField", new Vector3(-2.8f, 0.18f, 17.4f), new Vector3(8.4f, 0.04f, 7.4f), sidewalk).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "UnionSquareFountain", new Vector3(-2.8f, 0.58f, 17.4f), new Vector3(1.25f, 0.24f, 1.25f), brass).transform.SetParent(root, true);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitCommercial", "detail-parasol-a", prefix + "SquareParasolSignatureA", new Vector3(-5.7f, 0.08f, 15.2f), Vector3.zero, new Vector3(1.65f, 1.65f, 1.65f), root);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "sign-highway-detailed", prefix + "DowntownWayfindingSignature", new Vector3(5.5f, 0.08f, -19.6f), new Vector3(0f, 180f, 0f), new Vector3(1.8f, 1.8f, 1.8f), root);
+        }
+
+        private static void CreateOldQuarterProductionSignature(
+            string prefix,
+            Transform root,
+            Material metal,
+            Material glow,
+            Material roof,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitSuburban", "building-type-q", prefix + "ChapelMassReadyAsset", new Vector3(-18.8f, 0.06f, 15.4f), new Vector3(0f, 90f, 0f), new Vector3(2.9f, 2.8f, 2.9f), root);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "ChapelBellTower", new Vector3(-16.6f, 6.2f, 18.8f), new Vector3(0.65f, 3.5f, 0.65f), roof).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "ChapelCross", new Vector3(-16.6f, 10.1f, 18.8f), new Vector3(0.18f, 1.15f, 0.18f), brass).transform.SetParent(root, true);
+            for (var line = 0; line < 5; line += 1)
+            {
+                var z = -15.5f + (line * 7.2f);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LaundryWireFinished_" + line, new Vector3(0f, 5.75f, z), new Vector3(13.2f, 0.035f, 0.035f), metal).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LaundrySheetFinished_" + line, new Vector3(-1.7f + (line * 0.55f), 5.35f, z), new Vector3(0.55f, 0.65f, 0.035f), sign).transform.SetParent(root, true);
+            }
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitSuburban", "tree-small", prefix + "QuarterCourtyardTree", new Vector3(4.8f, 0.08f, 19.2f), Vector3.zero, new Vector3(2f, 2f, 2f), root);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitSuburban", "fence-1x4", prefix + "ChapelFenceSignature", new Vector3(-6.2f, 0.08f, 17.2f), new Vector3(0f, 90f, 0f), new Vector3(2f, 2f, 2f), root);
+        }
+
+        private static void CreateRailProductionSignature(
+            string prefix,
+            Transform root,
+            Material metal,
+            Material glow,
+            Material roof,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            for (var track = 0; track < 3; track += 1)
+            {
+                var x = -3.4f + (track * 3.4f);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "FinishedRailA_" + track, new Vector3(x - 0.42f, 0.16f, 10f), new Vector3(0.08f, 0.035f, 34f), metal).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "FinishedRailB_" + track, new Vector3(x + 0.42f, 0.16f, 10f), new Vector3(0.08f, 0.035f, 34f), metal).transform.SetParent(root, true);
+            }
+
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "BoxcarSignatureA", new Vector3(1.6f, 1.15f, 15.8f), new Vector3(2.3f, 2.15f, 8.2f), roof).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "BoxcarSignatureDoor", new Vector3(1.6f, 1.15f, 11.9f), new Vector3(1.7f, 1.55f, 0.08f), sign).transform.SetParent(root, true);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitIndustrial", "building-r", prefix + "FoundrySignatureAsset", new Vector3(-21.4f, 0.08f, 12.4f), new Vector3(0f, 90f, 0f), new Vector3(2.8f, 2.65f, 2.8f), root);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitIndustrial", "chimney-large", prefix + "FoundryStackSignatureA", new Vector3(-18.8f, 0.08f, 6.2f), Vector3.zero, new Vector3(2.25f, 2.25f, 2.25f), root);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitIndustrial", "detail-tank", prefix + "RailTankSignatureA", new Vector3(18.6f, 0.08f, -14.6f), Vector3.zero, new Vector3(2.4f, 2.4f, 2.4f), root);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "construction-light", prefix + "YardWorkLightSignature", new Vector3(4.8f, 0.08f, -20.2f), new Vector3(0f, 25f, 0f), new Vector3(1.6f, 1.6f, 1.6f), root);
+        }
+
         private static void CreateDistrictRooftopDetailPass(
             string prefix,
             float leftRoofX,
@@ -4579,21 +4847,32 @@ namespace MafiaTopDown.Editor
                 0.76f,
                 0.08f);
             var body = CreatePrimitive(PrimitiveType.Cube, name, position, bodyScale, bodyMaterial);
+            HideRenderer(body);
+            BuildNoirVehicleVisual(body, name, position, bodyScale, bodyMaterial, roofMaterial, roofMaterial, glassMaterial);
+        }
 
-            CreateVisualPrimitive(
-                PrimitiveType.Cube,
-                name + "Roof",
-                position + new Vector3(0f, 0.58f, -0.08f),
-                new Vector3(bodyScale.x * 0.64f, 0.34f, bodyScale.z * 0.48f),
-                roofMaterial).transform.SetParent(body.transform, true);
+        private static void BuildNoirVehicleVisual(
+            GameObject body,
+            string name,
+            Vector3 position,
+            Vector3 bodyScale,
+            Material bodyMaterial,
+            Material roofMaterial,
+            Material trimMaterial,
+            Material glowMaterial)
+        {
+            var halfWidth = bodyScale.x * 0.5f;
+            var halfLength = bodyScale.z * 0.5f;
 
-            CreateVisualPrimitive(
-                PrimitiveType.Cube,
-                name + "Glass",
-                position + new Vector3(0f, 0.45f, -bodyScale.z * 0.25f),
-                new Vector3(bodyScale.x * 0.58f, 0.22f, 0.1f),
-                glassMaterial).transform.SetParent(body.transform, true);
-            DecorateNoirVehicle(body, name, position, bodyScale, roofMaterial, glassMaterial);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "LowerChassis", position + new Vector3(0f, 0.42f, 0f), new Vector3(bodyScale.x * 0.96f, 0.44f, bodyScale.z * 0.78f), bodyMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "LongHood", position + new Vector3(0f, 0.66f, -halfLength * 0.48f), new Vector3(bodyScale.x * 0.74f, 0.34f, bodyScale.z * 0.34f), bodyMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "RoundedTrunk", position + new Vector3(0f, 0.62f, halfLength * 0.42f), new Vector3(bodyScale.x * 0.78f, 0.3f, bodyScale.z * 0.26f), bodyMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "Cabin", position + new Vector3(0f, 1.0f, -0.04f), new Vector3(bodyScale.x * 0.58f, 0.62f, bodyScale.z * 0.34f), roofMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "Windshield", position + new Vector3(0f, 1.03f, -bodyScale.z * 0.23f), new Vector3(bodyScale.x * 0.5f, 0.26f, 0.08f), glowMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "RearWindow", position + new Vector3(0f, 1.03f, bodyScale.z * 0.16f), new Vector3(bodyScale.x * 0.46f, 0.24f, 0.08f), glowMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "LeftSideGlass", position + new Vector3(-halfWidth * 0.32f, 1.04f, -0.02f), new Vector3(0.06f, 0.22f, bodyScale.z * 0.28f), glowMaterial).transform.SetParent(body.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "RightSideGlass", position + new Vector3(halfWidth * 0.32f, 1.04f, -0.02f), new Vector3(0.06f, 0.22f, bodyScale.z * 0.28f), glowMaterial).transform.SetParent(body.transform, true);
+            DecorateNoirVehicle(body, name, position, bodyScale, trimMaterial, glowMaterial);
         }
 
         private static void DecorateNoirVehicle(

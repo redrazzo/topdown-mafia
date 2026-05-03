@@ -2,6 +2,7 @@ using MafiaTopDown.Gameplay.Domain.Vehicles;
 using MafiaTopDown.Gameplay.Runtime.Player;
 using MafiaTopDown.Gameplay.Runtime.Progression;
 using MafiaTopDown.Gameplay.Runtime.Data;
+using System;
 using UnityEngine;
 
 namespace MafiaTopDown.Gameplay.Runtime.Vehicles
@@ -9,14 +10,15 @@ namespace MafiaTopDown.Gameplay.Runtime.Vehicles
     [DisallowMultipleComponent]
     public sealed class VehicleSeatController : MonoBehaviour
     {
-        [SerializeField] private Transform driverAnchor;
-        [SerializeField] private Transform exitAnchor;
-        [SerializeField] private CampaignProgressionController campaignProgressionController;
-        [SerializeField] private MissionDefinitionAsset missionAsset;
+        [SerializeField] private Transform? driverAnchor;
+        [SerializeField] private Transform? exitAnchor;
+        [SerializeField] private CampaignProgressionController? campaignProgressionController;
+        [SerializeField] private MissionDefinitionAsset? missionAsset;
         [SerializeField] private string missionStageIdOnEnter = string.Empty;
 
         private readonly VehicleSeatStateMachine _stateMachine = new();
-        private TopDownPlayerController _occupant;
+        private TopDownPlayerController? _occupant;
+        private Renderer[] _occupantRenderers = Array.Empty<Renderer>();
 
         public VehicleSeatState State => _stateMachine.State;
 
@@ -32,6 +34,8 @@ namespace MafiaTopDown.Gameplay.Runtime.Vehicles
             _stateMachine.BeginEnter();
             _occupant = player;
             _occupant.SetControlsLocked(true);
+            _occupantRenderers = _occupant.GetComponentsInChildren<Renderer>(true);
+            SetOccupantRenderersVisible(false);
 
             if (driverAnchor != null)
             {
@@ -68,8 +72,21 @@ namespace MafiaTopDown.Gameplay.Runtime.Vehicles
             }
 
             occupant.SetControlsLocked(false);
+            SetOccupantRenderersVisible(true);
+            _occupantRenderers = Array.Empty<Renderer>();
             _stateMachine.ConfirmExited();
             return true;
+        }
+
+        private void SetOccupantRenderersVisible(bool isVisible)
+        {
+            foreach (var renderer in _occupantRenderers)
+            {
+                if (renderer != null)
+                {
+                    renderer.enabled = isVisible;
+                }
+            }
         }
     }
 }
