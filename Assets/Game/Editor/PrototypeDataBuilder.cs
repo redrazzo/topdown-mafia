@@ -43,6 +43,10 @@ namespace MafiaTopDown.Editor
             var ledgerRun = EnsureAsset<ActivityDefinitionAsset>("Assets/Game/Data/Activities/LedgerRun.asset");
             var lookoutRun = EnsureAsset<ActivityDefinitionAsset>("Assets/Game/Data/Activities/LookoutRun.asset");
             var chopDelivery = EnsureAsset<ActivityDefinitionAsset>("Assets/Game/Data/Activities/ChopDelivery.asset");
+            var docksideMuscle = EnsureAsset<ActivityDefinitionAsset>("Assets/Game/Data/Activities/DocksideMuscle.asset");
+            var unionGetaway = EnsureAsset<ActivityDefinitionAsset>("Assets/Game/Data/Activities/UnionGetaway.asset");
+            var chapelCollection = EnsureAsset<ActivityDefinitionAsset>("Assets/Game/Data/Activities/ChapelCollection.asset");
+            var garagePrep = EnsureAsset<ActivityDefinitionAsset>("Assets/Game/Data/Activities/GaragePrep.asset");
             var lucaBriefing = EnsureAsset<DialogueSequenceAsset>("Assets/Game/Data/Dialogues/LucaBriefing.asset");
             var vincentHandoff = EnsureAsset<DialogueSequenceAsset>("Assets/Game/Data/Dialogues/VincentHandoff.asset");
             var bookkeeperWarning = EnsureAsset<DialogueSequenceAsset>("Assets/Game/Data/Dialogues/BookkeeperWarning.asset");
@@ -61,6 +65,10 @@ namespace MafiaTopDown.Editor
             var businessPrintShopPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/BusinessPrintShopPortal.asset");
             var oldQuarterTenementPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/OldQuarterTenementPortal.asset");
             var railDispatchPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/RailDispatchPortal.asset");
+            var docksSocialClubPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/DocksSocialClubPortal.asset");
+            var businessUnionHallPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/BusinessUnionHallPortal.asset");
+            var oldQuarterDinerPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/OldQuarterDinerPortal.asset");
+            var railLockerPortal = EnsureAsset<InteriorPortalAsset>("Assets/Game/Data/Portals/RailLockerPortal.asset");
             var campaign = EnsureAsset<CampaignDatabaseAsset>("Assets/Game/Data/CampaignDatabase.asset");
 
             PopulateMission(
@@ -72,7 +80,7 @@ namespace MafiaTopDown.Editor
                 200,
                 2,
                 new[] { "business-core" },
-                new[] { "activity-ledger-run" },
+                new[] { "activity-ledger-run", "activity-dockside-muscle" },
                 new[]
                 {
                     ("pickup", "Take the sedan", "Enter the assigned sedan.", "drive", true),
@@ -99,7 +107,7 @@ namespace MafiaTopDown.Editor
                 250,
                 1,
                 new[] { "old-quarter" },
-                new[] { "activity-lookout-run" },
+                new[] { "activity-lookout-run", "activity-union-getaway" },
                 new[]
                 {
                     ("meet-bookkeeper", "Meet the bookkeeper", "Reach the business core contact.", "leave-square", true),
@@ -122,7 +130,7 @@ namespace MafiaTopDown.Editor
                 300,
                 1,
                 new[] { "rail-yard" },
-                new[] { "activity-chop-delivery" },
+                new[] { "activity-chop-delivery", "activity-chapel-collection" },
                 new[]
                 {
                     ("find-debtor", "Find the debtor", "Track the debtor through the old quarter.", "push-message", true),
@@ -145,7 +153,7 @@ namespace MafiaTopDown.Editor
                 350,
                 2,
                 new string[0],
-                new string[0],
+                new[] { "activity-garage-prep" },
                 new[]
                 {
                     ("check-garage", "Check the garage", "Reach the Ironline garage in the rail yard.", "clear-watchmen", true),
@@ -384,15 +392,19 @@ namespace MafiaTopDown.Editor
                 "Act III - Closed Doors",
                 new[] { unionCrackdown, chapelAsh, yardBetrayal, lastRun },
                 null);
-            PopulateDistrict(docks, "docks", "Harbor Docks", "District_01", 0, true, string.Empty, new[] { "landmark-harbor-office" }, new[] { "activity-dock-courier" });
-            PopulateDistrict(business, "business-core", "Business Core", "District_BusinessCore_01", 1, false, "mission-a-quiet-favor", new[] { "landmark-union-square" }, new[] { "activity-ledger-run" });
-            PopulateDistrict(oldQuarter, "old-quarter", "Old Quarter", "District_OldQuarter_01", 2, false, "mission-union-due", new[] { "landmark-saint-vera" }, new[] { "activity-lookout-run" });
-            PopulateDistrict(railYard, "rail-yard", "Ironline Rail Yard", "District_RailYard_01", 3, false, "mission-chapel-debt", new[] { "landmark-ironline-garage" }, new[] { "activity-chop-delivery" });
+            PopulateDistrict(docks, "docks", "Harbor Docks", "District_01", 0, true, string.Empty, new[] { "landmark-harbor-office" }, new[] { "activity-dock-courier", "activity-dockside-muscle" });
+            PopulateDistrict(business, "business-core", "Business Core", "District_BusinessCore_01", 1, false, "mission-a-quiet-favor", new[] { "landmark-union-square" }, new[] { "activity-ledger-run", "activity-union-getaway" });
+            PopulateDistrict(oldQuarter, "old-quarter", "Old Quarter", "District_OldQuarter_01", 2, false, "mission-union-due", new[] { "landmark-saint-vera" }, new[] { "activity-lookout-run", "activity-chapel-collection" });
+            PopulateDistrict(railYard, "rail-yard", "Ironline Rail Yard", "District_RailYard_01", 3, false, "mission-chapel-debt", new[] { "landmark-ironline-garage" }, new[] { "activity-chop-delivery", "activity-garage-prep" });
 
             PopulateActivity(dockCourier, "activity-dock-courier", "Dock Courier", 0, "docks", 35, true, string.Empty);
             PopulateActivity(ledgerRun, "activity-ledger-run", "Ledger Run", 0, "business-core", 90, true, "mission-a-quiet-favor");
             PopulateActivity(lookoutRun, "activity-lookout-run", "Church Lookout", 4, "old-quarter", 110, true, "mission-union-due");
             PopulateActivity(chopDelivery, "activity-chop-delivery", "Rail Yard Chop Delivery", 3, "rail-yard", 140, true, "mission-chapel-debt");
+            PopulateActivity(docksideMuscle, "activity-dockside-muscle", "Dockside Muscle", 1, "docks", 120, true, "mission-a-quiet-favor");
+            PopulateActivity(unionGetaway, "activity-union-getaway", "Union Getaway", 2, "business-core", 180, true, "mission-union-due");
+            PopulateActivity(chapelCollection, "activity-chapel-collection", "Chapel Collection", 1, "old-quarter", 165, true, "mission-chapel-debt");
+            PopulateActivity(garagePrep, "activity-garage-prep", "Garage Prep", 4, "rail-yard", 150, true, "mission-yard-heat");
             PopulateDialogue(
                 lucaBriefing,
                 "dialogue-luca-briefing",
@@ -454,15 +466,19 @@ namespace MafiaTopDown.Editor
             PopulatePortal(businessPrintShopPortal, "portal-business-print-shop", "District_BusinessCore_01", "FromPrintShopInterior", "Interior_Business_PrintShop_01", "PrintShopInteriorSpawn");
             PopulatePortal(oldQuarterTenementPortal, "portal-old-quarter-tenement", "District_OldQuarter_01", "FromTenementInterior", "Interior_OldQuarter_Tenement_01", "TenementInteriorSpawn");
             PopulatePortal(railDispatchPortal, "portal-rail-dispatch", "District_RailYard_01", "FromDispatchInterior", "Interior_RailYard_Dispatch_01", "DispatchInteriorSpawn");
+            PopulatePortal(docksSocialClubPortal, "portal-docks-social-club", "District_01", "FromSocialClubInterior", "Interior_Docks_SocialClub_01", "SocialClubInteriorSpawn");
+            PopulatePortal(businessUnionHallPortal, "portal-business-union-hall", "District_BusinessCore_01", "FromUnionHallInterior", "Interior_Business_UnionHall_01", "UnionHallInteriorSpawn");
+            PopulatePortal(oldQuarterDinerPortal, "portal-old-quarter-diner", "District_OldQuarter_01", "FromDinerInterior", "Interior_OldQuarter_Diner_01", "DinerInteriorSpawn");
+            PopulatePortal(railLockerPortal, "portal-rail-locker", "District_RailYard_01", "FromLockerInterior", "Interior_RailYard_LockerRoom_01", "LockerInteriorSpawn");
             PopulateCampaignDatabase(
                 campaign,
                 new UnityEngine.Object[] { mission, unionDue, chapelDebt, yardHeat, belloriBooks, saintVeraSilence, pierNightWatch, ironlineLedger, bloodLedger, unionCrackdown, chapelAsh, yardBetrayal, lastRun },
                 new UnityEngine.Object[] { actOne, actTwo, actThree },
                 new UnityEngine.Object[] { docks, business, oldQuarter, railYard },
-                new UnityEngine.Object[] { dockCourier, ledgerRun, lookoutRun, chopDelivery },
+                new UnityEngine.Object[] { dockCourier, ledgerRun, lookoutRun, chopDelivery, docksideMuscle, unionGetaway, chapelCollection, garagePrep },
                 new UnityEngine.Object[] { harborOffice, unionSquare, saintVera, ironlineGarage },
                 new UnityEngine.Object[] { fleetlineSedan, harborTruck },
-                new UnityEngine.Object[] { backOfficePortal, belloriBooksPortal, saintVeraPortal, ironlineOfficePortal, docksWarehousePortal, businessPrintShopPortal, oldQuarterTenementPortal, railDispatchPortal },
+                new UnityEngine.Object[] { backOfficePortal, belloriBooksPortal, saintVeraPortal, ironlineOfficePortal, docksWarehousePortal, businessPrintShopPortal, oldQuarterTenementPortal, railDispatchPortal, docksSocialClubPortal, businessUnionHallPortal, oldQuarterDinerPortal, railLockerPortal },
                 new UnityEngine.Object[] { lucaBriefing, vincentHandoff, bookkeeperWarning, debtorThreat });
 
             EditorUtility.SetDirty(mission);
@@ -489,6 +505,10 @@ namespace MafiaTopDown.Editor
             EditorUtility.SetDirty(ledgerRun);
             EditorUtility.SetDirty(lookoutRun);
             EditorUtility.SetDirty(chopDelivery);
+            EditorUtility.SetDirty(docksideMuscle);
+            EditorUtility.SetDirty(unionGetaway);
+            EditorUtility.SetDirty(chapelCollection);
+            EditorUtility.SetDirty(garagePrep);
             EditorUtility.SetDirty(lucaBriefing);
             EditorUtility.SetDirty(vincentHandoff);
             EditorUtility.SetDirty(bookkeeperWarning);
@@ -507,6 +527,10 @@ namespace MafiaTopDown.Editor
             EditorUtility.SetDirty(businessPrintShopPortal);
             EditorUtility.SetDirty(oldQuarterTenementPortal);
             EditorUtility.SetDirty(railDispatchPortal);
+            EditorUtility.SetDirty(docksSocialClubPortal);
+            EditorUtility.SetDirty(businessUnionHallPortal);
+            EditorUtility.SetDirty(oldQuarterDinerPortal);
+            EditorUtility.SetDirty(railLockerPortal);
             EditorUtility.SetDirty(campaign);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

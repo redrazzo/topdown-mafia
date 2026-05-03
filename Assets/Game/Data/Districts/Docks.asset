@@ -22,3 +22,4 @@ MonoBehaviour:
   - landmark-harbor-office
   activityIds:
   - activity-dock-courier
+  - activity-dockside-muscle

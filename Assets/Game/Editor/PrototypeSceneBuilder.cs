@@ -64,6 +64,10 @@ namespace MafiaTopDown.Editor
             BuildBusinessPrintShopInteriorScene();
             BuildOldQuarterTenementInteriorScene();
             BuildRailYardDispatchInteriorScene();
+            BuildDocksSocialClubInteriorScene();
+            BuildBusinessUnionHallInteriorScene();
+            BuildOldQuarterDinerInteriorScene();
+            BuildRailYardLockerInteriorScene();
             BuildInteriorScene();
             ConfigureBuildSettings();
             AssetDatabase.SaveAssets();
@@ -109,6 +113,7 @@ namespace MafiaTopDown.Editor
             var dockCourierActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/DockCourier.asset");
             var ledgerRunActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/LedgerRun.asset");
             var chopDeliveryActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/ChopDelivery.asset");
+            var docksideMuscleActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/DocksideMuscle.asset");
 
             EnsureFolder("Assets/Game/Materials");
             var asphalt = GetOrCreateMaterial("Assets/Game/Materials/Asphalt.mat", new Color(0.09f, 0.105f, 0.125f), 0.86f, 0.02f);
@@ -308,6 +313,7 @@ namespace MafiaTopDown.Editor
             CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(0f, 1f, -12.8f));
             CreateSpawnPoint("FromRailYardGatePoint", "FromRailYardGate", new Vector3(6.8f, 1f, -1.6f));
             CreateSpawnPoint("FromWarehouseInteriorPoint", "FromWarehouseInterior", new Vector3(-5.15f, 1f, -9.9f));
+            CreateSpawnPoint("FromSocialClubInteriorPoint", "FromSocialClubInterior", new Vector3(5.15f, 1f, 5.4f));
 
             var campaignSystems = new GameObject("CampaignSystems");
             var saveGameFileService = campaignSystems.AddComponent<SaveGameFileService>();
@@ -571,6 +577,23 @@ namespace MafiaTopDown.Editor
                 "WarehouseInteriorSpawn",
                 sceneTransitionController);
 
+            CreateVisualPrimitive(
+                PrimitiveType.Cube,
+                "HarborSocialClubApron",
+                new Vector3(5.82f, 0.145f, 5.4f),
+                new Vector3(1.9f, 0.08f, 2.25f),
+                sidewalk);
+            CreateFreeRoamSceneDoor(
+                "HarborSocialClubDoor",
+                new Vector3(6.72f, 1.1f, 5.4f),
+                new Vector3(0.35f, 2.2f, 1.85f),
+                officeSign,
+                "Enter harbor social club",
+                "District_01",
+                "Interior_Docks_SocialClub_01",
+                "SocialClubInteriorSpawn",
+                sceneTransitionController);
+
             var pierNightWatchRoot = CreateObjectiveActionMissionRoot(
                 "PierNightWatchMissionRoot",
                 "PierWatchMarker",
@@ -646,6 +669,26 @@ namespace MafiaTopDown.Editor
             SetObjectReference(chopDeliveryCompleteInteractable, "activityAsset", chopDeliveryActivity);
             SetObjectReference(chopDeliveryCompleteInteractable, "activityProgressionController", activityProgressionController);
             SetStringValue(chopDeliveryCompleteInteractable, "promptText", "Drop the chopped cargo");
+
+            var docksideMuscleStart = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            docksideMuscleStart.name = "DocksideMuscleStart";
+            docksideMuscleStart.transform.position = new Vector3(5.6f, 1f, 5.4f);
+            docksideMuscleStart.transform.localScale = new Vector3(1.35f, 1.55f, 1.35f);
+            AssignMaterial(docksideMuscleStart, officeSign);
+            var docksideMuscleStartInteractable = docksideMuscleStart.AddComponent<ActivityStartInteractable>();
+            SetObjectReference(docksideMuscleStartInteractable, "activityAsset", docksideMuscleActivity);
+            SetObjectReference(docksideMuscleStartInteractable, "activityProgressionController", activityProgressionController);
+            SetStringValue(docksideMuscleStartInteractable, "promptText", "Take dockside muscle job");
+
+            var docksideMuscleComplete = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            docksideMuscleComplete.name = "DocksideMuscleComplete";
+            docksideMuscleComplete.transform.position = new Vector3(-12.4f, 1f, 6.8f);
+            docksideMuscleComplete.transform.localScale = new Vector3(1.2f, 1.4f, 1.2f);
+            AssignMaterial(docksideMuscleComplete, brass);
+            var docksideMuscleCompleteInteractable = docksideMuscleComplete.AddComponent<ActivityCompleteInteractable>();
+            SetObjectReference(docksideMuscleCompleteInteractable, "activityAsset", docksideMuscleActivity);
+            SetObjectReference(docksideMuscleCompleteInteractable, "activityProgressionController", activityProgressionController);
+            SetStringValue(docksideMuscleCompleteInteractable, "promptText", "Collect the dockside envelope");
 
             EditorSceneManager.SaveScene(scene);
         }
@@ -1434,6 +1477,74 @@ namespace MafiaTopDown.Editor
                 new Color(0.82f, 0.58f, 0.24f));
         }
 
+        private static void BuildDocksSocialClubInteriorScene()
+        {
+            BuildSupplementalInteriorScene(
+                "Assets/Game/Scenes/Interior_Docks_SocialClub_01.unity",
+                "Interior_Docks_SocialClub_01",
+                "SocialClubInteriorSpawn",
+                "District_01",
+                "FromSocialClubInterior",
+                "Leave the harbor social club",
+                "SocialClub",
+                new Color(0.075f, 0.055f, 0.05f),
+                new Color(0.16f, 0.105f, 0.08f),
+                new Color(0.24f, 0.13f, 0.095f),
+                new Color(0.42f, 0.25f, 0.13f),
+                new Color(0.72f, 0.45f, 0.2f));
+        }
+
+        private static void BuildBusinessUnionHallInteriorScene()
+        {
+            BuildSupplementalInteriorScene(
+                "Assets/Game/Scenes/Interior_Business_UnionHall_01.unity",
+                "Interior_Business_UnionHall_01",
+                "UnionHallInteriorSpawn",
+                "District_BusinessCore_01",
+                "FromUnionHallInterior",
+                "Leave the union hall",
+                "UnionHall",
+                new Color(0.08f, 0.075f, 0.07f),
+                new Color(0.15f, 0.135f, 0.11f),
+                new Color(0.24f, 0.21f, 0.17f),
+                new Color(0.45f, 0.34f, 0.18f),
+                new Color(0.18f, 0.2f, 0.22f));
+        }
+
+        private static void BuildOldQuarterDinerInteriorScene()
+        {
+            BuildSupplementalInteriorScene(
+                "Assets/Game/Scenes/Interior_OldQuarter_Diner_01.unity",
+                "Interior_OldQuarter_Diner_01",
+                "DinerInteriorSpawn",
+                "District_OldQuarter_01",
+                "FromDinerInterior",
+                "Leave Cafe Sava",
+                "Diner",
+                new Color(0.09f, 0.07f, 0.06f),
+                new Color(0.18f, 0.14f, 0.105f),
+                new Color(0.28f, 0.19f, 0.15f),
+                new Color(0.56f, 0.37f, 0.18f),
+                new Color(0.74f, 0.58f, 0.38f));
+        }
+
+        private static void BuildRailYardLockerInteriorScene()
+        {
+            BuildSupplementalInteriorScene(
+                "Assets/Game/Scenes/Interior_RailYard_LockerRoom_01.unity",
+                "Interior_RailYard_LockerRoom_01",
+                "LockerInteriorSpawn",
+                "District_RailYard_01",
+                "FromLockerInterior",
+                "Leave the locker room",
+                "LockerRoom",
+                new Color(0.055f, 0.065f, 0.075f),
+                new Color(0.105f, 0.11f, 0.105f),
+                new Color(0.15f, 0.17f, 0.17f),
+                new Color(0.26f, 0.2f, 0.14f),
+                new Color(0.76f, 0.5f, 0.22f));
+        }
+
         private static void BuildSupplementalInteriorScene(
             string scenePath,
             string sceneName,
@@ -1577,6 +1688,62 @@ namespace MafiaTopDown.Editor
                     CreateNoirActor("TenementNeighbor", new Vector3(-5.1f, 1f, 4.4f), contactCoat, null, false);
                     break;
 
+                case "SocialClub":
+                    CreateVisualPrimitive(PrimitiveType.Cube, "SocialClubBar", new Vector3(-4.5f, 0.95f, 2.4f), new Vector3(1.4f, 1.6f, 5.2f), wood);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "SocialClubBackBarMirror", new Vector3(-7.95f, 2.6f, 2.4f), new Vector3(0.08f, 2.2f, 4.8f), glow);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "SocialClubCardTable", new Vector3(1.6f, 0.78f, 1.8f), new Vector3(2.2f, 0.95f, 2.2f), trim);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "SocialClubStage", new Vector3(4.8f, 0.42f, 5.1f), new Vector3(3.2f, 0.35f, 1.7f), accent);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "SocialClubSafe", new Vector3(5.8f, 1.15f, -3.8f), new Vector3(1.1f, 1.8f, 1.1f), metal);
+                    for (var chair = 0; chair < 6; chair += 1)
+                    {
+                        CreateVisualPrimitive(PrimitiveType.Cylinder, "SocialClubStool_" + chair, new Vector3(-2.5f, 0.65f, -1.9f + (chair * 0.85f)), new Vector3(0.28f, 0.45f, 0.28f), accent);
+                    }
+
+                    CreateNoirActor("SocialClubBoss", new Vector3(2.8f, 1f, -2.6f), contactCoat, null, false);
+                    break;
+
+                case "UnionHall":
+                    CreateVisualPrimitive(PrimitiveType.Cube, "UnionHallPodium", new Vector3(0f, 0.95f, 5.2f), new Vector3(1.5f, 1.7f, 1f), wood);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "UnionHallBanner", new Vector3(0f, 3.35f, 7.96f), new Vector3(5.8f, 1f, 0.08f), accent);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "UnionHallNoticeBoard", new Vector3(-7.95f, 2.6f, 0.8f), new Vector3(0.08f, 2.7f, 4.4f), paper);
+                    for (var row = 0; row < 4; row += 1)
+                    {
+                        CreateVisualPrimitive(PrimitiveType.Cube, "UnionHallBench_" + row, new Vector3(-3.6f + (row * 2.4f), 0.62f, -0.8f), new Vector3(1.7f, 0.72f, 0.45f), wood);
+                        CreateVisualPrimitive(PrimitiveType.Cube, "UnionHallBackrest_" + row, new Vector3(-3.6f + (row * 2.4f), 1.02f, -1.1f), new Vector3(1.7f, 0.55f, 0.18f), wood);
+                    }
+
+                    CreateVisualPrimitive(PrimitiveType.Cube, "UnionHallDuesBox", new Vector3(4.8f, 1f, 4.4f), new Vector3(1.2f, 1.4f, 1f), metal);
+                    CreateNoirActor("UnionHallSteward", new Vector3(-3.8f, 1f, 4.3f), contactCoat, null, false);
+                    break;
+
+                case "Diner":
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DinerCounter", new Vector3(-3.8f, 0.9f, 1.8f), new Vector3(1.4f, 1.35f, 5.6f), wood);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DinerCoffeeUrn", new Vector3(-4.2f, 1.85f, 3.2f), new Vector3(0.75f, 0.85f, 0.75f), metal);
+                    for (var stool = 0; stool < 5; stool += 1)
+                    {
+                        CreateVisualPrimitive(PrimitiveType.Cylinder, "DinerStool_" + stool, new Vector3(-1.9f, 0.65f, -1.4f + (stool * 1.05f)), new Vector3(0.28f, 0.45f, 0.28f), accent);
+                    }
+
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DinerBackBooth", new Vector3(4.4f, 0.75f, 4.6f), new Vector3(3.2f, 1f, 1.3f), trim);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DinerNeonMenu", new Vector3(0f, 3.25f, 7.96f), new Vector3(4.4f, 0.85f, 0.08f), glow);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "DinerPieCase", new Vector3(2.4f, 1.05f, -3.8f), new Vector3(1.8f, 1.2f, 1f), paper);
+                    CreateNoirActor("DinerOwner", new Vector3(-5.4f, 1f, 4.4f), contactCoat, null, false);
+                    break;
+
+                case "LockerRoom":
+                    for (var locker = 0; locker < 5; locker += 1)
+                    {
+                        CreateVisualPrimitive(PrimitiveType.Cube, "LockerRoomLocker_" + locker, new Vector3(-7.6f, 1.65f, -4.2f + (locker * 1.2f)), new Vector3(0.82f, 2.7f, 0.8f), metal);
+                    }
+
+                    CreateVisualPrimitive(PrimitiveType.Cube, "LockerRoomToolBench", new Vector3(1.8f, 0.82f, 2.5f), new Vector3(4.2f, 1f, 1.4f), wood);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "LockerRoomWeaponCrate", new Vector3(5.1f, 0.65f, -3.2f), new Vector3(1.5f, 1.1f, 1.2f), accent);
+                    CreateVisualPrimitive(PrimitiveType.Cylinder, "LockerRoomStove", new Vector3(-2.6f, 1.05f, 4.8f), new Vector3(0.55f, 1f, 0.55f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cylinder, "LockerRoomStovePipe", new Vector3(-2.6f, 3.1f, 4.8f), new Vector3(0.18f, 2.4f, 0.18f), metal);
+                    CreateVisualPrimitive(PrimitiveType.Cube, "LockerRoomShiftBoard", new Vector3(0f, 2.9f, 7.96f), new Vector3(4.8f, 2.1f, 0.08f), paper);
+                    CreateNoirActor("LockerRoomMechanic", new Vector3(3.7f, 1f, 4.1f), contactCoat, null, false);
+                    break;
+
                 default:
                     CreateVisualPrimitive(PrimitiveType.Cube, "DispatchMapTable", new Vector3(-1.2f, 0.9f, 2.3f), new Vector3(3.2f, 1.2f, 1.8f), wood);
                     CreateVisualPrimitive(PrimitiveType.Cube, "DispatchRouteMap", new Vector3(-1.2f, 1.58f, 2.3f), new Vector3(2.65f, 0.08f, 1.3f), paper);
@@ -1600,6 +1767,7 @@ namespace MafiaTopDown.Editor
             var bookkeeperDialogue = AssetDatabase.LoadAssetAtPath<DialogueSequenceAsset>("Assets/Game/Data/Dialogues/BookkeeperWarning.asset");
             var dockCourierActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/DockCourier.asset");
             var ledgerRunActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/LedgerRun.asset");
+            var unionGetawayActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/UnionGetaway.asset");
             var unionCrackdownMission = AssetDatabase.LoadAssetAtPath<MissionDefinitionAsset>("Assets/Game/Data/Missions/UnionCrackdown.asset");
 
             EnsureFolder("Assets/Game/Materials");
@@ -1693,6 +1861,7 @@ namespace MafiaTopDown.Editor
             CreateSpawnPoint("FromOldQuarterGatePoint", "FromOldQuarterGate", new Vector3(12f, 1f, 0f));
             CreateSpawnPoint("FromBookkeeperInteriorPoint", "FromBookkeeperInterior", new Vector3(5.4f, 1f, -3.2f));
             CreateSpawnPoint("FromPrintShopInteriorPoint", "FromPrintShopInterior", new Vector3(-5.35f, 1f, -10.6f));
+            CreateSpawnPoint("FromUnionHallInteriorPoint", "FromUnionHallInterior", new Vector3(5.35f, 1f, 8.4f));
 
             CreateTravelGate(
                 "ToDocksGate",
@@ -1758,6 +1927,23 @@ namespace MafiaTopDown.Editor
                 "District_BusinessCore_01",
                 "Interior_Business_PrintShop_01",
                 "PrintShopInteriorSpawn",
+                runtime.SceneTransitionController);
+
+            CreateVisualPrimitive(
+                PrimitiveType.Cube,
+                "UnionHallApron",
+                new Vector3(6.55f, 0.145f, 8.4f),
+                new Vector3(1.75f, 0.08f, 2.2f),
+                sidewalk);
+            CreateFreeRoamSceneDoor(
+                "UnionHallDoor",
+                new Vector3(7.55f, 1.1f, 8.4f),
+                new Vector3(0.35f, 2.2f, 1.85f),
+                officeSign,
+                "Enter union hall",
+                "District_BusinessCore_01",
+                "Interior_Business_UnionHall_01",
+                "UnionHallInteriorSpawn",
                 runtime.SceneTransitionController);
 
             CreateStaticVehicle("BusinessSedan", new Vector3(3.8f, 0.72f, 6.5f), new Vector3(1.8f, 0.95f, 4f), new Color(0.12f, 0.12f, 0.14f), metal, windowGlow);
@@ -1841,6 +2027,26 @@ namespace MafiaTopDown.Editor
             SetObjectReference(ledgerRunStartInteractable, "activityProgressionController", runtime.ActivityProgressionController);
             SetStringValue(ledgerRunStartInteractable, "promptText", "Take ledger run");
 
+            var unionGetawayStart = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            unionGetawayStart.name = "UnionGetawayStart";
+            unionGetawayStart.transform.position = new Vector3(5.6f, 1f, 8.4f);
+            unionGetawayStart.transform.localScale = new Vector3(1.35f, 1.55f, 1.35f);
+            AssignMaterial(unionGetawayStart, officeSign);
+            var unionGetawayStartInteractable = unionGetawayStart.AddComponent<ActivityStartInteractable>();
+            SetObjectReference(unionGetawayStartInteractable, "activityAsset", unionGetawayActivity);
+            SetObjectReference(unionGetawayStartInteractable, "activityProgressionController", runtime.ActivityProgressionController);
+            SetStringValue(unionGetawayStartInteractable, "promptText", "Take union getaway contract");
+
+            var unionGetawayComplete = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            unionGetawayComplete.name = "UnionGetawayComplete";
+            unionGetawayComplete.transform.position = new Vector3(-1.2f, 1f, -14.0f);
+            unionGetawayComplete.transform.localScale = new Vector3(1.15f, 1.45f, 1.15f);
+            AssignMaterial(unionGetawayComplete, brass);
+            var unionGetawayCompleteInteractable = unionGetawayComplete.AddComponent<ActivityCompleteInteractable>();
+            SetObjectReference(unionGetawayCompleteInteractable, "activityAsset", unionGetawayActivity);
+            SetObjectReference(unionGetawayCompleteInteractable, "activityProgressionController", runtime.ActivityProgressionController);
+            SetStringValue(unionGetawayCompleteInteractable, "promptText", "Finish the getaway handoff");
+
             EditorSceneManager.SaveScene(scene);
         }
 
@@ -1853,6 +2059,7 @@ namespace MafiaTopDown.Editor
             var chapelDebtMission = AssetDatabase.LoadAssetAtPath<MissionDefinitionAsset>("Assets/Game/Data/Missions/ChapelDebt.asset");
             var debtorDialogue = AssetDatabase.LoadAssetAtPath<DialogueSequenceAsset>("Assets/Game/Data/Dialogues/DebtorThreat.asset");
             var lookoutActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/LookoutRun.asset");
+            var chapelCollectionActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/ChapelCollection.asset");
             var chapelAshMission = AssetDatabase.LoadAssetAtPath<MissionDefinitionAsset>("Assets/Game/Data/Missions/ChapelAsh.asset");
 
             EnsureFolder("Assets/Game/Materials");
@@ -1933,6 +2140,7 @@ namespace MafiaTopDown.Editor
             CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(12.2f, 1f, 0f));
             CreateSpawnPoint("FromChapelInteriorPoint", "FromChapelInterior", new Vector3(-5.2f, 1f, 8.4f));
             CreateSpawnPoint("FromTenementInteriorPoint", "FromTenementInterior", new Vector3(5.35f, 1f, -2.2f));
+            CreateSpawnPoint("FromDinerInteriorPoint", "FromDinerInterior", new Vector3(5.35f, 1f, 6.4f));
 
             CreateTravelGate(
                 "ToBusinessCoreGate",
@@ -2000,6 +2208,23 @@ namespace MafiaTopDown.Editor
                 "TenementInteriorSpawn",
                 runtime.SceneTransitionController);
 
+            CreateVisualPrimitive(
+                PrimitiveType.Cube,
+                "CafeSavaApron",
+                new Vector3(5.85f, 0.145f, 6.4f),
+                new Vector3(1.75f, 0.08f, 2.05f),
+                sidewalk);
+            CreateFreeRoamSceneDoor(
+                "CafeSavaDoor",
+                new Vector3(6.85f, 1.1f, 6.4f),
+                new Vector3(0.35f, 2.2f, 1.75f),
+                sign,
+                "Enter Cafe Sava",
+                "District_OldQuarter_01",
+                "Interior_OldQuarter_Diner_01",
+                "DinerInteriorSpawn",
+                runtime.SceneTransitionController);
+
             CreateStaticVehicle("QuarterCoupe", new Vector3(-2.9f, 0.72f, 7.4f), new Vector3(1.7f, 0.92f, 3.8f), new Color(0.19f, 0.07f, 0.05f), metal, windowGlow);
             CreateEnemyGuard("QuarterCollector", new Vector3(2.6f, 1f, 9.2f), enemyCoat, runtime.PlayerController, runtime.PlayerHealth);
 
@@ -2058,6 +2283,26 @@ namespace MafiaTopDown.Editor
             SetObjectReference(lookoutCompleteInteractable, "activityProgressionController", runtime.ActivityProgressionController);
             SetStringValue(lookoutCompleteInteractable, "promptText", "Report the church lookout");
 
+            var chapelCollectionStart = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            chapelCollectionStart.name = "ChapelCollectionStart";
+            chapelCollectionStart.transform.position = new Vector3(5.6f, 1f, 6.4f);
+            chapelCollectionStart.transform.localScale = new Vector3(1.3f, 1.5f, 1.3f);
+            AssignMaterial(chapelCollectionStart, sign);
+            var chapelCollectionStartInteractable = chapelCollectionStart.AddComponent<ActivityStartInteractable>();
+            SetObjectReference(chapelCollectionStartInteractable, "activityAsset", chapelCollectionActivity);
+            SetObjectReference(chapelCollectionStartInteractable, "activityProgressionController", runtime.ActivityProgressionController);
+            SetStringValue(chapelCollectionStartInteractable, "promptText", "Take chapel collection");
+
+            var chapelCollectionComplete = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            chapelCollectionComplete.name = "ChapelCollectionComplete";
+            chapelCollectionComplete.transform.position = new Vector3(-5.8f, 1f, 13.2f);
+            chapelCollectionComplete.transform.localScale = new Vector3(1.15f, 1.4f, 1.15f);
+            AssignMaterial(chapelCollectionComplete, brass);
+            var chapelCollectionCompleteInteractable = chapelCollectionComplete.AddComponent<ActivityCompleteInteractable>();
+            SetObjectReference(chapelCollectionCompleteInteractable, "activityAsset", chapelCollectionActivity);
+            SetObjectReference(chapelCollectionCompleteInteractable, "activityProgressionController", runtime.ActivityProgressionController);
+            SetStringValue(chapelCollectionCompleteInteractable, "promptText", "Deliver the chapel collection");
+
             EditorSceneManager.SaveScene(scene);
         }
 
@@ -2069,6 +2314,7 @@ namespace MafiaTopDown.Editor
             var chapterAsset = AssetDatabase.LoadAssetAtPath<CampaignChapterAsset>("Assets/Game/Data/Chapters/ActOne.asset");
             var yardHeatMission = AssetDatabase.LoadAssetAtPath<MissionDefinitionAsset>("Assets/Game/Data/Missions/YardHeat.asset");
             var chopDeliveryActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/ChopDelivery.asset");
+            var garagePrepActivity = AssetDatabase.LoadAssetAtPath<ActivityDefinitionAsset>("Assets/Game/Data/Activities/GaragePrep.asset");
             var yardBetrayalMission = AssetDatabase.LoadAssetAtPath<MissionDefinitionAsset>("Assets/Game/Data/Missions/YardBetrayal.asset");
 
             EnsureFolder("Assets/Game/Materials");
@@ -2146,6 +2392,7 @@ namespace MafiaTopDown.Editor
             CreateSpawnPoint("FromOldQuarterGatePoint", "FromOldQuarterGate", new Vector3(-2.6f, 1f, -12.2f));
             CreateSpawnPoint("FromGarageInteriorPoint", "FromGarageInterior", new Vector3(-5.2f, 1f, -6.8f));
             CreateSpawnPoint("FromDispatchInteriorPoint", "FromDispatchInterior", new Vector3(-5.15f, 1f, 9.2f));
+            CreateSpawnPoint("FromLockerInteriorPoint", "FromLockerInterior", new Vector3(5.35f, 1f, -1.4f));
 
             CreateTravelGate(
                 "ToDocksFromRailGate",
@@ -2194,6 +2441,23 @@ namespace MafiaTopDown.Editor
                 "District_RailYard_01",
                 "Interior_RailYard_Dispatch_01",
                 "DispatchInteriorSpawn",
+                runtime.SceneTransitionController);
+
+            CreateVisualPrimitive(
+                PrimitiveType.Cube,
+                "LockerRoomApron",
+                new Vector3(5.75f, 0.145f, -1.4f),
+                new Vector3(1.9f, 0.08f, 2.15f),
+                gravel);
+            CreateFreeRoamSceneDoor(
+                "LockerRoomDoor",
+                new Vector3(6.85f, 1.1f, -1.4f),
+                new Vector3(0.35f, 2.2f, 1.85f),
+                sign,
+                "Enter yard locker room",
+                "District_RailYard_01",
+                "Interior_RailYard_LockerRoom_01",
+                "LockerInteriorSpawn",
                 runtime.SceneTransitionController);
 
             var yardMissionRoot = new GameObject("YardHeatMissionRoot");
@@ -2252,6 +2516,26 @@ namespace MafiaTopDown.Editor
             SetObjectReference(chopDeliveryStartInteractable, "activityProgressionController", runtime.ActivityProgressionController);
             SetStringValue(chopDeliveryStartInteractable, "promptText", "Take chop delivery");
 
+            var garagePrepStart = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            garagePrepStart.name = "GaragePrepStart";
+            garagePrepStart.transform.position = new Vector3(5.7f, 1f, -1.4f);
+            garagePrepStart.transform.localScale = new Vector3(1.35f, 1.5f, 1.35f);
+            AssignMaterial(garagePrepStart, sign);
+            var garagePrepStartInteractable = garagePrepStart.AddComponent<ActivityStartInteractable>();
+            SetObjectReference(garagePrepStartInteractable, "activityAsset", garagePrepActivity);
+            SetObjectReference(garagePrepStartInteractable, "activityProgressionController", runtime.ActivityProgressionController);
+            SetStringValue(garagePrepStartInteractable, "promptText", "Take garage prep job");
+
+            var garagePrepComplete = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            garagePrepComplete.name = "GaragePrepComplete";
+            garagePrepComplete.transform.position = new Vector3(-4.9f, 1f, -8.4f);
+            garagePrepComplete.transform.localScale = new Vector3(1.15f, 1.4f, 1.15f);
+            AssignMaterial(garagePrepComplete, brass);
+            var garagePrepCompleteInteractable = garagePrepComplete.AddComponent<ActivityCompleteInteractable>();
+            SetObjectReference(garagePrepCompleteInteractable, "activityAsset", garagePrepActivity);
+            SetObjectReference(garagePrepCompleteInteractable, "activityProgressionController", runtime.ActivityProgressionController);
+            SetStringValue(garagePrepCompleteInteractable, "promptText", "Finish garage prep");
+
             EditorSceneManager.SaveScene(scene);
         }
 
@@ -2271,6 +2555,10 @@ namespace MafiaTopDown.Editor
                 new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_RailYard_Garage_01.unity", true),
                 new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_RailYard_Dispatch_01.unity", true),
                 new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_Docks_Warehouse_01.unity", true),
+                new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_Docks_SocialClub_01.unity", true),
+                new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_Business_UnionHall_01.unity", true),
+                new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_OldQuarter_Diner_01.unity", true),
+                new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_RailYard_LockerRoom_01.unity", true),
                 new EditorBuildSettingsScene("Assets/Game/Scenes/Interior_BackOffice_01.unity", true)
             };
         }

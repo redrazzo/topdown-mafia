@@ -23,6 +23,7 @@ MonoBehaviour:
   - old-quarter
   unlockActivityIds:
   - activity-lookout-run
+  - activity-union-getaway
   stages:
   - Id: meet-bookkeeper
     Title: Meet the bookkeeper

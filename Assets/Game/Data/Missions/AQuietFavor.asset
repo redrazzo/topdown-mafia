@@ -23,6 +23,7 @@ MonoBehaviour:
   - business-core
   unlockActivityIds:
   - activity-ledger-run
+  - activity-dockside-muscle
   stages:
   - Id: pickup
     Title: Take the sedan

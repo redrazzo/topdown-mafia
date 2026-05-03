@@ -23,6 +23,7 @@ MonoBehaviour:
   - rail-yard
   unlockActivityIds:
   - activity-chop-delivery
+  - activity-chapel-collection
   stages:
   - Id: find-debtor
     Title: Find the debtor

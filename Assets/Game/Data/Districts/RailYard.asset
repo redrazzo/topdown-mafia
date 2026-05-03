@@ -22,3 +22,4 @@ MonoBehaviour:
   - landmark-ironline-garage
   activityIds:
   - activity-chop-delivery
+  - activity-garage-prep

@@ -20,7 +20,8 @@ MonoBehaviour:
   cashReward: 350
   reputationDelta: 2
   unlockDistrictIds: []
-  unlockActivityIds: []
+  unlockActivityIds:
+  - activity-garage-prep
   stages:
   - Id: check-garage
     Title: Check the garage
