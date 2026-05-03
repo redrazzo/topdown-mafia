@@ -35,8 +35,8 @@ public sealed class SaveSlotDescriptorTests
         var descriptor = SaveSlotDescriptor.FromSaveGameData(1, save, 99L);
 
         Assert.That(descriptor.Exists, Is.True);
-        Assert.That(descriptor.DisplayName, Is.EqualTo("act-1 - quiet-favor"));
-        Assert.That(descriptor.Summary, Is.EqualTo("quiet-favor | District_Docks | $125 | Heat 2"));
+        Assert.That(descriptor.DisplayName, Is.EqualTo("Act I - Quiet Favor"));
+        Assert.That(descriptor.Summary, Is.EqualTo("Quiet Favor | Docks | $125 | Heat 2"));
         Assert.That(descriptor.LastWriteUtcTicks, Is.EqualTo(99L));
     }
 }

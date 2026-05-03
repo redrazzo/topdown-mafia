@@ -90,6 +90,8 @@ namespace MafiaTopDown.Editor
             var scene = OpenOrCreateScene("Assets/Game/Scenes/Boot.unity");
             ClearScene(scene);
 
+            CreateBootTitleDiorama();
+
             var bootRoot = new GameObject("BootFlow");
             var saveGameFileService = bootRoot.AddComponent<SaveGameFileService>();
             SetStringValue(saveGameFileService, "defaultSceneName", "District_01");
@@ -99,6 +101,177 @@ namespace MafiaTopDown.Editor
             SetObjectReference(bootFlowController, "saveGameFileService", saveGameFileService);
 
             EditorSceneManager.SaveScene(scene);
+        }
+
+        private static void CreateBootTitleDiorama()
+        {
+            EnsureFolder("Assets/Game/Materials");
+            var asphalt = GetOrCreateMaterial("Assets/Game/Materials/MenuWetAsphalt.mat", new Color(0.045f, 0.052f, 0.058f), 0.9f, 0.02f);
+            var sidewalk = GetOrCreateMaterial("Assets/Game/Materials/MenuRainSidewalk.mat", new Color(0.19f, 0.18f, 0.16f), 0.42f, 0f);
+            var brick = GetOrCreateMaterial("Assets/Game/Materials/MenuSootBrick.mat", new Color(0.17f, 0.075f, 0.055f), 0.24f, 0f);
+            var roof = GetOrCreateMaterial("Assets/Game/Materials/MenuTarRoof.mat", new Color(0.035f, 0.037f, 0.04f), 0.26f, 0f);
+            var metal = GetOrCreateMaterial("Assets/Game/Materials/MenuOiledMetal.mat", new Color(0.16f, 0.17f, 0.17f), 0.72f, 0.65f);
+            var brass = GetOrCreateMaterial("Assets/Game/Materials/MenuAgedBrass.mat", new Color(0.62f, 0.42f, 0.16f), 0.72f, 0.22f);
+            var glow = GetOrCreateMaterial("Assets/Game/Materials/MenuWindowGlow.mat", new Color(1f, 0.70f, 0.32f), 0.88f, 0.04f, new Color(1f, 0.54f, 0.18f) * 3.6f);
+            var neon = GetOrCreateMaterial("Assets/Game/Materials/MenuRedNeon.mat", new Color(0.88f, 0.22f, 0.11f), 0.8f, 0.08f, new Color(1f, 0.14f, 0.05f) * 3.4f);
+            var water = GetOrCreateMaterial("Assets/Game/Materials/MenuBlackHarborWater.mat", new Color(0.03f, 0.055f, 0.065f), 0.95f, 0.02f);
+            var wood = GetOrCreateMaterial("Assets/Game/Materials/MenuWetWood.mat", new Color(0.28f, 0.17f, 0.095f), 0.46f, 0f);
+            var rain = GetOrCreateMaterial("Assets/Game/Materials/MenuRainStreak.mat", new Color(0.34f, 0.42f, 0.46f, 0.55f), 0.58f, 0f);
+
+            ApplyExteriorAtmosphere(
+                new Color(0.065f, 0.072f, 0.078f),
+                new Color(0.035f, 0.044f, 0.050f),
+                0.016f,
+                new Color(0.82f, 0.68f, 0.52f),
+                0.55f,
+                Quaternion.Euler(34f, -42f, 0f));
+
+            var root = new GameObject("BootTitleDiorama_ReadyAssetHarbor");
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootHarborWaterPlane", new Vector3(16f, -0.04f, 6.5f), new Vector3(22f, 0.04f, 33f), water).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootMainWetStreet", new Vector3(-1.5f, 0.02f, 0f), new Vector3(13.5f, 0.04f, 35f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootLeftSidewalk", new Vector3(-9.2f, 0.11f, 0f), new Vector3(4.2f, 0.18f, 35f), sidewalk).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootRightPierWalk", new Vector3(6.7f, 0.12f, 0f), new Vector3(3.0f, 0.2f, 35f), sidewalk).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootHarborPierFace", new Vector3(8.4f, 0.38f, 0f), new Vector3(0.55f, 0.72f, 35f), wood).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootWetCrossStreet", new Vector3(-1.5f, 0.03f, 4.4f), new Vector3(28f, 0.035f, 6.2f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootStreetGoldCenterLineA", new Vector3(-1.5f, 0.065f, -9f), new Vector3(0.28f, 0.025f, 4.2f), brass).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootStreetGoldCenterLineB", new Vector3(-1.5f, 0.065f, 2.5f), new Vector3(0.28f, 0.025f, 4.2f), brass).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootStreetGoldCenterLineC", new Vector3(-1.5f, 0.065f, 13.8f), new Vector3(0.28f, 0.025f, 4.2f), brass).transform.SetParent(root.transform, true);
+
+            EnvironmentArtCatalog.CreateDocksBuilding(DocksBuildingRole.CornerShop, "BootReadyMorettiCafe", new Vector3(-12.1f, 0.05f, -10.4f), new Vector3(0f, 90f, 0f), new Vector3(2.35f, 2.55f, 2.35f), root.transform);
+            EnvironmentArtCatalog.CreateDocksBuilding(DocksBuildingRole.Warehouse, "BootReadyWarehouseNorth", new Vector3(-12.45f, 0.05f, 3.2f), new Vector3(0f, 90f, 0f), new Vector3(2.8f, 2.7f, 2.55f), root.transform);
+            EnvironmentArtCatalog.CreateDocksBuilding(DocksBuildingRole.OfficeBlock, "BootReadyHarborOffice", new Vector3(-12.35f, 0.05f, 14.1f), new Vector3(0f, 90f, 0f), new Vector3(2.45f, 2.65f, 2.45f), root.transform);
+            EnvironmentArtCatalog.CreateDocksBuilding(DocksBuildingRole.RowHouse, "BootReadyForegroundTenement", new Vector3(4.6f, 0.05f, 17.5f), new Vector3(0f, 180f, 0f), new Vector3(2.8f, 2.45f, 2.4f), root.transform);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitIndustrial", "detail-tank", "BootReadyFuelTank", new Vector3(10.6f, 0.08f, -8.8f), Vector3.zero, new Vector3(2.2f, 2.2f, 2.2f), root.transform);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "construction-light", "BootReadyWorkLight", new Vector3(4.3f, 0.08f, -12.5f), new Vector3(0f, 48f, 0f), new Vector3(1.45f, 1.45f, 1.45f), root.transform);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "light-curved-double", "BootReadyStreetLightLeft", new Vector3(-5.6f, 0.08f, -6.6f), new Vector3(0f, 90f, 0f), new Vector3(1.65f, 1.65f, 1.65f), root.transform);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "light-curved-double", "BootReadyStreetLightRight", new Vector3(4.9f, 0.08f, 7.8f), new Vector3(0f, -90f, 0f), new Vector3(1.65f, 1.65f, 1.65f), root.transform);
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootHeroLeftBrickFacade", new Vector3(-12.9f, 3.15f, -4.8f), new Vector3(1.25f, 6.3f, 13.5f), brick).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootHeroLeftRoofCap", new Vector3(-12.9f, 6.55f, -4.8f), new Vector3(1.45f, 0.32f, 13.9f), roof).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootHeroRightWarehouseWall", new Vector3(9.4f, 2.85f, 2.8f), new Vector3(1.25f, 5.7f, 16.2f), brick).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootHeroRightRoofCap", new Vector3(9.4f, 5.92f, 2.8f), new Vector3(1.45f, 0.32f, 16.7f), roof).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootBackAlleyBlock", new Vector3(1.2f, 3.8f, 18.2f), new Vector3(12.5f, 7.6f, 1.25f), brick).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootBackAlleyRoof", new Vector3(1.2f, 7.75f, 18.2f), new Vector3(12.9f, 0.35f, 1.45f), roof).transform.SetParent(root.transform, true);
+
+            for (var floor = 0; floor < 4; floor += 1)
+            {
+                var y = 1.45f + (floor * 1.22f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "BootRightBrickCourse_" + floor, new Vector3(8.70f, y, 2.8f), new Vector3(0.07f, 0.055f, 15.4f), roof).transform.SetParent(root.transform, true);
+            }
+
+            for (var bay = 0; bay < 5; bay += 1)
+            {
+                var z = -4.9f + (bay * 2.55f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "BootRightWindowFrameA_" + bay, new Vector3(8.67f, 3.15f, z), new Vector3(0.07f, 0.78f, 0.08f), metal).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "BootRightWindowFrameB_" + bay, new Vector3(8.67f, 3.15f, z + 0.56f), new Vector3(0.07f, 0.78f, 0.08f), metal).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "BootRightWindowSill_" + bay, new Vector3(8.66f, 2.74f, z + 0.28f), new Vector3(0.12f, 0.08f, 0.88f), brass).transform.SetParent(root.transform, true);
+            }
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootWarehouseGarageShutter", new Vector3(8.64f, 1.22f, -4.1f), new Vector3(0.12f, 1.72f, 2.55f), metal).transform.SetParent(root.transform, true);
+            for (var stripe = 0; stripe < 5; stripe += 1)
+            {
+                CreateVisualPrimitive(PrimitiveType.Cube, "BootWarehouseShutterSlat_" + stripe, new Vector3(8.56f, 0.62f + (stripe * 0.27f), -4.1f), new Vector3(0.08f, 0.035f, 2.42f), brass).transform.SetParent(root.transform, true);
+            }
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootWarehouseFireEscapeDeckA", new Vector3(8.50f, 3.62f, -1.0f), new Vector3(0.42f, 0.08f, 2.1f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootWarehouseFireEscapeDeckB", new Vector3(8.50f, 4.64f, 1.2f), new Vector3(0.42f, 0.08f, 2.1f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootWarehouseFireEscapeRailA", new Vector3(8.31f, 3.94f, -1.0f), new Vector3(0.055f, 0.58f, 2.1f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootWarehouseFireEscapeRailB", new Vector3(8.31f, 4.96f, 1.2f), new Vector3(0.055f, 0.58f, 2.1f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootWarehouseLadderA", new Vector3(8.24f, 4.22f, 0.08f), new Vector3(0.055f, 1.5f, 0.055f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootWarehouseLadderB", new Vector3(8.24f, 4.22f, 0.42f), new Vector3(0.055f, 1.5f, 0.055f), metal).transform.SetParent(root.transform, true);
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootRightWarehouseSignBacker", new Vector3(8.54f, 2.26f, 4.95f), new Vector3(0.12f, 0.72f, 2.85f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootRightWarehouseSignStripe", new Vector3(8.46f, 2.42f, 4.95f), new Vector3(0.08f, 0.10f, 2.45f), neon).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootRightWarehouseServiceGlow", new Vector3(8.45f, 1.18f, 5.95f), new Vector3(0.08f, 1.15f, 0.62f), glow).transform.SetParent(root.transform, true);
+
+            for (var index = 0; index < 7; index += 1)
+            {
+                var z = -10.2f + (index * 2.2f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "BootLeftWindowGlow_" + index, new Vector3(-12.22f, 3.2f + ((index % 2) * 1.55f), z), new Vector3(0.08f, 0.62f, 0.55f), glow).transform.SetParent(root.transform, true);
+            }
+
+            for (var index = 0; index < 8; index += 1)
+            {
+                var z = -5.1f + (index * 1.85f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "BootRightWarehouseWindow_" + index, new Vector3(8.74f, 3.05f + ((index % 3) * 0.9f), z), new Vector3(0.08f, 0.44f, 0.42f), glow).transform.SetParent(root.transform, true);
+            }
+
+            for (var index = 0; index < 6; index += 1)
+            {
+                var x = -4.4f + (index * 1.85f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "BootBackAlleyWindow_" + index, new Vector3(x, 4.2f + ((index % 2) * 1.3f), 17.52f), new Vector3(0.46f, 0.58f, 0.08f), glow).transform.SetParent(root.transform, true);
+            }
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootForegroundCafeAwning", new Vector3(-12.12f, 2.15f, -9.25f), new Vector3(1.35f, 0.18f, 2.35f), brass).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootForegroundWarehouseAwning", new Vector3(8.55f, 2.25f, 2.6f), new Vector3(1.7f, 0.18f, 3.2f), brass).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootOverheadWireA", new Vector3(0f, 5.9f, -5.4f), new Vector3(18f, 0.035f, 0.035f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootOverheadWireB", new Vector3(0f, 5.55f, 2.2f), new Vector3(18f, 0.035f, 0.035f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootOverheadWireC", new Vector3(0f, 6.15f, 10.6f), new Vector3(18f, 0.035f, 0.035f), metal).transform.SetParent(root.transform, true);
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootCafeSignBacker", new Vector3(-12.32f, 3.1f, -10.4f), new Vector3(0.16f, 0.78f, 3.25f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootCafeSignNeon", new Vector3(-12.15f, 3.16f, -10.4f), new Vector3(0.08f, 0.26f, 2.65f), neon).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootCafeDoorGlow", new Vector3(-12.05f, 1.2f, -9.15f), new Vector3(0.08f, 0.96f, 0.58f), glow).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootWarehouseLoadingGlow", new Vector3(-12.02f, 1.35f, 3.2f), new Vector3(0.08f, 1.7f, 1.35f), glow).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootBillboardBacker", new Vector3(2.2f, 4.8f, 13.8f), new Vector3(7.2f, 2.1f, 0.18f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootBillboardWarmFace", new Vector3(2.2f, 4.86f, 13.66f), new Vector3(6.65f, 1.55f, 0.08f), brass).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootBillboardTitleStripe", new Vector3(2.2f, 5.24f, 13.56f), new Vector3(5.8f, 0.12f, 0.08f), neon).transform.SetParent(root.transform, true);
+
+            CreateStaticVehicle("BootMenuSedan", new Vector3(0.8f, 0.72f, -4.6f), new Vector3(1.72f, 0.9f, 3.85f), new Color(0.055f, 0.052f, 0.048f), roof, glow);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootSedanWetReflection", new Vector3(0.8f, 0.075f, -4.6f), new Vector3(2.4f, 0.018f, 4.8f), water).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootSedanHeadlightConeLeft", new Vector3(0.38f, 0.11f, -8.9f), new Vector3(0.35f, 0.018f, 5.2f), glow).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootSedanHeadlightConeRight", new Vector3(1.22f, 0.11f, -8.9f), new Vector3(0.35f, 0.018f, 5.2f), glow).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootWetStreetReflectionLong", new Vector3(4.2f, 0.078f, -1.8f), new Vector3(0.42f, 0.018f, 13.5f), water).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootRightNeonReflection", new Vector3(6.8f, 0.082f, 2.6f), new Vector3(0.34f, 0.018f, 8.2f), neon).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootSteamVentA", new Vector3(-5.1f, 0.52f, -3.7f), new Vector3(0.24f, 0.88f, 0.24f), rain).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "BootSteamVentB", new Vector3(-4.85f, 0.78f, -3.45f), new Vector3(0.16f, 1.18f, 0.16f), rain).transform.SetParent(root.transform, true);
+
+            CreateBootRainField(root.transform, rain);
+            CreateBootMenuLight("BootCafeWarmPool", root.transform, new Vector3(-4.8f, 3.0f, -9.2f), new Color(1f, 0.58f, 0.22f), 8.2f, 3.4f);
+            CreateBootMenuLight("BootSedanHeadlampPool", root.transform, new Vector3(0.8f, 1.1f, -6.8f), new Color(1f, 0.76f, 0.44f), 7.4f, 2.5f);
+            CreateBootMenuLight("BootHarborSodiumPool", root.transform, new Vector3(5.0f, 3.4f, 7.8f), new Color(1f, 0.66f, 0.30f), 9.0f, 3.1f);
+
+            var cameraObject = new GameObject("Main Camera");
+            cameraObject.tag = "MainCamera";
+            cameraObject.transform.position = new Vector3(-4.85f, 2.95f, -13.2f);
+            cameraObject.transform.rotation = Quaternion.Euler(9.5f, 23.0f, 0f);
+            var camera = cameraObject.AddComponent<Camera>();
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color(0.010f, 0.012f, 0.014f);
+            camera.fieldOfView = 49f;
+            camera.nearClipPlane = 0.1f;
+            camera.farClipPlane = 120f;
+        }
+
+        private static void CreateBootRainField(Transform root, Material rainMaterial)
+        {
+            for (var index = 0; index < 84; index += 1)
+            {
+                var x = -14f + (StableNoise(index, 3) * 30f);
+                var y = 3.0f + (StableNoise(index, 7) * 7.5f);
+                var z = -16f + (StableNoise(index, 11) * 34f);
+                var streak = CreateVisualPrimitive(
+                    PrimitiveType.Cube,
+                    "BootRainStreak_" + index,
+                    new Vector3(x, y, z),
+                    new Vector3(0.025f, 0.72f + (StableNoise(index, 19) * 0.7f), 0.025f),
+                    rainMaterial);
+                streak.transform.SetParent(root, true);
+                streak.transform.rotation = Quaternion.Euler(0f, 0f, -12f);
+            }
+        }
+
+        private static void CreateBootMenuLight(string name, Transform root, Vector3 position, Color color, float range, float intensity)
+        {
+            var lightObject = new GameObject(name);
+            lightObject.transform.SetParent(root, true);
+            lightObject.transform.position = position;
+            var light = lightObject.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.color = color;
+            light.range = range;
+            light.intensity = intensity;
+            light.shadows = LightShadows.None;
         }
 
         private static void BuildDistrictScene()

@@ -55,8 +55,8 @@ namespace MafiaTopDown.Gameplay.Domain.Progression
                     return "No save data yet";
                 }
 
-                var mission = string.IsNullOrWhiteSpace(CurrentMissionId) ? "Free roam" : CurrentMissionId;
-                var scene = string.IsNullOrWhiteSpace(LastSceneName) ? "Unknown district" : LastSceneName;
+                var mission = string.IsNullOrWhiteSpace(CurrentMissionId) ? "Free Roam" : HumanizeIdentifier(CurrentMissionId);
+                var scene = HumanizeSceneName(LastSceneName);
                 return mission + " | " + scene + " | $" + Cash + " | Heat " + HeatLevel;
             }
         }
@@ -80,11 +80,11 @@ namespace MafiaTopDown.Gameplay.Domain.Progression
         {
             var label = string.IsNullOrWhiteSpace(saveGameData.CurrentChapterId)
                 ? "Open City"
-                : saveGameData.CurrentChapterId;
+                : HumanizeIdentifier(saveGameData.CurrentChapterId);
 
             if (!string.IsNullOrWhiteSpace(saveGameData.CurrentMissionId))
             {
-                label += " - " + saveGameData.CurrentMissionId;
+                label += " - " + HumanizeIdentifier(saveGameData.CurrentMissionId);
             }
 
             return new SaveSlotDescriptor(
@@ -98,6 +98,71 @@ namespace MafiaTopDown.Gameplay.Domain.Progression
                 cash: saveGameData.Cash,
                 heatLevel: saveGameData.HeatLevel,
                 lastWriteUtcTicks);
+        }
+
+        private static string HumanizeSceneName(string sceneName)
+        {
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                return "Unknown District";
+            }
+
+            switch (sceneName)
+            {
+                case "District_01":
+                case "District_Docks":
+                    return "Docks";
+                case "District_BusinessCore_01":
+                    return "Business Core";
+                case "District_OldQuarter_01":
+                    return "Old Quarter";
+                case "District_RailYard_01":
+                    return "Rail Yard";
+                case "Interior_BackOffice_01":
+                    return "Back Office";
+                default:
+                    return HumanizeIdentifier(sceneName);
+            }
+        }
+
+        private static string HumanizeIdentifier(string identifier)
+        {
+            if (string.IsNullOrWhiteSpace(identifier))
+            {
+                return string.Empty;
+            }
+
+            var normalized = identifier
+                .Replace("mission-", string.Empty)
+                .Replace("chapter-", string.Empty)
+                .Replace('_', '-');
+            var parts = normalized.Split('-');
+            for (var index = 0; index < parts.Length; index += 1)
+            {
+                parts[index] = HumanizePart(parts[index]);
+            }
+
+            return string.Join(" ", parts).Trim();
+        }
+
+        private static string HumanizePart(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
+
+            if (string.Equals(value, "i", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "I";
+            }
+
+            if (int.TryParse(value, out var number))
+            {
+                return number == 1 ? "I" : number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+            return char.ToUpperInvariant(value[0]) + value.Substring(1).ToLowerInvariant();
         }
     }
 }

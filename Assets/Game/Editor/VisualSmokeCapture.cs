@@ -40,6 +40,25 @@ namespace MafiaTopDown.Editor
             }
         }
 
+        public static void RunBatchBootCapture()
+        {
+            var outputRoot = Path.Combine(Application.dataPath, "..", "Builds", "Windows", "VisualSmoke");
+            Directory.CreateDirectory(outputRoot);
+
+            var scene = EditorSceneManager.OpenScene("Assets/Game/Scenes/Boot.unity");
+            var camera = Camera.main != null
+                ? Camera.main
+                : UnityEngine.Object.FindFirstObjectByType<Camera>();
+            if (camera == null)
+            {
+                throw new System.InvalidOperationException("No camera found in " + scene.path + ".");
+            }
+
+            var outputPath = Path.Combine(outputRoot, scene.name + ".png");
+            CaptureCamera(camera, outputPath);
+            Debug.Log("Boot visual smoke captured: " + outputPath);
+        }
+
         private static void CaptureCamera(Camera camera, string outputPath)
         {
             const int width = 1550;
