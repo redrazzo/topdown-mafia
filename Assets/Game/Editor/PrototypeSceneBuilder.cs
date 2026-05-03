@@ -345,13 +345,13 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.28f, 0.29f, 0.33f);
             camera.orthographic = false;
-            camera.fieldOfView = 42f;
+            camera.fieldOfView = 50f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 140f;
-            cameraRoot.transform.position = player.transform.position + new Vector3(0f, 20.5f, -7.4f);
+            cameraRoot.transform.position = player.transform.position + new Vector3(0f, 24.5f, -8.8f);
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            ConfigureNoirCamera(camera, topDownCamera, new Vector3(0f, 20.5f, -7.4f), 66f, -3f, 16f, 27f);
+            ConfigureNoirCamera(camera, topDownCamera, new Vector3(0f, 24.5f, -8.8f), 68f, -3f, 20f, 33f);
 
             var sceneTransitionControllerObject = new GameObject("SceneTransitionController");
             var sceneTransitionController = sceneTransitionControllerObject.AddComponent<SceneTransitionController>();
@@ -2909,14 +2909,14 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = backgroundColor;
             camera.orthographic = false;
-            camera.fieldOfView = 43f;
+            camera.fieldOfView = 50f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 160f;
-            var tunedDistrictCameraOffset = new Vector3(cameraOffset.x - 0.1f, Mathf.Clamp(cameraOffset.y + 2.8f, 19.2f, 23.5f), Mathf.Min(cameraOffset.z - 0.8f, -8.2f));
+            var tunedDistrictCameraOffset = new Vector3(cameraOffset.x - 0.1f, Mathf.Clamp(cameraOffset.y + 5.8f, 22.5f, 27.5f), Mathf.Min(cameraOffset.z - 1.15f, -8.8f));
             cameraRoot.transform.position = playerPosition + tunedDistrictCameraOffset;
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            ConfigureNoirCamera(camera, topDownCamera, tunedDistrictCameraOffset, 66f, -3f, 16f, 28f);
+            ConfigureNoirCamera(camera, topDownCamera, tunedDistrictCameraOffset, 68f, -3f, 20f, 34f);
             CreateNoirPostProcessVolume(sceneName, ResolveDistrictColorFilter(sceneName), 0.22f, 22f, -4f, 1.4f, 0.14f);
 
             var transitionRoot = new GameObject("SceneTransitionController");
@@ -3877,11 +3877,12 @@ namespace MafiaTopDown.Editor
             Material brass)
         {
             var root = new GameObject("LaunchArt_" + prefix + "_FinishedDistrictBlock");
-            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "OuterNeighborhoodAsphalt", new Vector3(0f, 0.042f, 1.5f), new Vector3(46f, 0.035f, 56f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "OuterNeighborhoodAsphalt", new Vector3(0f, 0.042f, -2f), new Vector3(78f, 0.035f, 100f), asphalt).transform.SetParent(root.transform, true);
             CreateVisualPrimitive(PrimitiveType.Cube, prefix + "WestServiceLane", new Vector3(-17.4f, 0.096f, 1f), new Vector3(5.2f, 0.035f, 50f), asphalt).transform.SetParent(root.transform, true);
             CreateVisualPrimitive(PrimitiveType.Cube, prefix + "EastServiceLane", new Vector3(17.4f, 0.096f, 1f), new Vector3(5.2f, 0.035f, 50f), asphalt).transform.SetParent(root.transform, true);
             CreateVisualPrimitive(PrimitiveType.Cube, prefix + "WestBackWalk", new Vector3(-20.9f, 0.13f, 1f), new Vector3(1.4f, 0.08f, 48f), sidewalk).transform.SetParent(root.transform, true);
             CreateVisualPrimitive(PrimitiveType.Cube, prefix + "EastBackWalk", new Vector3(20.9f, 0.13f, 1f), new Vector3(1.4f, 0.08f, 48f), sidewalk).transform.SetParent(root.transform, true);
+            CreateOpenCityGridPass(district, prefix, root.transform, asphalt, facade, roof, metal, glow, sign, sidewalk, puddle, brass);
 
             var leftRoles = new[]
             {
@@ -3964,6 +3965,192 @@ namespace MafiaTopDown.Editor
             {
                 CreateRailProductionSignature(prefix, root.transform, metal, glow, roof, sign, sidewalk, puddle, brass);
             }
+        }
+
+        private static void CreateOpenCityGridPass(
+            DistrictArtStyle district,
+            string prefix,
+            Transform root,
+            Material asphalt,
+            Material facade,
+            Material roof,
+            Material metal,
+            Material glow,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            var northSouthRoads = new[] { -18f, 0f, 18f };
+            var crossStreets = new[] { -42f, -28f, -14f, 0f, 14f, 28f, 42f };
+
+            for (var roadIndex = 0; roadIndex < northSouthRoads.Length; roadIndex += 1)
+            {
+                var x = northSouthRoads[roadIndex];
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "GridNorthSouthRoad_" + roadIndex, new Vector3(x, 0.128f, -2f), new Vector3(5.9f, 0.036f, 92f), asphalt).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "GridNorthSouthLeftCurb_" + roadIndex, new Vector3(x - 4.15f, 0.168f, -2f), new Vector3(1.35f, 0.08f, 89f), sidewalk).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "GridNorthSouthRightCurb_" + roadIndex, new Vector3(x + 4.15f, 0.168f, -2f), new Vector3(1.35f, 0.08f, 89f), sidewalk).transform.SetParent(root, true);
+
+                for (var stripe = 0; stripe < 10; stripe += 1)
+                {
+                    var z = -39.5f + (stripe * 8.1f);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "GridLaneStripe_" + roadIndex + "_" + stripe, new Vector3(x, 0.181f, z), new Vector3(0.28f, 0.018f, 2.2f), brass).transform.SetParent(root, true);
+                }
+            }
+
+            for (var streetIndex = 0; streetIndex < crossStreets.Length; streetIndex += 1)
+            {
+                var z = crossStreets[streetIndex];
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "GridEastWestRoad_" + streetIndex, new Vector3(0f, 0.132f, z), new Vector3(72f, 0.036f, 5.7f), asphalt).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "GridEastWestNorthCurb_" + streetIndex, new Vector3(0f, 0.17f, z + 4.05f), new Vector3(69f, 0.08f, 1.28f), sidewalk).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "GridEastWestSouthCurb_" + streetIndex, new Vector3(0f, 0.17f, z - 4.05f), new Vector3(69f, 0.08f, 1.28f), sidewalk).transform.SetParent(root, true);
+
+                for (var crossing = 0; crossing < northSouthRoads.Length; crossing += 1)
+                {
+                    var x = northSouthRoads[crossing];
+                    EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "road-crossroad-line", prefix + "GridCrossroad_" + streetIndex + "_" + crossing, new Vector3(x, 0.186f, z), Vector3.zero, new Vector3(2.4f, 1f, 2.4f), root);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "GridCrosswalkA_" + streetIndex + "_" + crossing, new Vector3(x - 2.65f, 0.194f, z), new Vector3(0.32f, 0.018f, 4.65f), brass).transform.SetParent(root, true);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "GridCrosswalkB_" + streetIndex + "_" + crossing, new Vector3(x + 2.65f, 0.194f, z), new Vector3(0.32f, 0.018f, 4.65f), brass).transform.SetParent(root, true);
+                }
+            }
+
+            var buildingRoles = new[]
+            {
+                DistrictBuildingRole.CornerShop,
+                DistrictBuildingRole.NarrowTenement,
+                DistrictBuildingRole.OfficeBlock,
+                DistrictBuildingRole.RowHouse,
+                DistrictBuildingRole.Warehouse
+            };
+            var lotXs = new[] { -31f, -10.4f, 10.4f, 31f };
+            var lotZs = new[] { -49f, -35f, -21f, -7f, 7f, 21f, 35f, 49f };
+
+            for (var zIndex = 0; zIndex < lotZs.Length; zIndex += 1)
+            {
+                for (var xIndex = 0; xIndex < lotXs.Length; xIndex += 1)
+                {
+                    var x = lotXs[xIndex];
+                    var z = lotZs[zIndex] + (((xIndex + zIndex) % 2 == 0) ? 0.9f : -0.75f);
+                    var innerBlock = Mathf.Abs(x) < 12f;
+                    var frontageScale = innerBlock
+                        ? new Vector3(1.45f + ((zIndex % 2) * 0.2f), 1.9f + ((zIndex % 3) * 0.18f), 1.6f)
+                        : new Vector3(2.1f + ((zIndex % 2) * 0.22f), 2.55f + ((xIndex % 3) * 0.22f), 2.25f);
+                    var facing = x < 0f ? 90f : -90f;
+                    var role = buildingRoles[(xIndex + zIndex) % buildingRoles.Length];
+
+                    PlaceDistrictBuilding(district, role, prefix + "OpenGridBlock_" + xIndex + "_" + zIndex, new Vector3(x, 0.08f, z), new Vector3(0f, facing, 0f), frontageScale, facade, roof, glow, root);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "OpenGridLotShadow_" + xIndex + "_" + zIndex, new Vector3(x + (x < 0f ? 2.8f : -2.8f), 0.19f, z + 0.85f), new Vector3(1.8f, 0.02f, 2.8f), puddle).transform.SetParent(root, true);
+
+                    if ((xIndex + zIndex) % 3 == 0)
+                    {
+                        CreateVisualPrimitive(PrimitiveType.Cube, prefix + "OpenGridStoreSign_" + xIndex + "_" + zIndex, new Vector3(x + (x < 0f ? 2.1f : -2.1f), 2.85f, z - 0.55f), new Vector3(1.1f, 0.34f, 0.08f), sign).transform.SetParent(root, true);
+                    }
+                }
+            }
+
+            for (var alley = 0; alley < 7; alley += 1)
+            {
+                var z = -42f + (alley * 14f);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "OpenGridAlleyWetCutWest_" + alley, new Vector3(-24.5f, 0.19f, z), new Vector3(4.6f, 0.02f, 0.82f), puddle).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "OpenGridAlleyWetCutEast_" + alley, new Vector3(24.5f, 0.19f, z + 1.7f), new Vector3(4.6f, 0.02f, 0.82f), puddle).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "OpenGridOverheadWire_" + alley, new Vector3(0f, 6.45f, z + 0.5f), new Vector3(68f, 0.035f, 0.035f), metal).transform.SetParent(root, true);
+            }
+
+            CreateOpenGridHeroLandmark(district, prefix, root, facade, roof, metal, glow, sign, sidewalk, puddle, brass);
+
+            var lightCorners = new[]
+            {
+                new Vector3(-22.15f, 0f, -28f),
+                new Vector3(22.15f, 0f, -14f),
+                new Vector3(-4.15f, 0f, 0f),
+                new Vector3(4.15f, 0f, 14f),
+                new Vector3(-22.15f, 0f, 28f),
+                new Vector3(22.15f, 0f, 42f)
+            };
+
+            for (var index = 0; index < lightCorners.Length; index += 1)
+            {
+                CreateDistrictPointLight(prefix + "OpenGridCornerLight_" + index, root, lightCorners[index], glow, brass);
+                EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "light-curved-double", prefix + "OpenGridKitLamp_" + index, lightCorners[index] + new Vector3(0f, 0.08f, 0f), new Vector3(0f, index % 2 == 0 ? 90f : -90f, 0f), new Vector3(1.35f, 1.35f, 1.35f), root);
+            }
+
+            CreateStaticVehicle(prefix + "OpenGridParkedSedanWest", new Vector3(-18f, 0.72f, -33.5f), new Vector3(1.78f, 0.92f, 4.05f), new Color(0.045f, 0.048f, 0.052f), roof, glow);
+            CreateStaticVehicle(prefix + "OpenGridParkedSedanEast", new Vector3(18f, 0.72f, 17.5f), new Vector3(1.78f, 0.92f, 4.05f), new Color(0.16f, 0.045f, 0.04f), roof, glow);
+            CreateStaticVehicle(prefix + "OpenGridParkedSedanNorth", new Vector3(5.4f, 0.72f, 35.8f), new Vector3(1.72f, 0.9f, 3.95f), new Color(0.07f, 0.066f, 0.058f), roof, glow);
+
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "OpenGridDistrictMarquee", new Vector3(-3.2f, 3.35f, -28.35f), new Vector3(4.8f, 0.48f, 0.1f), sign).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "OpenGridDistrictMarqueeGlow", new Vector3(-3.2f, 3.37f, -28.28f), new Vector3(3.9f, 0.16f, 0.08f), glow).transform.SetParent(root, true);
+        }
+
+        private static void CreateOpenGridHeroLandmark(
+            DistrictArtStyle district,
+            string prefix,
+            Transform root,
+            Material facade,
+            Material roof,
+            Material metal,
+            Material glow,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            if (district == DistrictArtStyle.Docks)
+            {
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroHarborWaterSlip", new Vector3(-38.2f, 0.205f, -8f), new Vector3(7.4f, 0.03f, 58f), puddle).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroHarborPierA", new Vector3(-33.2f, 0.29f, -25f), new Vector3(9.2f, 0.18f, 1.15f), sidewalk).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroHarborPierB", new Vector3(-33.2f, 0.29f, 2.5f), new Vector3(9.2f, 0.18f, 1.15f), sidewalk).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroCraneMast", new Vector3(-29.4f, 4.15f, -21.5f), new Vector3(0.55f, 8.1f, 0.55f), metal).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroCraneBoom", new Vector3(-33.6f, 7.9f, -21.5f), new Vector3(8.4f, 0.32f, 0.32f), brass).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroCraneCabGlow", new Vector3(-30.2f, 6.5f, -20.9f), new Vector3(1.1f, 0.72f, 0.1f), glow).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroReadableDockCraneMast", new Vector3(-0.8f, 4.25f, -31.4f), new Vector3(0.48f, 8.5f, 0.48f), metal).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroReadableDockCraneBoom", new Vector3(-4.5f, 8.25f, -31.4f), new Vector3(7.4f, 0.28f, 0.28f), brass).transform.SetParent(root, true);
+                return;
+            }
+
+            if (district == DistrictArtStyle.BusinessCore)
+            {
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroBankPlaza", new Vector3(-29.8f, 0.24f, -24.4f), new Vector3(11.5f, 0.12f, 9.2f), sidewalk).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroBankMass", new Vector3(-31f, 3.25f, -24.4f), new Vector3(6.2f, 6.5f, 6.9f), facade).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroBankRoofCap", new Vector3(-31f, 6.75f, -24.4f), new Vector3(6.9f, 0.46f, 7.4f), roof).transform.SetParent(root, true);
+                for (var column = 0; column < 4; column += 1)
+                {
+                    CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "HeroBankColumn_" + column, new Vector3(-27.4f, 2.2f, -27.2f + (column * 1.85f)), new Vector3(0.34f, 2.35f, 0.34f), brass).transform.SetParent(root, true);
+                }
+
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroBankWarmWindows", new Vector3(-27.85f, 4.15f, -24.4f), new Vector3(0.12f, 1.8f, 4.6f), glow).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroBankMarquee", new Vector3(-27.7f, 2.95f, -24.4f), new Vector3(0.12f, 0.55f, 3.8f), sign).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroReadableBankTower", new Vector3(-0.8f, 5.25f, -31.2f), new Vector3(3.2f, 10.5f, 3.2f), facade).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroReadableBankClockGlow", new Vector3(0.85f, 7.2f, -31.2f), new Vector3(0.1f, 1.0f, 1.0f), glow).transform.SetParent(root, true);
+                return;
+            }
+
+            if (district == DistrictArtStyle.OldQuarter)
+            {
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroChapelCourtyard", new Vector3(-30.4f, 0.24f, -24.8f), new Vector3(10.4f, 0.1f, 10.8f), sidewalk).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroChapelNave", new Vector3(-31.5f, 2.7f, -24.8f), new Vector3(5.1f, 5.4f, 8.2f), facade).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroChapelRoof", new Vector3(-31.5f, 5.55f, -24.8f), new Vector3(5.6f, 0.55f, 8.8f), roof).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroChapelTower", new Vector3(-27.8f, 5.2f, -28.1f), new Vector3(2.1f, 10.4f, 2.1f), facade).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "HeroChapelSteeple", new Vector3(-27.8f, 11.0f, -28.1f), new Vector3(1.25f, 3.4f, 1.25f), roof).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroChapelRoseWindow", new Vector3(-26.72f, 5.6f, -28.1f), new Vector3(0.1f, 1.0f, 1.0f), glow).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroChapelStreetCross", new Vector3(-26.62f, 12.55f, -28.1f), new Vector3(0.1f, 1.2f, 0.2f), brass).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroReadableChapelTower", new Vector3(-0.8f, 5.65f, -31.2f), new Vector3(2.2f, 11.3f, 2.2f), facade).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "HeroReadableChapelSteeple", new Vector3(-0.8f, 11.6f, -31.2f), new Vector3(1.25f, 3.7f, 1.25f), roof).transform.SetParent(root, true);
+                return;
+            }
+
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroRailLoadingYard", new Vector3(-30.2f, 0.22f, -23.8f), new Vector3(12.4f, 0.08f, 11.4f), sidewalk).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroRailGantryTop", new Vector3(-30.2f, 5.85f, -23.8f), new Vector3(10.8f, 0.42f, 0.48f), brass).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroRailGantryLegA", new Vector3(-35.2f, 3.1f, -23.8f), new Vector3(0.42f, 6.2f, 0.42f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroRailGantryLegB", new Vector3(-25.2f, 3.1f, -23.8f), new Vector3(0.42f, 6.2f, 0.42f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "HeroRailTankA", new Vector3(-33.8f, 1.6f, -28.3f), new Vector3(2.0f, 1.65f, 2.0f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "HeroRailTankB", new Vector3(-28.1f, 1.6f, -28.3f), new Vector3(2.0f, 1.65f, 2.0f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "HeroRailStackA", new Vector3(-35.6f, 4.2f, -19.2f), new Vector3(0.62f, 8.4f, 0.62f), roof).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, prefix + "HeroRailStackB", new Vector3(-27.3f, 3.7f, -18.7f), new Vector3(0.54f, 7.4f, 0.54f), roof).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroRailYardLampGlow", new Vector3(-29.7f, 4.2f, -23.35f), new Vector3(1.7f, 0.12f, 0.12f), glow).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroReadableRailGantryTop", new Vector3(-1.1f, 6.1f, -31.2f), new Vector3(7.4f, 0.36f, 0.42f), brass).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroReadableRailGantryLegA", new Vector3(-4.5f, 3.25f, -31.2f), new Vector3(0.36f, 6.5f, 0.36f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "HeroReadableRailGantryLegB", new Vector3(2.3f, 3.25f, -31.2f), new Vector3(0.36f, 6.5f, 0.36f), metal).transform.SetParent(root, true);
         }
 
         private static void CreateSouthNeighborhoodFill(

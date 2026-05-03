@@ -103,7 +103,7 @@ namespace MafiaTopDown.Gameplay.Domain.Progression
                 reputation: 0,
                 heatLevel: 0,
                 completedMissionIds: new string[0],
-                unlockedDistrictIds: new[] { "docks" },
+                unlockedDistrictIds: new[] { "docks", "business-core", "old-quarter", "rail-yard" },
                 unlockedActivityIds: new string[0]);
         }
     }

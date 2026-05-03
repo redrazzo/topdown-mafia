@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using MafiaTopDown.Gameplay.Domain.Progression;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Progression
     public sealed class SaveGameFileService : MonoBehaviour
     {
         private const string ActiveSlotPlayerPrefsKey = "MafiaTopDown.ActiveSaveSlot";
+        private static readonly string[] LaunchDistrictIds = { "docks", "business-core", "old-quarter", "rail-yard" };
 
         [SerializeField] private string saveFileName = "savegame.json";
         [SerializeField] private string defaultSceneName = "District_01";
@@ -130,7 +132,14 @@ namespace MafiaTopDown.Gameplay.Runtime.Progression
 
             try
             {
-                return ReadSaveAtPath(SavePath);
+                var saveGameData = ReadSaveAtPath(SavePath);
+                var migratedSave = EnsureLaunchDistrictsUnlocked(saveGameData);
+                if (!ReferenceEquals(saveGameData, migratedSave))
+                {
+                    Save(migratedSave);
+                }
+
+                return migratedSave;
             }
             catch (System.Exception exception)
             {
@@ -178,6 +187,22 @@ namespace MafiaTopDown.Gameplay.Runtime.Progression
             }
 
             return Path.Combine(Application.persistentDataPath, baseName + "-slot-" + slotIndex + extension);
+        }
+
+        private static SaveGameData EnsureLaunchDistrictsUnlocked(SaveGameData saveGameData)
+        {
+            if (LaunchDistrictIds.All(saveGameData.UnlockedDistrictIds.Contains))
+            {
+                return saveGameData;
+            }
+
+            return SaveGameMutator.ApplyReward(
+                saveGameData,
+                new RewardPayload(
+                    cashReward: 0,
+                    reputationDelta: 0,
+                    unlockDistrictIds: LaunchDistrictIds,
+                    unlockActivityIds: new string[0]));
         }
 
         private int NormalizeSlotIndex(int slotIndex)

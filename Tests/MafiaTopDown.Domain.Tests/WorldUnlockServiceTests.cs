@@ -9,7 +9,17 @@ public sealed class WorldUnlockServiceTests
     public void Unlocks_districts_and_activities_tied_to_completed_missions()
     {
         var saveData = SaveGameMutator.MarkMissionCompleted(
-            SaveGameData.CreateFreshGame("District_01", "DefaultSpawn"),
+            new SaveGameData(
+                currentMissionId: null,
+                currentMissionStageId: null,
+                lastSceneName: "District_01",
+                lastSpawnPointId: "DefaultSpawn",
+                cash: 0,
+                reputation: 0,
+                heatLevel: 0,
+                completedMissionIds: Array.Empty<string>(),
+                unlockedDistrictIds: new[] { "docks" },
+                unlockedActivityIds: Array.Empty<string>()),
             "mission-vincent-ledger");
 
         var districts = new[]
