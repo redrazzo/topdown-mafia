@@ -6,19 +6,96 @@ namespace MafiaTopDown.Gameplay.Runtime.Progression
 {
     public sealed class SaveGameFileService : MonoBehaviour
     {
+        private const string ActiveSlotPlayerPrefsKey = "MafiaTopDown.ActiveSaveSlot";
+
         [SerializeField] private string saveFileName = "savegame.json";
         [SerializeField] private string defaultSceneName = "District_01";
         [SerializeField] private string defaultSpawnPointId = "DefaultSpawn";
+        [SerializeField] private int slotCount = 3;
+        [SerializeField] private int activeSlotIndex = 1;
 
-        public string SavePath => Path.Combine(Application.persistentDataPath, saveFileName);
+        public string SavePath => GetSavePath(activeSlotIndex);
+
+        public int ActiveSlotIndex => activeSlotIndex;
+
+        public int SlotCount => Mathf.Max(3, slotCount);
+
+        private void Awake()
+        {
+            activeSlotIndex = NormalizeSlotIndex(PlayerPrefs.GetInt(ActiveSlotPlayerPrefsKey, activeSlotIndex));
+            MigrateLegacySaveIfNeeded();
+        }
 
         public bool SaveExists()
         {
-            return File.Exists(SavePath);
+            return SaveExists(activeSlotIndex);
+        }
+
+        public bool SaveExists(int slotIndex)
+        {
+            MigrateLegacySaveIfNeeded();
+            return File.Exists(GetSavePath(slotIndex));
+        }
+
+        public void SetActiveSlot(int slotIndex)
+        {
+            activeSlotIndex = NormalizeSlotIndex(slotIndex);
+            PlayerPrefs.SetInt(ActiveSlotPlayerPrefsKey, activeSlotIndex);
+            PlayerPrefs.Save();
+            MigrateLegacySaveIfNeeded();
+        }
+
+        public SaveSlotDescriptor[] GetSlotDescriptors()
+        {
+            MigrateLegacySaveIfNeeded();
+            var descriptors = new SaveSlotDescriptor[SlotCount];
+            for (var slotIndex = 1; slotIndex <= SlotCount; slotIndex += 1)
+            {
+                descriptors[slotIndex - 1] = DescribeSlot(slotIndex);
+            }
+
+            return descriptors;
+        }
+
+        public SaveSlotDescriptor DescribeSlot(int slotIndex)
+        {
+            slotIndex = NormalizeSlotIndex(slotIndex);
+            var path = GetSavePath(slotIndex);
+            if (!File.Exists(path))
+            {
+                return SaveSlotDescriptor.Empty(slotIndex);
+            }
+
+            try
+            {
+                var save = ReadSaveAtPath(path);
+                return SaveSlotDescriptor.FromSaveGameData(slotIndex, save, File.GetLastWriteTimeUtc(path).Ticks);
+            }
+            catch (System.Exception exception)
+            {
+                Debug.LogWarning("Save slot " + slotIndex + " could not be described: " + exception.Message);
+                return new SaveSlotDescriptor(
+                    slotIndex,
+                    exists: true,
+                    displayName: "Needs Recovery",
+                    currentChapterId: string.Empty,
+                    currentMissionId: string.Empty,
+                    lastSceneName: string.Empty,
+                    lastSpawnPointId: string.Empty,
+                    cash: 0,
+                    heatLevel: 0,
+                    lastWriteUtcTicks: File.GetLastWriteTimeUtc(path).Ticks);
+            }
         }
 
         public SaveGameData CreateFreshSave()
         {
+            return CreateFreshSave(activeSlotIndex);
+        }
+
+        public SaveGameData CreateFreshSave(int slotIndex)
+        {
+            SetActiveSlot(slotIndex);
             var freshSave = SaveGameData.CreateFreshGame(defaultSceneName, defaultSpawnPointId);
             Save(freshSave);
             return freshSave;
@@ -26,22 +103,41 @@ namespace MafiaTopDown.Gameplay.Runtime.Progression
 
         public void DeleteSave()
         {
-            if (File.Exists(SavePath))
+            DeleteSave(activeSlotIndex);
+        }
+
+        public void DeleteSave(int slotIndex)
+        {
+            var path = GetSavePath(slotIndex);
+            if (File.Exists(path))
             {
-                File.Delete(SavePath);
+                File.Delete(path);
             }
         }
 
         public SaveGameData LoadOrCreateSave()
         {
+            return LoadOrCreateSave(activeSlotIndex);
+        }
+
+        public SaveGameData LoadOrCreateSave(int slotIndex)
+        {
+            SetActiveSlot(slotIndex);
             if (!SaveExists())
             {
                 return CreateFreshSave();
             }
 
-            var json = File.ReadAllText(SavePath);
-            var document = JsonUtility.FromJson<SaveGameDocument>(json);
-            return document.ToSaveGameData();
+            try
+            {
+                return ReadSaveAtPath(SavePath);
+            }
+            catch (System.Exception exception)
+            {
+                Debug.LogWarning("Save slot " + activeSlotIndex + " was unreadable and will be recovered: " + exception.Message);
+                BackupCorruptedSave(SavePath);
+                return CreateFreshSave();
+            }
         }
 
         public void UpdateSceneLocation(string sceneName, string spawnPointId)
@@ -60,28 +156,90 @@ namespace MafiaTopDown.Gameplay.Runtime.Progression
 
         public void Save(SaveGameData saveGameData)
         {
+            Directory.CreateDirectory(Application.persistentDataPath);
             var document = SaveGameDocument.FromSaveGameData(saveGameData);
             var json = JsonUtility.ToJson(document, true);
             File.WriteAllText(SavePath, json);
         }
 
+        private string GetSavePath(int slotIndex)
+        {
+            slotIndex = NormalizeSlotIndex(slotIndex);
+            var extension = Path.GetExtension(saveFileName);
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                extension = ".json";
+            }
+
+            var baseName = Path.GetFileNameWithoutExtension(saveFileName);
+            if (string.IsNullOrWhiteSpace(baseName))
+            {
+                baseName = "savegame";
+            }
+
+            return Path.Combine(Application.persistentDataPath, baseName + "-slot-" + slotIndex + extension);
+        }
+
+        private int NormalizeSlotIndex(int slotIndex)
+        {
+            return Mathf.Clamp(slotIndex, 1, SlotCount);
+        }
+
+        private void MigrateLegacySaveIfNeeded()
+        {
+            var legacyPath = Path.Combine(Application.persistentDataPath, saveFileName);
+            var firstSlotPath = GetSavePath(1);
+            if (string.Equals(legacyPath, firstSlotPath, System.StringComparison.OrdinalIgnoreCase) ||
+                !File.Exists(legacyPath) ||
+                File.Exists(firstSlotPath))
+            {
+                return;
+            }
+
+            Directory.CreateDirectory(Application.persistentDataPath);
+            File.Copy(legacyPath, firstSlotPath, overwrite: false);
+        }
+
+        private static SaveGameData ReadSaveAtPath(string path)
+        {
+            var json = File.ReadAllText(path);
+            var document = JsonUtility.FromJson<SaveGameDocument>(json);
+            if (document == null)
+            {
+                throw new InvalidDataException("Save document was empty.");
+            }
+
+            return document.ToSaveGameData();
+        }
+
+        private static void BackupCorruptedSave(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return;
+            }
+
+            var backupPath = path + ".broken-" + System.DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            File.Copy(path, backupPath, overwrite: true);
+        }
+
         [System.Serializable]
         private sealed class SaveGameDocument
         {
-            public string CurrentChapterId;
-            public string CurrentMissionId;
-            public string CurrentMissionStageId;
-            public string CurrentActivityId;
-            public string LastSceneName;
-            public string LastSpawnPointId;
+            public string CurrentChapterId = string.Empty;
+            public string CurrentMissionId = string.Empty;
+            public string CurrentMissionStageId = string.Empty;
+            public string CurrentActivityId = string.Empty;
+            public string LastSceneName = string.Empty;
+            public string LastSpawnPointId = string.Empty;
             public int Cash;
             public int Reputation;
             public int HeatLevel;
-            public string[] CompletedChapterIds;
-            public string[] CompletedMissionIds;
-            public string[] CompletedActivityIds;
-            public string[] UnlockedDistrictIds;
-            public string[] UnlockedActivityIds;
+            public string[] CompletedChapterIds = new string[0];
+            public string[] CompletedMissionIds = new string[0];
+            public string[] CompletedActivityIds = new string[0];
+            public string[] UnlockedDistrictIds = new string[0];
+            public string[] UnlockedActivityIds = new string[0];
 
             public SaveGameData ToSaveGameData()
             {

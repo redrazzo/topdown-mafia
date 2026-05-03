@@ -10,15 +10,18 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
     {
         [SerializeField] private string firstPlayableScene = "District_01";
         [SerializeField] private string firstPlayableSpawnPoint = "PickupSpawn";
-        [SerializeField] private SaveGameFileService saveGameFileService;
+        [SerializeField] private SaveGameFileService? saveGameFileService;
         [SerializeField] private bool loadLastSceneFromSave = true;
         [SerializeField] private Rect menuRect = new Rect(56f, 58f, 540f, 610f);
         [SerializeField] private string title = "Mafia Topdown City";
         [SerializeField] private string subtitle = "A quiet favor starts the fall.";
+        [SerializeField] private int defaultSlotIndex = 1;
 
         private bool _saveExists;
         private bool _isLoading;
         private bool _showSettings;
+        private int _selectedSlotIndex = 1;
+        private SaveSlotDescriptor[] _slotDescriptors = new SaveSlotDescriptor[0];
         private GameSettingsData? _settings;
         private GUIStyle? _titleStyle;
         private GUIStyle? _subtitleStyle;
@@ -40,9 +43,9 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             _settings = GameSettingsFileService.LoadOrCreate();
             GameSettingsFileService.Apply(_settings);
             _menuInputReadyAtTime = Time.unscaledTime + 0.65f;
-
             ResolveSaveGameFileService();
-            _saveExists = saveGameFileService != null && saveGameFileService.SaveExists();
+            _selectedSlotIndex = saveGameFileService == null ? Mathf.Max(1, defaultSlotIndex) : saveGameFileService.ActiveSlotIndex;
+            RefreshSlotState();
 
             if (ShouldSkipBoot())
             {
@@ -72,7 +75,19 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
                 return;
             }
 
-            if (_saveExists && Input.GetKeyDown(KeyCode.C))
+            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+            {
+                SelectSlot(1);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+            {
+                SelectSlot(2);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+            {
+                SelectSlot(3);
+            }
+            else if (_saveExists && Input.GetKeyDown(KeyCode.C))
             {
                 ContinueGame();
             }
@@ -95,6 +110,41 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             {
                 _showSettings = true;
             }
+        }
+
+        private void SelectSlot(int slotIndex)
+        {
+            _selectedSlotIndex = slotIndex;
+            RefreshSlotState();
+        }
+
+        private void RefreshSlotState()
+        {
+            if (saveGameFileService == null)
+            {
+                _slotDescriptors = new[] { SaveSlotDescriptor.Empty(_selectedSlotIndex) };
+                _saveExists = false;
+                return;
+            }
+
+            saveGameFileService.SetActiveSlot(_selectedSlotIndex);
+            _selectedSlotIndex = saveGameFileService.ActiveSlotIndex;
+            _slotDescriptors = saveGameFileService.GetSlotDescriptors();
+            var selectedSlot = GetSelectedSlot();
+            _saveExists = selectedSlot != null && selectedSlot.Exists;
+        }
+
+        private SaveSlotDescriptor? GetSelectedSlot()
+        {
+            for (var index = 0; index < _slotDescriptors.Length; index += 1)
+            {
+                if (_slotDescriptors[index].SlotIndex == _selectedSlotIndex)
+                {
+                    return _slotDescriptors[index];
+                }
+            }
+
+            return null;
         }
 
         private void OnGUI()
@@ -127,6 +177,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
                 return;
             }
 
+            saveGameFileService.SetActiveSlot(_selectedSlotIndex);
             var targetScene = firstPlayableScene;
             var targetSpawnPoint = firstPlayableSpawnPoint;
             if (loadLastSceneFromSave)
@@ -149,10 +200,11 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
         {
             if (saveGameFileService != null)
             {
+                saveGameFileService.SetActiveSlot(_selectedSlotIndex);
                 saveGameFileService.CreateFreshSave();
             }
 
-            _saveExists = true;
+            RefreshSlotState();
             BeginLoad(firstPlayableScene);
         }
 
@@ -227,34 +279,53 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             DrawRule(new Rect(x, y, width, 2f));
             y += 24f;
             GUI.Label(
-                new Rect(x, y, width, 88f),
-                _saveExists
-                    ? "A rain-slick harbor, a borrowed sedan, and a favor that keeps getting heavier. Continue the last job or burn a clean save from the docks."
-                    : "A rain-slick harbor, a borrowed sedan, and a favor that keeps getting heavier. Start from the docks and keep your head down.",
+                new Rect(x, y, width, 52f),
+                "A rain-slick harbor, a borrowed sedan, and a favor that keeps getting heavier. Pick a save slot, continue a dirty job, or start clean from the docks.",
                 _bodyStyle);
-            y += 110f;
+            y += 58f;
 
-            if (_saveExists && DrawMenuButton(new Rect(x, y, width, 46f), "Continue Last Job", "C"))
+            GUI.Label(new Rect(x, y, width, 20f), "SAVE SLOTS", _smallCapsStyle);
+            y += 24f;
+            for (var index = 0; index < _slotDescriptors.Length; index += 1)
             {
-                ContinueGame();
+                if (DrawSaveSlotRow(new Rect(x, y, width, 38f), _slotDescriptors[index]))
+                {
+                    SelectSlot(_slotDescriptors[index].SlotIndex);
+                }
+
+                y += 44f;
             }
 
-            y += 56f;
-            if (DrawMenuButton(new Rect(x, y, width, 46f), "New Game", "N"))
+            var selectedSlot = GetSelectedSlot();
+            var selectedExists = selectedSlot != null && selectedSlot.Exists;
+            if (DrawMenuButton(new Rect(x, y, width, 42f), selectedExists ? "Continue Selected Slot" : "Start Selected Slot", selectedExists ? "C" : "ENTER"))
+            {
+                if (selectedExists)
+                {
+                    ContinueGame();
+                }
+                else
+                {
+                    StartNewGame();
+                }
+            }
+
+            y += 50f;
+            if (DrawMenuButton(new Rect(x, y, width, 42f), "New Game In Selected Slot", "N"))
             {
                 StartNewGame();
             }
 
-            y += 56f;
-            if (DrawMenuButton(new Rect(x, y, width, 46f), "Settings", "S"))
+            y += 50f;
+            if (DrawMenuButton(new Rect(x, y, width, 42f), "Settings", "S"))
             {
                 _showSettings = true;
             }
 
-            y += 74f;
+            y += 58f;
             DrawRule(new Rect(x, y, width, 1f));
             y += 16f;
-            GUI.Label(new Rect(x, y, width, 44f), "WASD DRIVE / WALK     E INTERACT     SPACE FIRE     ESC PAUSE", _smallCapsStyle);
+            GUI.Label(new Rect(x, y, width, 44f), "1-3 SELECT SLOT     WASD DRIVE / WALK     E INTERACT     ESC PAUSE", _smallCapsStyle);
         }
 
         private void DrawLoading(Rect panel)
@@ -281,36 +352,54 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             var width = panel.width - 72f;
 
             GUI.Label(new Rect(x, y, width, 22f), "OPTIONS", _smallCapsStyle);
-            y += 40f;
-            GUI.Label(new Rect(x, y, width, 52f), "SETTINGS", _titleStyle);
-            y += 68f;
-            GUI.Label(new Rect(x, y, width, 48f), "Keep the presentation readable without dragging the city out of its smoke.", _bodyStyle);
-            y += 68f;
+            y += 34f;
+            GUI.Label(new Rect(x, y, width, 48f), "SETTINGS", _titleStyle);
+            y += 58f;
+            GUI.Label(new Rect(x, y, width, 38f), "Keep the presentation readable without dragging the city out of its smoke.", _bodyStyle);
+            y += 50f;
 
             var previousVolume = _settings.MasterVolume;
             var previousHudScale = _settings.HudScale;
             var previousFullscreen = _settings.Fullscreen;
             var previousSubtitles = _settings.Subtitles;
+            var previousResolutionWidth = _settings.ResolutionWidth;
+            var previousResolutionHeight = _settings.ResolutionHeight;
+            var previousInputSensitivity = _settings.InputSensitivity;
 
             DrawSettingLabel(new Rect(x, y, width, 24f), "Master Volume", Mathf.RoundToInt(_settings.MasterVolume * 100f) + "%");
             y += 28f;
             _settings.MasterVolume = GUI.HorizontalSlider(new Rect(x, y, width, 22f), _settings.MasterVolume, 0f, 1f);
-            y += 52f;
+            y += 40f;
 
-            _settings.Fullscreen = DrawToggle(new Rect(x, y, width, 42f), "Fullscreen", _settings.Fullscreen);
-            y += 52f;
-            _settings.Subtitles = DrawToggle(new Rect(x, y, width, 42f), "Subtitles", _settings.Subtitles);
-            y += 60f;
+            var halfWidth = (width - 12f) * 0.5f;
+            _settings.Fullscreen = DrawToggle(new Rect(x, y, halfWidth, 38f), "Fullscreen", _settings.Fullscreen);
+            _settings.Subtitles = DrawToggle(new Rect(x + halfWidth + 12f, y, halfWidth, 38f), "Subtitles", _settings.Subtitles);
+            y += 48f;
+
+            if (DrawMenuButton(new Rect(x, y, width, 38f), "Resolution " + _settings.ResolutionWidth + " x " + _settings.ResolutionHeight, "R"))
+            {
+                GameSettingsFileService.CycleResolution(_settings);
+            }
+
+            y += 48f;
 
             DrawSettingLabel(new Rect(x, y, width, 24f), "HUD Scale", _settings.HudScale.ToString("0.00") + "x");
             y += 28f;
             _settings.HudScale = GUI.HorizontalSlider(new Rect(x, y, width, 22f), _settings.HudScale, 0.85f, 1.35f);
-            y += 64f;
+            y += 40f;
+
+            DrawSettingLabel(new Rect(x, y, width, 24f), "Input Sensitivity", _settings.InputSensitivity.ToString("0.00") + "x");
+            y += 28f;
+            _settings.InputSensitivity = GUI.HorizontalSlider(new Rect(x, y, width, 22f), _settings.InputSensitivity, 0.75f, 1.35f);
+            y += 42f;
 
             if (!Mathf.Approximately(previousVolume, _settings.MasterVolume) ||
                 !Mathf.Approximately(previousHudScale, _settings.HudScale) ||
                 previousFullscreen != _settings.Fullscreen ||
-                previousSubtitles != _settings.Subtitles)
+                previousSubtitles != _settings.Subtitles ||
+                previousResolutionWidth != _settings.ResolutionWidth ||
+                previousResolutionHeight != _settings.ResolutionHeight ||
+                !Mathf.Approximately(previousInputSensitivity, _settings.InputSensitivity))
             {
                 GameSettingsFileService.Save(_settings);
                 GameSettingsFileService.Apply(_settings);
@@ -332,6 +421,31 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
         {
             var toggled = DrawMenuButton(rect, label, value ? "ON" : "OFF");
             return toggled ? !value : value;
+        }
+
+        private bool DrawSaveSlotRow(Rect rect, SaveSlotDescriptor slot)
+        {
+            var acceptsInput = CanAcceptMenuInput();
+            var selected = slot.SlotIndex == _selectedSlotIndex;
+            var mousePosition = Event.current.mousePosition;
+            var hovering = acceptsInput && rect.Contains(mousePosition);
+            var pressed = hovering && Event.current.type == EventType.MouseDown && Event.current.button == 0;
+
+            GUI.DrawTexture(rect, pressed ? _buttonActiveTexture : selected || hovering ? _buttonHoverTexture : _buttonTexture);
+            DrawRect(new Rect(rect.x, rect.y, 3f, rect.height), new Color(0.75f, 0.54f, 0.22f, selected ? 1f : 0.45f));
+            DrawRect(new Rect(rect.x, rect.y, rect.width, 1f), new Color(0.95f, 0.78f, 0.42f, selected ? 0.38f : 0.14f));
+
+            GUI.Label(new Rect(rect.x + 16f, rect.y + 5f, rect.width - 92f, 18f), "SLOT " + slot.SlotIndex + " - " + slot.DisplayName.ToUpperInvariant(), _buttonTextStyle);
+            GUI.Label(new Rect(rect.x + 16f, rect.y + 21f, rect.width - 92f, 16f), slot.Summary, _smallCapsStyle);
+            GUI.Label(new Rect(rect.x + rect.width - 66f, rect.y + 9f, 48f, 20f), slot.SlotIndex.ToString(), _hintStyle);
+
+            if (acceptsInput && hovering && Event.current.type == EventType.MouseUp && Event.current.button == 0)
+            {
+                Event.current.Use();
+                return true;
+            }
+
+            return acceptsInput && GUI.Button(rect, GUIContent.none, GUIStyle.none);
         }
 
         private void DrawPosterPanel(Rect rect)

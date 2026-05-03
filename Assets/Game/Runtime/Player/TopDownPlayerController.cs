@@ -1,4 +1,5 @@
 using UnityEngine;
+using MafiaTopDown.Gameplay.Runtime.UI;
 
 namespace MafiaTopDown.Gameplay.Runtime.Player
 {
@@ -8,9 +9,10 @@ namespace MafiaTopDown.Gameplay.Runtime.Player
         [SerializeField] private float walkSpeed = 4.5f;
         [SerializeField] private float sprintMultiplier = 1.65f;
         [SerializeField] private float turnSpeed = 12f;
-        [SerializeField] private CharacterController characterController;
+        [SerializeField] private CharacterController? characterController;
 
         private bool _controlsLocked;
+        private GameSettingsData? _settings;
 
         public bool ControlsLocked => _controlsLocked;
 
@@ -24,6 +26,11 @@ namespace MafiaTopDown.Gameplay.Runtime.Player
             characterController = GetComponent<CharacterController>();
         }
 
+        private void Start()
+        {
+            _settings = GameSettingsFileService.LoadOrCreate();
+        }
+
         private void Update()
         {
             if (_controlsLocked)
@@ -33,7 +40,8 @@ namespace MafiaTopDown.Gameplay.Runtime.Player
 
             var input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
             var isSprinting = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-            var speed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
+            var sensitivity = _settings == null ? 1f : Mathf.Clamp(_settings.InputSensitivity, 0.75f, 1.35f);
+            var speed = walkSpeed * sensitivity * (isSprinting ? sprintMultiplier : 1f);
             var desiredVelocity = input.normalized * speed;
 
             if (characterController != null)
