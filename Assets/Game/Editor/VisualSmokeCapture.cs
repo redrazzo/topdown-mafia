@@ -33,7 +33,7 @@ namespace MafiaTopDown.Editor
                     throw new System.InvalidOperationException("No camera found in " + scenePath + ".");
                 }
 
-                camera.transform.rotation = Quaternion.Euler(70f, -3f, 0f);
+                ApplyGameplayCameraPose(camera);
                 var outputPath = Path.Combine(outputRoot, scene.name + ".png");
                 CaptureCamera(camera, outputPath);
                 Debug.Log("Visual smoke captured: " + outputPath);
@@ -88,6 +88,19 @@ namespace MafiaTopDown.Editor
                 UnityEngine.Object.DestroyImmediate(texture);
                 UnityEngine.Object.DestroyImmediate(renderTexture);
             }
+        }
+
+        private static void ApplyGameplayCameraPose(Camera camera)
+        {
+            var player = GameObject.Find("Player");
+            if (player == null)
+            {
+                return;
+            }
+
+            camera.fieldOfView = 36f;
+            camera.transform.position = player.transform.position + new Vector3(0f, 10.8f, -6.6f);
+            camera.transform.rotation = Quaternion.Euler(52f, -2f, 0f);
         }
 
         private static byte[] EncodeTextureToPng(Texture2D texture)

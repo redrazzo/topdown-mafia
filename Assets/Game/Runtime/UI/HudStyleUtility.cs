@@ -51,8 +51,12 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
 
             DrawFrame(rect, true);
 
-            GUI.Label(new Rect(rect.x + 17f, rect.y + 9f, rect.width - 34f, 20f), title.ToUpperInvariant(), _titleStyle);
-            GUI.Label(new Rect(rect.x + 17f, rect.y + 32f, rect.width - 34f, rect.height - 39f), body, _bodyStyle);
+            var titleText = title.ToUpperInvariant();
+            var contentWidth = rect.width - 30f;
+            var titleHeight = Mathf.Clamp(_titleStyle.CalcHeight(new GUIContent(titleText), contentWidth), 18f, 34f);
+            var bodyY = rect.y + 13f + titleHeight;
+            GUI.Label(new Rect(rect.x + 15f, rect.y + 8f, contentWidth, titleHeight), titleText, _titleStyle);
+            GUI.Label(new Rect(rect.x + 15f, bodyY, contentWidth, rect.yMax - bodyY - 6f), body, _bodyStyle);
         }
 
         public static void DrawPrompt(Rect rect, string text)
@@ -114,22 +118,22 @@ namespace MafiaTopDown.Gameplay.Runtime.UI
 
             _titleStyle = new GUIStyle(GUI.skin.label)
             {
-                fontSize = 13,
+                fontSize = 12,
                 fontStyle = FontStyle.Bold,
                 normal = { textColor = new Color(0.9f, 0.72f, 0.38f, 1f) },
-                wordWrap = false
+                wordWrap = true
             };
 
             _bodyStyle = new GUIStyle(GUI.skin.label)
             {
-                fontSize = 13,
+                fontSize = 12,
                 normal = { textColor = new Color(0.88f, 0.84f, 0.72f, 1f) },
                 wordWrap = true
             };
 
             _promptStyle = new GUIStyle(GUI.skin.label)
             {
-                fontSize = 13,
+                fontSize = 12,
                 fontStyle = FontStyle.Bold,
                 normal = { textColor = new Color(0.92f, 0.82f, 0.62f, 1f) },
                 wordWrap = false
