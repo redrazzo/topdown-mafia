@@ -323,140 +323,9 @@ namespace MafiaTopDown.Editor
             RenderSettings.fogDensity = 0.009f;
             CreateNoirPostProcessVolume("District_01", new Color(0.92f, 0.96f, 1f), 0.26f, 21f, -4f, 1.4f, 0.14f);
 
-            var streetPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            streetPlane.name = "StreetPlane";
-            streetPlane.transform.localScale = new Vector3(4f, 1f, 4f);
-            AssignMaterial(streetPlane, asphalt);
+            CreateSteamReadyDocksCityPass(asphalt, brick, roof, metal, windowGlow, crateWood, officeSign, sidewalk, puddle, water, stone, brass, lanePaint);
 
-            CreatePrimitive(
-                PrimitiveType.Cube,
-                "DockWater",
-                new Vector3(-16.2f, -0.18f, 3f),
-                new Vector3(6.2f, 0.08f, 38f),
-                water);
-
-            CreatePrimitive(
-                PrimitiveType.Cube,
-                "DockPier",
-                new Vector3(-12.6f, 0.12f, 3f),
-                new Vector3(1.7f, 0.24f, 37f),
-                stone);
-
-            CreatePrimitive(
-                PrimitiveType.Cube,
-                "DockEdgeRail",
-                new Vector3(-14.1f, 0.8f, 3f),
-                new Vector3(0.15f, 1.1f, 37f),
-                metal);
-
-            var road = CreatePrimitive(
-                PrimitiveType.Cube,
-                "MainRoad",
-                new Vector3(0f, 0.05f, 2f),
-                new Vector3(9f, 0.1f, 36f),
-                asphalt);
-
-            CreatePrimitive(
-                PrimitiveType.Cube,
-                "LeftSidewalk",
-                new Vector3(-6.2f, 0.1f, 2f),
-                new Vector3(3f, 0.2f, 36f),
-                sidewalk);
-
-            CreatePrimitive(
-                PrimitiveType.Cube,
-                "RightSidewalk",
-                new Vector3(6.2f, 0.1f, 2f),
-                new Vector3(3f, 0.2f, 36f),
-                sidewalk);
-
-            CreateColliderBlock(
-                "LeftBuildingCollision",
-                new Vector3(-10.95f, 3.1f, 2f),
-                new Vector3(3.55f, 6.2f, 34f));
-
-            CreateColliderBlock(
-                "RightBuildingCollision",
-                new Vector3(10.95f, 3.1f, 2f),
-                new Vector3(3.55f, 6.2f, 34f));
-
-            for (var index = 0; index < 7; index += 1)
-            {
-                CreateVisualPrimitive(
-                    PrimitiveType.Cube,
-                    "LaneMarker_" + index,
-                    new Vector3(0f, 0.11f, -9f + (index * 5f)),
-                    new Vector3(0.35f, 0.02f, 2f),
-                    lanePaint);
-            }
-
-            for (var index = 0; index < 4; index += 1)
-            {
-                var z = -5f + (index * 8f);
-                CreateVisualPrimitive(
-                    PrimitiveType.Cube,
-                    "LeftWindow_" + index,
-                    new Vector3(-8.1f, 3f, z),
-                    new Vector3(1.4f, 1.6f, 0.15f),
-                    windowGlow);
-
-                CreateVisualPrimitive(
-                    PrimitiveType.Cube,
-                    "RightWindow_" + index,
-                    new Vector3(8.1f, 3f, z + 2f),
-                    new Vector3(1.4f, 1.6f, 0.15f),
-                    windowGlow);
-            }
-
-            for (var index = 0; index < 6; index += 1)
-            {
-                CreatePrimitive(
-                    PrimitiveType.Cube,
-                    "DockBollard_" + index,
-                    new Vector3(-13.55f, 0.55f, -10f + (index * 5.6f)),
-                    new Vector3(0.28f, 0.9f, 0.28f),
-                    metal);
-            }
-
-            CreateVisualPrimitive(
-                PrimitiveType.Cube,
-                "CrosswalkA",
-                new Vector3(0f, 0.11f, 12.4f),
-                new Vector3(8.6f, 0.02f, 0.55f),
-                lanePaint);
-
-            CreateVisualPrimitive(
-                PrimitiveType.Cube,
-                "CrosswalkB",
-                new Vector3(0f, 0.11f, 13.7f),
-                new Vector3(8.6f, 0.02f, 0.55f),
-                lanePaint);
-
-            CreateVisualPrimitive(
-                PrimitiveType.Cube,
-                "PuddleNearLamp",
-                new Vector3(3.6f, 0.065f, 5.6f),
-                new Vector3(1.6f, 0.01f, 1.2f),
-                puddle);
-
-            CreateVisualPrimitive(
-                PrimitiveType.Cube,
-                "PuddleNearOffice",
-                new Vector3(-1.8f, 0.065f, 14.2f),
-                new Vector3(1.4f, 0.01f, 1f),
-                puddle);
-
-            CreateLampPost(new Vector3(-4.8f, 0f, -4f), metal, windowGlow);
-            CreateLampPost(new Vector3(4.8f, 0f, 4f), metal, windowGlow);
-            CreateLampPost(new Vector3(-4.8f, 0f, 12f), metal, windowGlow);
-            CreateLampPost(new Vector3(4.8f, 0f, 18f), metal, windowGlow);
-            CreateProductionDockOpeningPass(brick, roof, metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
-            CreateDockStartDetailPass(metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
-            CreateDocksIdentityPass(metal, windowGlow, crateWood, officeSign, water, brass);
-            CreateAuthoredDocksVerticalSlicePass(asphalt, brick, roof, metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
-            CreateDocksFirstScreenPolishPass(asphalt, brick, roof, metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
-
-            var openingSpawn = new Vector3(-0.85f, 1f, -13.45f);
+            var openingSpawn = new Vector3(-14.8f, 1f, -22.5f);
             var player = CreateNoirActor("Player", openingSpawn, playerCoat, null, false);
             var characterController = player.AddComponent<CharacterController>();
             characterController.height = 1.8f;
@@ -474,7 +343,7 @@ namespace MafiaTopDown.Editor
 
             CreateSpawnPoint("DefaultSpawnPoint", "DefaultSpawn", openingSpawn);
             CreateSpawnPoint("PickupSpawnPoint", "PickupSpawn", openingSpawn);
-            CreateSpawnPoint("DriveSpawnPoint", "DriveSpawn", new Vector3(1.15f, 1f, -7.4f));
+            CreateSpawnPoint("DriveSpawnPoint", "DriveSpawn", new Vector3(-14.4f, 1f, -14.0f));
             CreateSpawnPoint("ExteriorReturnSpawnPoint", "ExteriorReturn", new Vector3(0f, 1f, 12.5f));
             CreateSpawnPoint("PierExitSpawnPoint", "PierExitSpawn", new Vector3(-3.2f, 1f, 9.8f));
             CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(0f, 1f, -12.8f));
@@ -514,11 +383,11 @@ namespace MafiaTopDown.Editor
             camera.fieldOfView = 38f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 140f;
-            var tunedOpeningCameraOffset = new Vector3(0.25f, 7.0f, -6.65f);
+            var tunedOpeningCameraOffset = new Vector3(0.2f, 4.85f, -4.2f);
             cameraRoot.transform.position = player.transform.position + tunedOpeningCameraOffset;
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            ConfigureNoirCamera(camera, topDownCamera, tunedOpeningCameraOffset, 48f, 8f, 6.4f, 10.8f);
+            ConfigureNoirCamera(camera, topDownCamera, tunedOpeningCameraOffset, 58f, 8f, 4.4f, 8.2f);
 
             var sceneTransitionControllerObject = new GameObject("SceneTransitionController");
             var sceneTransitionController = sceneTransitionControllerObject.AddComponent<SceneTransitionController>();
@@ -544,7 +413,7 @@ namespace MafiaTopDown.Editor
             SetObjectReference(pauseMenu, "dialogueController", dialogueController);
 
             var docksMissionRoot = new GameObject("AQuietFavorDistrictRoot");
-            var luca = CreateNoirActor("LucaContact", new Vector3(-2.25f, 1f, -12.9f), contactCoat, docksMissionRoot.transform);
+            var luca = CreateNoirActor("LucaContact", new Vector3(-16.4f, 1f, -21.25f), contactCoat, docksMissionRoot.transform);
             var lucaInteractable = luca.AddComponent<DialogueInteractable>();
             SetObjectReference(lucaInteractable, "dialogueController", dialogueController);
             SetObjectReference(lucaInteractable, "dialogueSequence", lucaBriefing);
@@ -553,7 +422,7 @@ namespace MafiaTopDown.Editor
             var car = GameObject.CreatePrimitive(PrimitiveType.Cube);
             car.name = "Sedan";
             car.transform.SetParent(docksMissionRoot.transform, false);
-            car.transform.position = new Vector3(2.35f, 0.75f, -8.1f);
+            car.transform.position = new Vector3(-12.95f, 0.75f, -23.75f);
             car.transform.localScale = new Vector3(2.2f, 1f, 4.6f);
             AssignMaterial(car, sedanPaint);
             HideRenderer(car);
@@ -3523,8 +3392,7 @@ namespace MafiaTopDown.Editor
             Material skinMaterial,
             Material shirtMaterial)
         {
-            // The Kenney blocky character kit reads like a toy from the gameplay camera.
-            // Keep authored noir silhouettes until a higher-fidelity humanoid pack is imported.
+            // The imported blocky kit reads worse than the authored noir silhouette at gameplay scale.
             var useBlockyPlaceholderMesh = false;
             if (!useBlockyPlaceholderMesh)
             {
@@ -4820,6 +4688,303 @@ namespace MafiaTopDown.Editor
             CreateVisualPrimitive(PrimitiveType.Cube, "StartShopSignLetterHintA", new Vector3(-5.0f, 3.03f, -10.55f), new Vector3(0.045f, 0.42f, 0.06f), brass);
             CreateVisualPrimitive(PrimitiveType.Cube, "StartShopSignLetterHintB", new Vector3(-5.0f, 3.03f, -10.18f), new Vector3(0.045f, 0.42f, 0.06f), brass);
             CreateVisualPrimitive(PrimitiveType.Cube, "StartShopSignLetterHintC", new Vector3(-5.0f, 3.03f, -9.8f), new Vector3(0.045f, 0.42f, 0.06f), brass);
+        }
+
+        private static void CreateSteamReadyDocksCityPass(
+            Material asphalt,
+            Material facade,
+            Material roof,
+            Material metal,
+            Material glow,
+            Material wood,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material water,
+            Material stone,
+            Material brass,
+            Material lanePaint)
+        {
+            var root = new GameObject("SteamDocks_AuthoredCitySlice");
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_CityGround", new Vector3(0f, 0.0f, 0f), new Vector3(56f, 0.08f, 78f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_HarborWater", new Vector3(-31f, -0.12f, 0f), new Vector3(11f, 0.08f, 78f), water).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_DockBoardwalk", new Vector3(-23.4f, 0.16f, 0f), new Vector3(4.4f, 0.18f, 74f), stone).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_HarborRail", new Vector3(-25.7f, 0.76f, 0f), new Vector3(0.16f, 1.1f, 72f), metal).transform.SetParent(root.transform, true);
+
+            var northSouthRoads = new[] { -15f, 0f, 15f };
+            foreach (var x in northSouthRoads)
+            {
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_NS_Asphalt_" + x, new Vector3(x, 0.12f, 0f), new Vector3(6.8f, 0.08f, 72f), asphalt).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_NS_WestSidewalk_" + x, new Vector3(x - 4.7f, 0.22f, 0f), new Vector3(2.2f, 0.12f, 72f), sidewalk).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_NS_EastSidewalk_" + x, new Vector3(x + 4.7f, 0.22f, 0f), new Vector3(2.2f, 0.12f, 72f), sidewalk).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_NS_WestCurb_" + x, new Vector3(x - 3.58f, 0.32f, 0f), new Vector3(0.22f, 0.22f, 72f), stone).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_NS_EastCurb_" + x, new Vector3(x + 3.58f, 0.32f, 0f), new Vector3(0.22f, 0.22f, 72f), stone).transform.SetParent(root.transform, true);
+            }
+
+            var eastWestRoads = new[] { -24f, -8f, 10f, 27f };
+            foreach (var z in eastWestRoads)
+            {
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_EW_Asphalt_" + z, new Vector3(0f, 0.13f, z), new Vector3(48f, 0.08f, 6.4f), asphalt).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_EW_NorthCurb_" + z, new Vector3(0f, 0.33f, z + 3.35f), new Vector3(48f, 0.22f, 0.22f), stone).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_EW_SouthCurb_" + z, new Vector3(0f, 0.33f, z - 3.35f), new Vector3(48f, 0.22f, 0.22f), stone).transform.SetParent(root.transform, true);
+            }
+
+            for (var stripe = 0; stripe < 12; stripe += 1)
+            {
+                var z = -32f + (stripe * 5.6f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_MainLaneStripe_" + stripe, new Vector3(0.9f, 0.18f, z), new Vector3(0.18f, 0.025f, 1.65f), lanePaint).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_WestLaneStripe_" + stripe, new Vector3(-14.1f, 0.18f, z + 1.5f), new Vector3(0.18f, 0.025f, 1.45f), lanePaint).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_EastLaneStripe_" + stripe, new Vector3(15.9f, 0.18f, z - 0.8f), new Vector3(0.18f, 0.025f, 1.45f), lanePaint).transform.SetParent(root.transform, true);
+            }
+
+            for (var cross = 0; cross < eastWestRoads.Length; cross += 1)
+            {
+                var z = eastWestRoads[cross];
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_CrosswalkA_" + cross, new Vector3(0f, 0.19f, z - 2.15f), new Vector3(8.5f, 0.025f, 0.22f), brass).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_CrosswalkB_" + cross, new Vector3(0f, 0.19f, z - 1.45f), new Vector3(8.5f, 0.025f, 0.22f), brass).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_CrossStreetWetRead_" + cross, new Vector3(-1.4f, 0.17f, z + 1.4f), new Vector3(14.5f, 0.018f, 0.75f), puddle).transform.SetParent(root.transform, true);
+            }
+
+            var westRoles = new[]
+            {
+                DistrictBuildingRole.Warehouse,
+                DistrictBuildingRole.CornerShop,
+                DistrictBuildingRole.NarrowTenement,
+                DistrictBuildingRole.Warehouse,
+                DistrictBuildingRole.OfficeBlock,
+                DistrictBuildingRole.RowHouse,
+                DistrictBuildingRole.Warehouse
+            };
+            var eastRoles = new[]
+            {
+                DistrictBuildingRole.RowHouse,
+                DistrictBuildingRole.OfficeBlock,
+                DistrictBuildingRole.CornerShop,
+                DistrictBuildingRole.Warehouse,
+                DistrictBuildingRole.NarrowTenement,
+                DistrictBuildingRole.CornerShop,
+                DistrictBuildingRole.OfficeBlock
+            };
+
+            for (var index = 0; index < westRoles.Length; index += 1)
+            {
+                var z = -31f + (index * 10.2f);
+                PlaceDistrictBuilding(DistrictArtStyle.Docks, westRoles[index], "SteamDocks_WaterfrontBlock_" + index, new Vector3(-20.2f, 0.08f, z), new Vector3(0f, 90f, 0f), new Vector3(2.45f, 2.65f + ((index % 2) * 0.25f), 2.35f), facade, roof, glow, root.transform);
+                PlaceDistrictBuilding(DistrictArtStyle.Docks, eastRoles[index], "SteamDocks_CentralWestFrontage_" + index, new Vector3(-5.1f, 0.08f, z + 2.2f), new Vector3(0f, 90f, 0f), new Vector3(2.72f, 2.82f + ((index % 3) * 0.2f), 2.45f), facade, roof, glow, root.transform);
+                PlaceDistrictBuilding(DistrictArtStyle.Docks, westRoles[(index + 2) % westRoles.Length], "SteamDocks_CentralEastFrontage_" + index, new Vector3(5.1f, 0.08f, z - 1.4f), new Vector3(0f, -90f, 0f), new Vector3(2.72f, 2.82f + (((index + 1) % 3) * 0.2f), 2.45f), facade, roof, glow, root.transform);
+                PlaceDistrictBuilding(DistrictArtStyle.Docks, eastRoles[(index + 3) % eastRoles.Length], "SteamDocks_BacklotFrontage_" + index, new Vector3(20.2f, 0.08f, z + 3.5f), new Vector3(0f, -90f, 0f), new Vector3(2.4f, 2.55f + ((index % 2) * 0.24f), 2.3f), facade, roof, glow, root.transform);
+            }
+
+            CreateSteamDocksOpeningCanyon(root.transform, facade, roof, metal, glow, wood, sign, puddle, brass);
+
+            CreateColliderBlock("SteamDocks_WestHarborBoundary", new Vector3(-27.2f, 1.4f, 0f), new Vector3(0.8f, 2.8f, 78f)).transform.SetParent(root.transform, true);
+            CreateColliderBlock("SteamDocks_EastCityBoundary", new Vector3(27.2f, 1.4f, 0f), new Vector3(0.8f, 2.8f, 78f)).transform.SetParent(root.transform, true);
+            CreateColliderBlock("SteamDocks_SouthCityBoundary", new Vector3(0f, 1.4f, -38.3f), new Vector3(56f, 2.8f, 0.8f)).transform.SetParent(root.transform, true);
+            CreateColliderBlock("SteamDocks_NorthCityBoundary", new Vector3(0f, 1.4f, 38.3f), new Vector3(56f, 2.8f, 0.8f)).transform.SetParent(root.transform, true);
+            CreateColliderBlock("SteamDocks_WaterfrontWarehouseMass", new Vector3(-20.8f, 2.5f, 4f), new Vector3(3.0f, 5.0f, 61f)).transform.SetParent(root.transform, true);
+            CreateColliderBlock("SteamDocks_BacklotWarehouseMass", new Vector3(20.8f, 2.5f, 3f), new Vector3(3.0f, 5.0f, 61f)).transform.SetParent(root.transform, true);
+
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitCommercial", "detail-awning-wide", "SteamDocks_MorettiAwningReadyAsset", new Vector3(-7.45f, 2.05f, -22.8f), new Vector3(0f, 90f, 0f), new Vector3(1.75f, 1.75f, 1.75f), root.transform);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitCommercial", "detail-overhang-wide", "SteamDocks_BackOfficeCanopyReadyAsset", new Vector3(0f, 2.35f, 15.6f), new Vector3(0f, 0f, 0f), new Vector3(1.95f, 1.95f, 1.95f), root.transform);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "construction-barrier", "SteamDocks_RoadworkBarrierA", new Vector3(9.2f, 0.22f, -13.4f), new Vector3(0f, 20f, 0f), new Vector3(1.3f, 1.3f, 1.3f), root.transform);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "construction-light", "SteamDocks_RoadworkLightA", new Vector3(10.1f, 0.22f, -12.4f), new Vector3(0f, 42f, 0f), new Vector3(1.25f, 1.25f, 1.25f), root.transform);
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_BackOfficeMarquee", new Vector3(0f, 3.6f, 15.7f), new Vector3(5.8f, 0.5f, 0.22f), sign).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_BackOfficeWarmLetters", new Vector3(0f, 3.72f, 15.52f), new Vector3(4.85f, 0.13f, 0.08f), glow).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_MarketSign", new Vector3(-7.3f, 3.15f, -23.1f), new Vector3(0.14f, 0.68f, 3.7f), sign).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_MarketSignGlow", new Vector3(-7.15f, 3.17f, -23.1f), new Vector3(0.055f, 0.18f, 3.15f), glow).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_HarborCraneMast", new Vector3(-24.2f, 3.4f, -9.5f), new Vector3(0.55f, 6.8f, 0.55f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_HarborCraneBoom", new Vector3(-20.8f, 6.25f, -9.5f), new Vector3(6.8f, 0.24f, 0.24f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_CraneHook", new Vector3(-18.1f, 3.75f, -9.5f), new Vector3(0.28f, 0.34f, 0.28f), brass).transform.SetParent(root.transform, true);
+
+            for (var index = 0; index < 12; index += 1)
+            {
+                var z = -32f + (index * 6f);
+                CreatePrimitive(PrimitiveType.Cylinder, "SteamDocks_HarborBollard_" + index, new Vector3(-25.1f, 0.55f, z), new Vector3(0.24f, 0.8f, 0.24f), metal).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_WarehouseCrate_" + index, new Vector3(-18.3f + ((index % 3) * 0.55f), 0.58f + ((index % 2) * 0.24f), z + 1.5f), new Vector3(0.86f, 0.72f, 0.72f), wood).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_WetGutter_" + index, new Vector3(index % 2 == 0 ? -3.2f : 3.2f, 0.17f, z + 2.4f), new Vector3(0.42f, 0.018f, 2.4f), puddle).transform.SetParent(root.transform, true);
+            }
+
+            CreateStaticVehicle("SteamDocks_ParkedTaxiForeground", new Vector3(-2.85f, 0.72f, -30.4f), new Vector3(1.7f, 0.9f, 3.85f), new Color(0.13f, 0.095f, 0.036f), roof, glow);
+            CreateStaticVehicle("SteamDocks_ParkedDeliveryTruck", new Vector3(-14.9f, 0.78f, -2.5f), new Vector3(2.25f, 1.15f, 5.0f), new Color(0.1f, 0.11f, 0.105f), roof, glow);
+            CreateStaticVehicle("SteamDocks_ParkedMaroonSedan", new Vector3(15.1f, 0.72f, 12.8f), new Vector3(1.72f, 0.9f, 3.85f), new Color(0.18f, 0.045f, 0.04f), roof, glow);
+            CreateStaticVehicle("SteamDocks_ParkedPoliceWatch", new Vector3(14.9f, 0.72f, -25.8f), new Vector3(1.78f, 0.92f, 4.05f), new Color(0.04f, 0.048f, 0.058f), roof, glow);
+
+            var lampPositions = new[]
+            {
+                new Vector3(-4.7f, 0.1f, -26.2f),
+                new Vector3(4.7f, 0.1f, -19.8f),
+                new Vector3(-4.7f, 0.1f, -6.2f),
+                new Vector3(4.7f, 0.1f, 5.6f),
+                new Vector3(-4.7f, 0.1f, 16.2f),
+                new Vector3(4.7f, 0.1f, 25.5f),
+                new Vector3(-18.8f, 0.1f, -17.3f),
+                new Vector3(18.8f, 0.1f, 21.4f)
+            };
+
+            for (var index = 0; index < lampPositions.Length; index += 1)
+            {
+                CreateLowProfileStreetLamp("SteamDocks_StreetLamp_" + index, lampPositions[index], root.transform);
+            }
+
+            var keyLight = new GameObject("SteamDocks_WarmMarketKey");
+            keyLight.transform.SetParent(root.transform, true);
+            keyLight.transform.position = new Vector3(-4.2f, 4.5f, -22.5f);
+            var light = keyLight.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.range = 14f;
+            light.intensity = 2.3f;
+            light.color = new Color(1f, 0.66f, 0.32f);
+        }
+
+        private static void CreateSteamDocksOpeningCanyon(
+            Transform root,
+            Material facade,
+            Material roof,
+            Material metal,
+            Material glow,
+            Material wood,
+            Material sign,
+            Material puddle,
+            Material brass)
+        {
+            const float laneCenterX = -15f;
+            var leftRoles = new[]
+            {
+                DistrictBuildingRole.CornerShop,
+                DistrictBuildingRole.NarrowTenement,
+                DistrictBuildingRole.Warehouse,
+                DistrictBuildingRole.OfficeBlock
+            };
+            var rightRoles = new[]
+            {
+                DistrictBuildingRole.Warehouse,
+                DistrictBuildingRole.RowHouse,
+                DistrictBuildingRole.CornerShop,
+                DistrictBuildingRole.NarrowTenement
+            };
+
+            for (var index = 0; index < leftRoles.Length; index += 1)
+            {
+                var z = -31f + (index * 7.2f);
+                PlaceDistrictBuilding(
+                    DistrictArtStyle.Docks,
+                    leftRoles[index],
+                    "SteamDocks_OpeningLeftPlayableFacade_" + index,
+                    new Vector3(laneCenterX - 4.35f, 0.08f, z),
+                    new Vector3(0f, 90f, 0f),
+                    new Vector3(3.05f, 3.15f + ((index % 2) * 0.22f), 2.72f),
+                    facade,
+                    roof,
+                    glow,
+                    root);
+                PlaceDistrictBuilding(
+                    DistrictArtStyle.Docks,
+                    rightRoles[index],
+                    "SteamDocks_OpeningRightPlayableFacade_" + index,
+                    new Vector3(laneCenterX + 4.35f, 0.08f, z + 2.4f),
+                    new Vector3(0f, -90f, 0f),
+                    new Vector3(3.0f, 3.08f + (((index + 1) % 2) * 0.24f), 2.7f),
+                    facade,
+                    roof,
+                    glow,
+                    root);
+            }
+
+            CreateColliderBlock("SteamDocks_OpeningLeftStreetWallCollider", new Vector3(laneCenterX - 3.65f, 2.35f, -20.6f), new Vector3(0.45f, 4.7f, 27f)).transform.SetParent(root, true);
+            CreateColliderBlock("SteamDocks_OpeningRightStreetWallCollider", new Vector3(laneCenterX + 3.65f, 2.35f, -19.4f), new Vector3(0.45f, 4.7f, 27f)).transform.SetParent(root, true);
+
+            for (var index = 0; index < 5; index += 1)
+            {
+                var z = -31f + (index * 6f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningLeftCloseFacade_" + index, new Vector3(laneCenterX - 3.55f, 2.25f, z), new Vector3(0.34f, 4.5f, 5.2f), facade).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningRightCloseFacade_" + index, new Vector3(laneCenterX + 3.55f, 2.2f, z + 1.5f), new Vector3(0.34f, 4.4f, 5.2f), facade).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningLeftCornice_" + index, new Vector3(laneCenterX - 3.22f, 4.6f, z), new Vector3(0.42f, 0.28f, 5.45f), roof).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningRightCornice_" + index, new Vector3(laneCenterX + 3.22f, 4.52f, z + 1.5f), new Vector3(0.42f, 0.28f, 5.45f), roof).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningLeftLitWindowsA_" + index, new Vector3(laneCenterX - 3.2f, 2.65f, z - 1.35f), new Vector3(0.16f, 0.7f, 1.12f), glow).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningLeftLitWindowsB_" + index, new Vector3(laneCenterX - 3.2f, 3.35f, z + 1.35f), new Vector3(0.16f, 0.6f, 1.02f), glow).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningRightLitWindowsA_" + index, new Vector3(laneCenterX + 3.2f, 2.6f, z + 0.35f), new Vector3(0.16f, 0.66f, 1.1f), glow).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningRightLitWindowsB_" + index, new Vector3(laneCenterX + 3.2f, 3.22f, z + 2.55f), new Vector3(0.16f, 0.58f, 1.0f), glow).transform.SetParent(root, true);
+            }
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningRightNeonGarageBlade", new Vector3(laneCenterX + 3.0f, 2.85f, -22.9f), new Vector3(0.2f, 0.42f, 3.6f), sign).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningRightNeonGarageGlow", new Vector3(laneCenterX + 2.86f, 2.88f, -22.9f), new Vector3(0.08f, 0.16f, 3.0f), glow).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningLeftClubCanopy", new Vector3(laneCenterX - 2.98f, 1.85f, -25.6f), new Vector3(0.32f, 0.18f, 3.2f), sign).transform.SetParent(root, true);
+
+            EnvironmentArtCatalog.CreateKenneyFallback(
+                "CityKitCommercial",
+                "detail-awning-wide",
+                "SteamDocks_OpeningMorettiAwning",
+                new Vector3(laneCenterX - 2.85f, 1.82f, -23.25f),
+                new Vector3(0f, 90f, 0f),
+                new Vector3(1.9f, 1.9f, 1.9f),
+                root);
+            EnvironmentArtCatalog.CreateKenneyFallback(
+                "CityKitRoads",
+                "mailbox",
+                "SteamDocks_OpeningMailbox",
+                new Vector3(laneCenterX - 2.75f, 0.22f, -20.2f),
+                new Vector3(0f, 95f, 0f),
+                new Vector3(1.08f, 1.08f, 1.08f),
+                root);
+            EnvironmentArtCatalog.CreateKenneyFallback(
+                "CityKitRoads",
+                "trashcan",
+                "SteamDocks_OpeningTrashCan",
+                new Vector3(laneCenterX + 2.75f, 0.22f, -17.65f),
+                new Vector3(0f, -35f, 0f),
+                new Vector3(1.12f, 1.12f, 1.12f),
+                root);
+            EnvironmentArtCatalog.CreateKenneyFallback(
+                "CityKitRoads",
+                "construction-barrier",
+                "SteamDocks_OpeningCurbBarrier",
+                new Vector3(laneCenterX + 2.7f, 0.22f, -28.8f),
+                new Vector3(0f, -12f, 0f),
+                new Vector3(1.38f, 1.38f, 1.38f),
+                root);
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningCafeBladeSign", new Vector3(laneCenterX - 2.72f, 3.1f, -22.7f), new Vector3(0.12f, 0.68f, 2.65f), sign).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningCafeBladeGlow", new Vector3(laneCenterX - 2.62f, 3.12f, -22.7f), new Vector3(0.045f, 0.16f, 2.22f), glow).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningGarageSign", new Vector3(laneCenterX + 2.72f, 3.0f, -15.4f), new Vector3(0.12f, 0.62f, 2.55f), sign).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningGarageSignGlow", new Vector3(laneCenterX + 2.62f, 3.02f, -15.4f), new Vector3(0.045f, 0.14f, 2.1f), glow).transform.SetParent(root, true);
+
+            for (var index = 0; index < 5; index += 1)
+            {
+                var z = -29.5f + (index * 5.2f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningFireEscapeLeft_" + index, new Vector3(laneCenterX - 2.72f, 3.1f, z), new Vector3(0.12f, 0.08f, 1.8f), metal).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningFireEscapeRailLeft_" + index, new Vector3(laneCenterX - 2.63f, 3.42f, z), new Vector3(0.06f, 0.52f, 1.8f), metal).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningWindowGlowLeft_" + index, new Vector3(laneCenterX - 2.68f, 2.72f, z + 1.45f), new Vector3(0.055f, 0.52f, 0.82f), glow).transform.SetParent(root, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningWindowGlowRight_" + index, new Vector3(laneCenterX + 2.68f, 2.62f, z + 2.2f), new Vector3(0.055f, 0.46f, 0.78f), glow).transform.SetParent(root, true);
+            }
+
+            for (var index = 0; index < 8; index += 1)
+            {
+                var z = -31.8f + (index * 4.6f);
+                var x = laneCenterX + (index % 2 == 0 ? -2.85f : 2.85f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningWetPatch_" + index, new Vector3(x, 0.205f, z), new Vector3(0.82f, 0.014f, 1.85f), puddle).transform.SetParent(root, true);
+            }
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningStackedCrateA", new Vector3(laneCenterX - 2.55f, 0.55f, -26.7f), new Vector3(0.82f, 0.72f, 0.74f), wood).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_OpeningStackedCrateB", new Vector3(laneCenterX - 2.52f, 1.18f, -26.68f), new Vector3(0.72f, 0.62f, 0.64f), wood).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, "SteamDocks_OpeningCornerBollardA", new Vector3(laneCenterX - 2.8f, 0.55f, -24.25f), new Vector3(0.18f, 0.68f, 0.18f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, "SteamDocks_OpeningCornerBollardB", new Vector3(laneCenterX + 2.8f, 0.55f, -24.25f), new Vector3(0.18f, 0.68f, 0.18f), metal).transform.SetParent(root, true);
+
+            CreateLowProfileStreetLamp("SteamDocks_OpeningHeroLampLeft", new Vector3(laneCenterX - 2.95f, 0.1f, -23.6f), root);
+            CreateLowProfileStreetLamp("SteamDocks_OpeningHeroLampRight", new Vector3(laneCenterX + 2.95f, 0.1f, -16.6f), root);
+
+            var practicalLight = new GameObject("SteamDocks_OpeningStorefrontPractical");
+            practicalLight.transform.SetParent(root, true);
+            practicalLight.transform.position = new Vector3(laneCenterX - 2.55f, 3.05f, -22.9f);
+            var light = practicalLight.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.range = 8f;
+            light.intensity = 2.1f;
+            light.color = new Color(1f, 0.68f, 0.32f);
+
+            CreateStaticVehicle("SteamDocks_OpeningParkedDeliveryTruck", new Vector3(laneCenterX - 2.9f, 0.78f, -12.2f), new Vector3(2.15f, 1.08f, 4.75f), new Color(0.09f, 0.105f, 0.11f), roof, glow);
+            CreateStaticVehicle("SteamDocks_OpeningParkedMaroonCoupe", new Vector3(laneCenterX + 2.95f, 0.72f, -27.9f), new Vector3(1.64f, 0.88f, 3.7f), new Color(0.17f, 0.045f, 0.038f), roof, brass);
         }
 
         private static void CreateAuthoredDocksVerticalSlicePass(
