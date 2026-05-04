@@ -7,7 +7,8 @@ namespace MafiaTopDown.Editor
 {
     internal static class EnvironmentArtCatalog
     {
-        private const string QuaterniusUltimateBuildingsRoot = "Assets/ThirdParty/Quaternius/UltimateBuildingsPack/Models/FBX/";
+        private const string QuaterniusUltimateBuildingsRoot =
+            "Assets/ThirdParty/Quaternius/UltimateTexturedBuildingPack/Ultimate Textured Building Pack - Dec 2019/Models with Materials/FBX/";
         private const string KenneyRoot = "Assets/ThirdParty/Kenney/";
 
         internal static GameObject? CreateDocksBuilding(
@@ -81,8 +82,11 @@ namespace MafiaTopDown.Editor
                 var replacementMaterials = new Material[sourceMaterials.Length];
                 for (var index = 0; index < sourceMaterials.Length; index += 1)
                 {
-                    var sourceName = sourceMaterials[index] != null ? sourceMaterials[index].name : string.Empty;
-                    replacementMaterials[index] = ResolveNoirMaterial(assetPath, instance.name, sourceName, resolvedDistrict);
+                    var sourceMaterial = sourceMaterials[index];
+                    var sourceName = sourceMaterial != null ? sourceMaterial.name : string.Empty;
+                    replacementMaterials[index] = ResolveNoirMaterial(assetPath, instance.name, sourceName, resolvedDistrict) ??
+                        sourceMaterial ??
+                        ResolveFacadeVariantMaterial(resolvedDistrict, instance.name, sourceName);
                 }
 
                 renderer.sharedMaterials = replacementMaterials;
@@ -369,7 +373,7 @@ namespace MafiaTopDown.Editor
             return DistrictArtStyle.Docks;
         }
 
-        private static Material ResolveNoirMaterial(
+        private static Material? ResolveNoirMaterial(
             string assetPath,
             string instanceName,
             string sourceMaterialName,
@@ -422,17 +426,24 @@ namespace MafiaTopDown.Editor
                 return GetOrCreateNoirMaterial("NoirReadyWetVegetation", new Color(0.1f, 0.14f, 0.1f), 0.28f, 0f);
             }
 
-            switch (district)
+            if (assetPath.Contains("Ultimate Textured Building Pack", System.StringComparison.OrdinalIgnoreCase) ||
+                assetName.Contains("story", System.StringComparison.OrdinalIgnoreCase) ||
+                assetName.StartsWith("building", System.StringComparison.OrdinalIgnoreCase))
             {
-                case DistrictArtStyle.BusinessCore:
-                    return ResolveFacadeVariantMaterial(district, instanceName, sourceMaterialName);
-                case DistrictArtStyle.OldQuarter:
-                    return ResolveFacadeVariantMaterial(district, instanceName, sourceMaterialName);
-                case DistrictArtStyle.RailYard:
-                    return ResolveFacadeVariantMaterial(district, instanceName, sourceMaterialName);
-                default:
-                    return ResolveFacadeVariantMaterial(district, instanceName, sourceMaterialName);
+                switch (district)
+                {
+                    case DistrictArtStyle.BusinessCore:
+                        return GetOrCreateNoirMaterial("NoirReadyBusinessFacade", new Color(0.21f, 0.205f, 0.185f), 0.38f, 0.03f);
+                    case DistrictArtStyle.OldQuarter:
+                        return GetOrCreateNoirMaterial("NoirReadyOldQuarterFacade", new Color(0.26f, 0.17f, 0.135f), 0.34f, 0.02f);
+                    case DistrictArtStyle.RailYard:
+                        return GetOrCreateNoirMaterial("NoirReadyRailYardFacade", new Color(0.16f, 0.155f, 0.145f), 0.46f, 0.12f);
+                    default:
+                        return GetOrCreateNoirMaterial("NoirReadyDocksFacade", new Color(0.22f, 0.15f, 0.12f), 0.36f, 0.02f);
+                }
             }
+
+            return null;
         }
 
         private static Material ResolveFacadeVariantMaterial(DistrictArtStyle district, string instanceName, string sourceMaterialName)

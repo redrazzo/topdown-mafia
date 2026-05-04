@@ -15,6 +15,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Vehicles
         [SerializeField] private CampaignProgressionController? campaignProgressionController;
         [SerializeField] private MissionDefinitionAsset? missionAsset;
         [SerializeField] private string missionStageIdOnEnter = string.Empty;
+        [SerializeField] private float exitProbeStep = 0.85f;
 
         private readonly VehicleSeatStateMachine _stateMachine = new();
         private TopDownPlayerController? _occupant;
@@ -61,14 +62,26 @@ namespace MafiaTopDown.Gameplay.Runtime.Vehicles
 
             _stateMachine.BeginExit();
 
-            var occupant = _occupant;
+            var occupant = _occupant!;
             _occupant = null;
+            var characterController = occupant.GetComponent<CharacterController>();
+            var wasEnabled = characterController != null && characterController.enabled;
+            if (wasEnabled && characterController != null)
+            {
+                characterController.enabled = false;
+            }
 
             occupant.transform.SetParent(null, true);
 
             if (exitAnchor != null)
             {
-                occupant.transform.SetPositionAndRotation(exitAnchor.position, exitAnchor.rotation);
+                var exitPosition = ResolveClearExitPosition(exitAnchor.position, characterController);
+                occupant.transform.SetPositionAndRotation(exitPosition, exitAnchor.rotation);
+            }
+
+            if (wasEnabled && characterController != null)
+            {
+                characterController.enabled = true;
             }
 
             occupant.SetControlsLocked(false);
@@ -76,6 +89,50 @@ namespace MafiaTopDown.Gameplay.Runtime.Vehicles
             _occupantRenderers = Array.Empty<Renderer>();
             _stateMachine.ConfirmExited();
             return true;
+        }
+
+        private Vector3 ResolveClearExitPosition(Vector3 requestedPosition, CharacterController? characterController)
+        {
+            if (IsExitClear(requestedPosition, characterController))
+            {
+                return requestedPosition;
+            }
+
+            var directions = new[]
+            {
+                transform.right,
+                -transform.right,
+                transform.forward,
+                -transform.forward,
+                (transform.right + transform.forward).normalized,
+                (-transform.right + transform.forward).normalized,
+                (transform.right - transform.forward).normalized,
+                (-transform.right - transform.forward).normalized
+            };
+
+            for (var ring = 1; ring <= 3; ring += 1)
+            {
+                var distance = exitProbeStep * ring;
+                foreach (var direction in directions)
+                {
+                    var candidate = requestedPosition + (direction * distance);
+                    if (IsExitClear(candidate, characterController))
+                    {
+                        return candidate;
+                    }
+                }
+            }
+
+            return requestedPosition;
+        }
+
+        private static bool IsExitClear(Vector3 position, CharacterController? characterController)
+        {
+            var radius = characterController != null ? Mathf.Max(0.2f, characterController.radius) : 0.35f;
+            var height = characterController != null ? Mathf.Max(1f, characterController.height) : 1.8f;
+            var bottom = position + Vector3.up * (radius + 0.08f);
+            var top = position + Vector3.up * Mathf.Max(radius + 0.12f, height - radius);
+            return !Physics.CheckCapsule(bottom, top, radius, ~0, QueryTriggerInteraction.Ignore);
         }
 
         private void SetOccupantRenderersVisible(bool isVisible)

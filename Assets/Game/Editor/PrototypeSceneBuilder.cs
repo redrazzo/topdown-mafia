@@ -293,9 +293,9 @@ namespace MafiaTopDown.Editor
             var warmDoor = GetOrCreateMaterial("Assets/Game/Materials/WarmDoor.mat", new Color(0.62f, 0.49f, 0.28f), 0.28f, 0f);
             var sedanPaint = GetOrCreateMaterial("Assets/Game/Materials/SedanPaint.mat", new Color(0.37f, 0.07f, 0.08f), 0.8f, 0.1f);
             var awning = GetOrCreateMaterial("Assets/Game/Materials/Awning.mat", new Color(0.1f, 0.12f, 0.14f), 0.18f, 0f);
-            var playerCoat = GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.42f, 0.39f, 0.31f), 0.28f, 0f);
+            var playerCoat = GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.16f, 0.145f, 0.12f), 0.32f, 0f);
             var enemyCoat = GetOrCreateMaterial("Assets/Game/Materials/EnemyCoat.mat", new Color(0.14f, 0.16f, 0.18f), 0.15f, 0f);
-            var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.45f, 0.32f, 0.21f), 0.22f, 0f);
+            var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.20f, 0.13f, 0.08f), 0.24f, 0f);
             var roof = GetOrCreateMaterial("Assets/Game/Materials/Roof.mat", new Color(0.055f, 0.06f, 0.07f), 0.22f, 0f);
             var windowGlow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(1f, 0.78f, 0.42f), 0.86f, 0.08f, new Color(1f, 0.68f, 0.28f) * 3.2f);
             var metal = GetOrCreateMaterial("Assets/Game/Materials/Metal.mat", new Color(0.27f, 0.28f, 0.3f), 0.78f, 0.7f);
@@ -451,17 +451,12 @@ namespace MafiaTopDown.Editor
             CreateLampPost(new Vector3(-4.8f, 0f, 12f), metal, windowGlow);
             CreateLampPost(new Vector3(4.8f, 0f, 18f), metal, windowGlow);
             CreateProductionDockOpeningPass(brick, roof, metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
-            CreateReadyAssetUrbanCanyonPass(DistrictArtStyle.Docks, "Dock", brick, roof, metal, windowGlow, officeSign, sidewalk, puddle, brass);
-            CreateNoirStreetDressing("Dock", metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
-            CreateNoirSpawnComposition("DockStart", new Vector3(0f, 0f, -12f), metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass, "MORETTI");
-            CreateFinishedCityBlockPass("Dock", asphalt, brick, roof, metal, windowGlow, officeSign, sidewalk, puddle, brass);
-            CreateDistrictRooftopDetailPass("Dock", -10.6f, 10.6f, metal, windowGlow, roof, officeSign, brass);
             CreateDockStartDetailPass(metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
             CreateDocksIdentityPass(metal, windowGlow, crateWood, officeSign, water, brass);
-            CreateKenneyDistrictAssetPass("Docks");
-            CreateMafiaDistrictProductionPass(DistrictArtStyle.Docks, "Dock", asphalt, brick, roof, metal, windowGlow, officeSign, sidewalk, puddle, brass);
+            CreateAuthoredDocksVerticalSlicePass(asphalt, brick, roof, metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
+            CreateDocksFirstScreenPolishPass(asphalt, brick, roof, metal, windowGlow, crateWood, officeSign, sidewalk, puddle, brass);
 
-            var openingSpawn = new Vector3(-2.2f, 1f, -10.8f);
+            var openingSpawn = new Vector3(-0.85f, 1f, -13.45f);
             var player = CreateNoirActor("Player", openingSpawn, playerCoat, null, false);
             var characterController = player.AddComponent<CharacterController>();
             characterController.height = 1.8f;
@@ -479,7 +474,7 @@ namespace MafiaTopDown.Editor
 
             CreateSpawnPoint("DefaultSpawnPoint", "DefaultSpawn", openingSpawn);
             CreateSpawnPoint("PickupSpawnPoint", "PickupSpawn", openingSpawn);
-            CreateSpawnPoint("DriveSpawnPoint", "DriveSpawn", new Vector3(0f, 1f, -4.2f));
+            CreateSpawnPoint("DriveSpawnPoint", "DriveSpawn", new Vector3(1.15f, 1f, -7.4f));
             CreateSpawnPoint("ExteriorReturnSpawnPoint", "ExteriorReturn", new Vector3(0f, 1f, 12.5f));
             CreateSpawnPoint("PierExitSpawnPoint", "PierExitSpawn", new Vector3(-3.2f, 1f, 9.8f));
             CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(0f, 1f, -12.8f));
@@ -516,14 +511,14 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.28f, 0.29f, 0.33f);
             camera.orthographic = false;
-            camera.fieldOfView = 36f;
+            camera.fieldOfView = 38f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 140f;
-            var tunedOpeningCameraOffset = new Vector3(0f, 10.8f, -6.6f);
+            var tunedOpeningCameraOffset = new Vector3(0.25f, 7.0f, -6.65f);
             cameraRoot.transform.position = player.transform.position + tunedOpeningCameraOffset;
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            ConfigureNoirCamera(camera, topDownCamera, tunedOpeningCameraOffset, 52f, -2f, 8.6f, 14.2f);
+            ConfigureNoirCamera(camera, topDownCamera, tunedOpeningCameraOffset, 48f, 8f, 6.4f, 10.8f);
 
             var sceneTransitionControllerObject = new GameObject("SceneTransitionController");
             var sceneTransitionController = sceneTransitionControllerObject.AddComponent<SceneTransitionController>();
@@ -549,7 +544,7 @@ namespace MafiaTopDown.Editor
             SetObjectReference(pauseMenu, "dialogueController", dialogueController);
 
             var docksMissionRoot = new GameObject("AQuietFavorDistrictRoot");
-            var luca = CreateNoirActor("LucaContact", new Vector3(-5.05f, 1f, -12.75f), contactCoat, docksMissionRoot.transform);
+            var luca = CreateNoirActor("LucaContact", new Vector3(-2.25f, 1f, -12.9f), contactCoat, docksMissionRoot.transform);
             var lucaInteractable = luca.AddComponent<DialogueInteractable>();
             SetObjectReference(lucaInteractable, "dialogueController", dialogueController);
             SetObjectReference(lucaInteractable, "dialogueSequence", lucaBriefing);
@@ -558,10 +553,18 @@ namespace MafiaTopDown.Editor
             var car = GameObject.CreatePrimitive(PrimitiveType.Cube);
             car.name = "Sedan";
             car.transform.SetParent(docksMissionRoot.transform, false);
-            car.transform.position = new Vector3(1.8f, 0.75f, -5.8f);
+            car.transform.position = new Vector3(2.35f, 0.75f, -8.1f);
             car.transform.localScale = new Vector3(2.2f, 1f, 4.6f);
             AssignMaterial(car, sedanPaint);
             HideRenderer(car);
+            var carBody = car.AddComponent<Rigidbody>();
+            carBody.useGravity = false;
+            carBody.mass = 1200f;
+            carBody.interpolation = RigidbodyInterpolation.Interpolate;
+            carBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            carBody.constraints = RigidbodyConstraints.FreezePositionY |
+                RigidbodyConstraints.FreezeRotationX |
+                RigidbodyConstraints.FreezeRotationZ;
             var seatController = car.AddComponent<VehicleSeatController>();
             var vehicleDriver = car.AddComponent<SimpleVehicleDriver>();
             var driverAnchor = new GameObject("DriverAnchor").transform;
@@ -872,7 +875,7 @@ namespace MafiaTopDown.Editor
             var ledgerAccent = GetOrCreateMaterial("Assets/Game/Materials/LedgerAccent.mat", new Color(0.34f, 0.47f, 0.19f), 0.22f, 0f);
             var crateWood = GetOrCreateMaterial("Assets/Game/Materials/CrateWood.mat", new Color(0.44f, 0.29f, 0.18f), 0.18f, 0f);
             var enemyCoat = GetOrCreateMaterial("Assets/Game/Materials/EnemyCoat.mat", new Color(0.14f, 0.16f, 0.18f), 0.15f, 0f);
-            var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.45f, 0.32f, 0.21f), 0.22f, 0f);
+            var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.20f, 0.13f, 0.08f), 0.24f, 0f);
             var wallpaper = GetOrCreateMaterial("Assets/Game/Materials/OfficeWallpaper.mat", new Color(0.24f, 0.2f, 0.15f), 0.05f, 0f);
             var brass = GetOrCreateMaterial("Assets/Game/Materials/Brass.mat", new Color(0.63f, 0.47f, 0.21f), 0.8f, 0.88f);
             var carpet = GetOrCreateMaterial("Assets/Game/Materials/OfficeCarpet.mat", new Color(0.32f, 0.08f, 0.07f), 0.14f, 0f);
@@ -1238,7 +1241,7 @@ namespace MafiaTopDown.Editor
             var brass = GetOrCreateMaterial("Assets/Game/Materials/Brass.mat", new Color(0.63f, 0.47f, 0.21f), 0.8f, 0.88f);
             var ledgerAccent = GetOrCreateMaterial("Assets/Game/Materials/LedgerAccent.mat", new Color(0.34f, 0.47f, 0.19f), 0.22f, 0f);
             var crateWood = GetOrCreateMaterial("Assets/Game/Materials/CrateWood.mat", new Color(0.44f, 0.29f, 0.18f), 0.18f, 0f);
-            var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.45f, 0.32f, 0.21f), 0.22f, 0f);
+            var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.20f, 0.13f, 0.08f), 0.24f, 0f);
 
             var runtime = CreateFreeRoamInteriorRuntime(
                 "Interior_BusinessBookkeeper_01",
@@ -1733,7 +1736,7 @@ namespace MafiaTopDown.Editor
             var metal = GetOrCreateMaterial("Assets/Game/Materials/Metal.mat", new Color(0.27f, 0.28f, 0.3f), 0.78f, 0.7f);
             var paper = GetOrCreateMaterial("Assets/Game/Materials/PaperStack.mat", new Color(0.72f, 0.67f, 0.55f), 0.08f, 0f);
             var glow = GetOrCreateMaterial("Assets/Game/Materials/WindowGlow.mat", new Color(1f, 0.78f, 0.42f), 0.86f, 0.08f, new Color(1f, 0.68f, 0.28f) * 3.2f);
-            var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.45f, 0.32f, 0.21f), 0.22f, 0f);
+            var contactCoat = GetOrCreateMaterial("Assets/Game/Materials/ContactCoat.mat", new Color(0.20f, 0.13f, 0.08f), 0.24f, 0f);
 
             var runtime = CreateFreeRoamInteriorRuntime(
                 sceneName,
@@ -2935,7 +2938,7 @@ namespace MafiaTopDown.Editor
             var player = CreateNoirActor(
                 "InteriorPlayer",
                 playerPosition,
-                GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.42f, 0.39f, 0.31f), 0.28f, 0f),
+                GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.16f, 0.145f, 0.12f), 0.32f, 0f),
                 null,
                 false);
             var characterController = player.AddComponent<CharacterController>();
@@ -3030,7 +3033,7 @@ namespace MafiaTopDown.Editor
             var player = CreateNoirActor(
                 "Player",
                 playerPosition,
-                GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.42f, 0.39f, 0.31f), 0.28f, 0f),
+                GetOrCreateMaterial("Assets/Game/Materials/PlayerCoat.mat", new Color(0.16f, 0.145f, 0.12f), 0.32f, 0f),
                 null,
                 false);
             var characterController = player.AddComponent<CharacterController>();
@@ -3464,19 +3467,42 @@ namespace MafiaTopDown.Editor
             }
 
             var hat = GetOrCreateMaterial("Assets/Game/Materials/FedoraFelt.mat", new Color(0.045f, 0.04f, 0.035f), 0.36f, 0f);
-            var skin = GetOrCreateMaterial("Assets/Game/Materials/FaceWarm.mat", new Color(0.53f, 0.38f, 0.27f), 0.22f, 0f);
-            var shirt = GetOrCreateMaterial("Assets/Game/Materials/ShirtIvory.mat", new Color(0.72f, 0.65f, 0.52f), 0.22f, 0f);
+            var skin = GetOrCreateMaterial("Assets/Game/Materials/FaceWarm.mat", new Color(0.30f, 0.21f, 0.15f), 0.22f, 0f);
+            var shirt = GetOrCreateMaterial("Assets/Game/Materials/ShirtIvory.mat", new Color(0.24f, 0.21f, 0.16f), 0.24f, 0f);
             var shadow = GetOrCreateMaterial("Assets/Game/Materials/ActorShadow.mat", new Color(0.005f, 0.006f, 0.008f, 0.72f), 0.04f, 0f);
             var ground = new Vector3(position.x, position.y - 1f, position.z);
 
-            CreateVisualPrimitive(PrimitiveType.Cylinder, name + "_Shadow", ground + new Vector3(0.08f, 0.035f, -0.08f), new Vector3(0.52f, 0.025f, 0.78f), shadow).transform.SetParent(root.transform, true);
-            CreateVisualPrimitive(PrimitiveType.Capsule, name + "_Coat", ground + new Vector3(0f, 0.82f, 0f), new Vector3(0.42f, 0.72f, 0.42f), coatMaterial).transform.SetParent(root.transform, true);
-            CreateVisualPrimitive(PrimitiveType.Cube, name + "_Shoulders", ground + new Vector3(0f, 1.23f, -0.03f), new Vector3(0.82f, 0.18f, 0.42f), coatMaterial).transform.SetParent(root.transform, true);
-            CreateVisualPrimitive(PrimitiveType.Cube, name + "_Shirt", ground + new Vector3(0f, 1.18f, -0.25f), new Vector3(0.26f, 0.22f, 0.08f), shirt).transform.SetParent(root.transform, true);
-            CreateVisualPrimitive(PrimitiveType.Sphere, name + "_Head", ground + new Vector3(0f, 1.55f, 0f), new Vector3(0.34f, 0.28f, 0.34f), skin).transform.SetParent(root.transform, true);
-            CreateVisualPrimitive(PrimitiveType.Cylinder, name + "_HatBrim", ground + new Vector3(0f, 1.74f, 0f), new Vector3(0.5f, 0.045f, 0.5f), hat).transform.SetParent(root.transform, true);
-            CreateVisualPrimitive(PrimitiveType.Cylinder, name + "_HatCrown", ground + new Vector3(0f, 1.88f, 0f), new Vector3(0.31f, 0.16f, 0.31f), hat).transform.SetParent(root.transform, true);
-            CreateVisualPrimitive(PrimitiveType.Cube, name + "_CoatTail", ground + new Vector3(0f, 0.42f, -0.24f), new Vector3(0.38f, 0.38f, 0.42f), coatMaterial).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, name + "_Shadow", ground + new Vector3(0.06f, 0.035f, -0.06f), new Vector3(0.38f, 0.02f, 0.56f), shadow).transform.SetParent(root.transform, true);
+            var readyActor = CreateReadyActorModel(name, ground, root.transform, coatMaterial, skin, shirt);
+            if (readyActor != null)
+            {
+                CreateVisualPrimitive(PrimitiveType.Sphere, name + "_FaceRead", ground + new Vector3(0f, 1.34f, -0.08f), new Vector3(0.23f, 0.2f, 0.2f), skin).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cylinder, name + "_HatBrim", ground + new Vector3(0f, 1.42f, 0f), new Vector3(0.34f, 0.035f, 0.34f), hat).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cylinder, name + "_HatCrown", ground + new Vector3(0f, 1.53f, 0f), new Vector3(0.22f, 0.12f, 0.22f), hat).transform.SetParent(root.transform, true);
+
+                if (addInteractionCollider)
+                {
+                    var capsule = root.AddComponent<CapsuleCollider>();
+                    capsule.height = 1.8f;
+                    capsule.radius = 0.42f;
+                    capsule.center = new Vector3(0f, 0.9f, 0f);
+                }
+
+                return root;
+            }
+
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_LeftShoe", ground + new Vector3(-0.09f, 0.15f, 0.04f), new Vector3(0.08f, 0.16f, 0.18f), hat).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_RightShoe", ground + new Vector3(0.09f, 0.15f, 0.04f), new Vector3(0.08f, 0.16f, 0.18f), hat).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_LeftTrouser", ground + new Vector3(-0.08f, 0.38f, 0.02f), new Vector3(0.08f, 0.45f, 0.11f), coatMaterial).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_RightTrouser", ground + new Vector3(0.08f, 0.38f, 0.02f), new Vector3(0.08f, 0.45f, 0.11f), coatMaterial).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_LongCoat", ground + new Vector3(0f, 0.7f, -0.02f), new Vector3(0.28f, 0.72f, 0.2f), coatMaterial).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_CoatLapels", ground + new Vector3(0f, 0.93f, -0.13f), new Vector3(0.16f, 0.25f, 0.04f), shirt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_ShoulderLine", ground + new Vector3(0f, 0.99f, -0.01f), new Vector3(0.42f, 0.08f, 0.2f), coatMaterial).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_LeftSleeve", ground + new Vector3(-0.24f, 0.73f, -0.01f), new Vector3(0.08f, 0.47f, 0.09f), coatMaterial).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_RightSleeve", ground + new Vector3(0.24f, 0.73f, -0.01f), new Vector3(0.08f, 0.47f, 0.09f), coatMaterial).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_Head", ground + new Vector3(0f, 1.18f, -0.01f), new Vector3(0.16f, 0.16f, 0.15f), skin).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_FedoraBrim", ground + new Vector3(0f, 1.27f, -0.03f), new Vector3(0.25f, 0.028f, 0.18f), hat).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "_FedoraCrown", ground + new Vector3(0f, 1.34f, -0.01f), new Vector3(0.15f, 0.075f, 0.13f), hat).transform.SetParent(root.transform, true);
 
             if (addInteractionCollider)
             {
@@ -3487,6 +3513,126 @@ namespace MafiaTopDown.Editor
             }
 
             return root;
+        }
+
+        private static GameObject? CreateReadyActorModel(
+            string actorName,
+            Vector3 groundPosition,
+            Transform parent,
+            Material coatMaterial,
+            Material skinMaterial,
+            Material shirtMaterial)
+        {
+            // The Kenney blocky character kit reads like a toy from the gameplay camera.
+            // Keep authored noir silhouettes until a higher-fidelity humanoid pack is imported.
+            var useBlockyPlaceholderMesh = false;
+            if (!useBlockyPlaceholderMesh)
+            {
+                return null;
+            }
+
+            var modelName = ResolveReadyActorModel(actorName);
+            var readyActor = EnvironmentArtCatalog.CreateKenneyFallback(
+                "BlockyCharacters",
+                modelName,
+                actorName + "_ReadyActorMesh",
+                groundPosition,
+                Vector3.zero,
+                new Vector3(0.68f, 0.68f, 0.68f),
+                parent);
+            if (readyActor == null)
+            {
+                return null;
+            }
+
+            ApplyNoirActorMaterials(readyActor, coatMaterial, skinMaterial, shirtMaterial);
+            readyActor.transform.localRotation = Quaternion.identity;
+            return readyActor;
+        }
+
+        private static void ApplyNoirActorMaterials(
+            GameObject actorModel,
+            Material coatMaterial,
+            Material skinMaterial,
+            Material shirtMaterial)
+        {
+            var renderers = actorModel.GetComponentsInChildren<Renderer>(true);
+            foreach (var renderer in renderers)
+            {
+                var sourceMaterials = renderer.sharedMaterials;
+                if (sourceMaterials.Length == 0)
+                {
+                    renderer.sharedMaterial = coatMaterial;
+                    continue;
+                }
+
+                var replacements = new Material[sourceMaterials.Length];
+                for (var index = 0; index < sourceMaterials.Length; index += 1)
+                {
+                    replacements[index] = coatMaterial;
+                }
+
+                renderer.sharedMaterials = replacements;
+            }
+        }
+
+        private static Material ResolveNoirActorMaterial(
+            Material? sourceMaterial,
+            Material coatMaterial,
+            Material skinMaterial,
+            Material shirtMaterial)
+        {
+            if (sourceMaterial == null)
+            {
+                return coatMaterial;
+            }
+
+            var sourceName = sourceMaterial.name;
+            if (sourceName.Contains("skin", System.StringComparison.OrdinalIgnoreCase) ||
+                sourceName.Contains("face", System.StringComparison.OrdinalIgnoreCase) ||
+                sourceName.Contains("head", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return skinMaterial;
+            }
+
+            if (sourceName.Contains("shirt", System.StringComparison.OrdinalIgnoreCase) ||
+                sourceName.Contains("collar", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return shirtMaterial;
+            }
+
+            return coatMaterial;
+        }
+
+        private static Color ExtractMaterialColor(Material material)
+        {
+            if (material.HasProperty("_BaseColor"))
+            {
+                return material.GetColor("_BaseColor");
+            }
+
+            return material.HasProperty("_Color")
+                ? material.GetColor("_Color")
+                : Color.black;
+        }
+
+        private static string ResolveReadyActorModel(string actorName)
+        {
+            if (actorName.Contains("Luca", System.StringComparison.OrdinalIgnoreCase) ||
+                actorName.Contains("Vincent", System.StringComparison.OrdinalIgnoreCase) ||
+                actorName.Contains("Contact", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "character-c";
+            }
+
+            if (actorName.Contains("Watch", System.StringComparison.OrdinalIgnoreCase) ||
+                actorName.Contains("Enemy", System.StringComparison.OrdinalIgnoreCase) ||
+                actorName.Contains("Guard", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "character-f";
+            }
+
+            return "character-a";
         }
 
         private static void CreateNoirStreetDressing(
@@ -3906,6 +4052,7 @@ namespace MafiaTopDown.Editor
             var instance = EnvironmentArtCatalog.CreateDocksBuilding(role, instanceName, position, rotationEuler, scale, root);
             if (instance != null)
             {
+                AddRendererBoundsCollider(instance, instanceName + "_BuildingEnvelope", 0.88f, 0.92f);
                 return;
             }
 
@@ -3927,10 +4074,36 @@ namespace MafiaTopDown.Editor
             var instance = EnvironmentArtCatalog.CreateDistrictBuilding(district, role, instanceName, position, rotationEuler, scale, root);
             if (instance != null)
             {
+                AddRendererBoundsCollider(instance, instanceName + "_BuildingEnvelope", 0.88f, 0.92f);
                 return;
             }
 
             CreateFallbackFacade(instanceName, position, rotationEuler.y < 0f ? -1f : 1f, facade, roof, glow);
+        }
+
+        private static void AddRendererBoundsCollider(GameObject instance, string colliderName, float horizontalScale, float depthScale)
+        {
+            var renderers = instance.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                return;
+            }
+
+            var bounds = renderers[0].bounds;
+            for (var index = 1; index < renderers.Length; index += 1)
+            {
+                bounds.Encapsulate(renderers[index].bounds);
+            }
+
+            var colliderObject = new GameObject(colliderName);
+            colliderObject.transform.SetParent(instance.transform, true);
+            colliderObject.transform.position = bounds.center;
+            colliderObject.transform.rotation = Quaternion.identity;
+            var collider = colliderObject.AddComponent<BoxCollider>();
+            collider.size = new Vector3(
+                Mathf.Max(0.8f, bounds.size.x * horizontalScale),
+                Mathf.Max(1.4f, bounds.size.y),
+                Mathf.Max(0.8f, bounds.size.z * depthScale));
         }
 
         private static void CreateFallbackFacade(string name, Vector3 position, float facingSign, Material facade, Material roof, Material glow)
@@ -3941,6 +4114,7 @@ namespace MafiaTopDown.Editor
             CreateVisualPrimitive(PrimitiveType.Cube, name + "_FallbackMass", new Vector3(x, 2.6f, z), new Vector3(3.2f, 5.2f, 4.8f), facade);
             CreateVisualPrimitive(PrimitiveType.Cube, name + "_FallbackRoof", new Vector3(x, 5.45f, z), new Vector3(3.5f, 0.34f, 5.05f), roof);
             CreateVisualPrimitive(PrimitiveType.Cube, name + "_FallbackDoor", new Vector3(frontX, 1.05f, z - 1.1f), new Vector3(0.08f, 1.55f, 0.72f), roof);
+            CreateColliderBlock(name + "_FallbackCollider", new Vector3(x, 2.6f, z), new Vector3(3.0f, 5.2f, 4.6f));
 
             for (var row = 0; row < 3; row += 1)
             {
@@ -4558,7 +4732,7 @@ namespace MafiaTopDown.Editor
             string marqueeText)
         {
             var streetZ = anchor.z + 3.8f;
-            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "ForegroundShadow", anchor + new Vector3(0f, 0.14f, -7.8f), new Vector3(10.8f, 0.05f, 0.72f), sign);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "ForegroundWetEdge", anchor + new Vector3(0f, 0.095f, -8.6f), new Vector3(10.8f, 0.018f, 0.18f), puddle);
             CreateColliderBlock(prefix + "LeftFacadeCollision", anchor + new Vector3(-7.25f, 2.2f, -1.2f), new Vector3(2.4f, 4.4f, 7.4f));
             CreateColliderBlock(prefix + "RightFacadeCollision", anchor + new Vector3(7.15f, 2.4f, 1.2f), new Vector3(2.2f, 4.8f, 8.6f));
             CreateVisualPrimitive(PrimitiveType.Cube, prefix + "LeftAwning", anchor + new Vector3(-5.85f, 2.35f, 1.1f), new Vector3(1.15f, 0.24f, 2.9f), sign);
@@ -4646,6 +4820,262 @@ namespace MafiaTopDown.Editor
             CreateVisualPrimitive(PrimitiveType.Cube, "StartShopSignLetterHintA", new Vector3(-5.0f, 3.03f, -10.55f), new Vector3(0.045f, 0.42f, 0.06f), brass);
             CreateVisualPrimitive(PrimitiveType.Cube, "StartShopSignLetterHintB", new Vector3(-5.0f, 3.03f, -10.18f), new Vector3(0.045f, 0.42f, 0.06f), brass);
             CreateVisualPrimitive(PrimitiveType.Cube, "StartShopSignLetterHintC", new Vector3(-5.0f, 3.03f, -9.8f), new Vector3(0.045f, 0.42f, 0.06f), brass);
+        }
+
+        private static void CreateAuthoredDocksVerticalSlicePass(
+            Material asphalt,
+            Material facade,
+            Material roof,
+            Material metal,
+            Material glow,
+            Material wood,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            var root = new GameObject("Authoring_DocksVerticalSlice_ProductionBlock");
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceReadableWetAsphalt", new Vector3(0f, 0.215f, 0.5f), new Vector3(8.4f, 0.07f, 54f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceHarborSideStreet", new Vector3(-8.2f, 0.205f, -12.8f), new Vector3(8.2f, 0.055f, 4.8f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceWarehouseSideStreet", new Vector3(8.2f, 0.205f, 6.8f), new Vector3(8.2f, 0.055f, 4.8f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceWestCurbStone", new Vector3(-4.18f, 0.31f, 0.5f), new Vector3(0.28f, 0.24f, 54f), sidewalk).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceEastCurbStone", new Vector3(4.18f, 0.31f, 0.5f), new Vector3(0.28f, 0.24f, 54f), sidewalk).transform.SetParent(root.transform, true);
+
+            for (var index = 0; index < 9; index += 1)
+            {
+                var z = -21f + (index * 5.3f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceBrokenLanePaint_" + index, new Vector3(0f, 0.262f, z), new Vector3(0.26f, 0.018f, 1.9f), brass).transform.SetParent(root.transform, true);
+            }
+
+            for (var index = 0; index < 4; index += 1)
+            {
+                var z = -17f + (index * 12f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceCrossStreetWetRead_" + index, new Vector3(0f, 0.255f, z), new Vector3(18.5f, 0.018f, 0.82f), puddle).transform.SetParent(root.transform, true);
+            }
+
+            var leftRoles = new[]
+            {
+                DistrictBuildingRole.CornerShop,
+                DistrictBuildingRole.Warehouse,
+                DistrictBuildingRole.NarrowTenement,
+                DistrictBuildingRole.OfficeBlock,
+                DistrictBuildingRole.Warehouse,
+                DistrictBuildingRole.RowHouse
+            };
+            var rightRoles = new[]
+            {
+                DistrictBuildingRole.Warehouse,
+                DistrictBuildingRole.RowHouse,
+                DistrictBuildingRole.CornerShop,
+                DistrictBuildingRole.OfficeBlock,
+                DistrictBuildingRole.NarrowTenement,
+                DistrictBuildingRole.Warehouse
+            };
+
+            for (var index = 0; index < leftRoles.Length; index += 1)
+            {
+                var z = -21.5f + (index * 8f);
+                PlaceDistrictBuilding(
+                    DistrictArtStyle.Docks,
+                    leftRoles[index],
+                    "DocksSliceLeftAssetFacade_" + index,
+                    new Vector3(-9.25f - ((index % 2) * 0.45f), 0.08f, z),
+                    new Vector3(0f, 90f, 0f),
+                    new Vector3(2.35f, 2.55f + ((index % 3) * 0.18f), 2.25f),
+                    facade,
+                    roof,
+                    glow,
+                    root.transform);
+                PlaceDistrictBuilding(
+                    DistrictArtStyle.Docks,
+                    rightRoles[index],
+                    "DocksSliceRightAssetFacade_" + index,
+                    new Vector3(9.25f + (((index + 1) % 2) * 0.45f), 0.08f, z + 2.6f),
+                    new Vector3(0f, -90f, 0f),
+                    new Vector3(2.3f, 2.45f + (((index + 1) % 3) * 0.18f), 2.2f),
+                    facade,
+                    roof,
+                    glow,
+                    root.transform);
+            }
+
+            CreateColliderBlock("DocksSliceWestBuildingContinuousCollider", new Vector3(-8.15f, 2.9f, 0.5f), new Vector3(1.15f, 5.8f, 53f)).transform.SetParent(root.transform, true);
+            CreateColliderBlock("DocksSliceEastBuildingContinuousCollider", new Vector3(8.15f, 2.9f, 1.5f), new Vector3(1.15f, 5.8f, 53f)).transform.SetParent(root.transform, true);
+            CreateColliderBlock("DocksSliceHarborEdgeCollider", new Vector3(-14.15f, 1.3f, 1f), new Vector3(0.7f, 2.6f, 55f)).transform.SetParent(root.transform, true);
+            CreateColliderBlock("DocksSliceBackLotCollider", new Vector3(14.15f, 1.3f, 1f), new Vector3(0.7f, 2.6f, 55f)).transform.SetParent(root.transform, true);
+            CreateColliderBlock("DocksSliceSouthSoftBoundary", new Vector3(0f, 1.4f, -27.2f), new Vector3(28f, 2.8f, 0.75f)).transform.SetParent(root.transform, true);
+            CreateColliderBlock("DocksSliceNorthSoftBoundary", new Vector3(0f, 1.4f, 31.4f), new Vector3(28f, 2.8f, 0.75f)).transform.SetParent(root.transform, true);
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceWestPavement", new Vector3(-5.65f, 0.24f, 1f), new Vector3(2.6f, 0.08f, 54f), sidewalk).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceEastPavement", new Vector3(5.65f, 0.24f, 1f), new Vector3(2.6f, 0.08f, 54f), sidewalk).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceWetMainLane", new Vector3(-1.6f, 0.235f, -1.5f), new Vector3(0.45f, 0.018f, 30f), puddle).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceHarborWaterRead", new Vector3(-17.25f, 0.015f, 1f), new Vector3(5.4f, 0.018f, 56f), puddle).transform.SetParent(root.transform, true);
+
+            CreateLowProfileStreetLamp("DocksSliceLampSouthWest", new Vector3(-5.1f, 0.08f, -18.8f), root.transform);
+            CreateLowProfileStreetLamp("DocksSliceLampCafe", new Vector3(5.15f, 0.08f, -10.2f), root.transform);
+            CreateLowProfileStreetLamp("DocksSliceLampWarehouse", new Vector3(-5.1f, 0.08f, 4.5f), root.transform);
+            CreateLowProfileStreetLamp("DocksSliceLampOffice", new Vector3(5.15f, 0.08f, 18.5f), root.transform);
+
+            CreateStaticVehicle("DocksSliceParkedDeliveryTruck", new Vector3(-3.85f, 0.76f, -20.4f), new Vector3(2.05f, 1.08f, 4.55f), new Color(0.09f, 0.105f, 0.11f), roof, glow);
+            CreateStaticVehicle("DocksSliceParkedBlackSedan", new Vector3(3.85f, 0.72f, -2.8f), new Vector3(1.65f, 0.9f, 3.75f), new Color(0.055f, 0.052f, 0.048f), roof, glow);
+            CreateStaticVehicle("DocksSliceParkedMaroonSedan", new Vector3(3.95f, 0.72f, 18.2f), new Vector3(1.7f, 0.92f, 3.85f), new Color(0.22f, 0.055f, 0.05f), roof, glow);
+
+            for (var index = 0; index < 6; index += 1)
+            {
+                var z = -18.5f + (index * 7.1f);
+                CreatePrimitive(PrimitiveType.Cube, "DocksSliceCrateCollisionStack_" + index, new Vector3(-6.1f, 0.58f, z), new Vector3(0.95f, 0.95f, 0.9f), wood).transform.SetParent(root.transform, true);
+                CreatePrimitive(PrimitiveType.Cylinder, "DocksSliceSteelBollard_" + index, new Vector3(-13.35f, 0.58f, z + 1.9f), new Vector3(0.26f, 0.9f, 0.26f), metal).transform.SetParent(root.transform, true);
+            }
+
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitCommercial", "detail-awning-wide", "DocksSliceMorettiAwning", new Vector3(-6.85f, 1.86f, -14.2f), new Vector3(0f, 90f, 0f), new Vector3(1.75f, 1.75f, 1.75f), root.transform);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitCommercial", "detail-overhang-wide", "DocksSliceWarehouseOverhang", new Vector3(6.85f, 2.05f, 8.6f), new Vector3(0f, -90f, 0f), new Vector3(1.7f, 1.7f, 1.7f), root.transform);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "construction-barrier", "DocksSliceRoadworksBarrierA", new Vector3(4.85f, 0.18f, -20.6f), new Vector3(0f, 15f, 0f), new Vector3(1.35f, 1.35f, 1.35f), root.transform);
+            EnvironmentArtCatalog.CreateKenneyFallback("CityKitRoads", "construction-light", "DocksSliceRoadworksLightA", new Vector3(5.4f, 0.18f, -19.35f), new Vector3(0f, 45f, 0f), new Vector3(1.25f, 1.25f, 1.25f), root.transform);
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceNeonCafeSignBack", new Vector3(-6.98f, 3.05f, -14.15f), new Vector3(0.16f, 0.72f, 2.9f), sign).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceNeonCafeSignGlow", new Vector3(-6.88f, 3.08f, -14.15f), new Vector3(0.07f, 0.18f, 2.35f), glow).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceWarehouseLoadingDoor", new Vector3(7.02f, 1.2f, 8.6f), new Vector3(0.12f, 1.85f, 1.85f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceOfficeHeroSign", new Vector3(7.02f, 3.45f, 21.5f), new Vector3(0.14f, 0.62f, 3.6f), sign).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "DocksSliceOfficeHeroSignGlow", new Vector3(6.92f, 3.48f, 21.5f), new Vector3(0.06f, 0.18f, 3.1f), glow).transform.SetParent(root.transform, true);
+
+            var sliceKeyLight = new GameObject("DocksSliceWarmStreetKey");
+            sliceKeyLight.transform.SetParent(root.transform, true);
+            sliceKeyLight.transform.position = new Vector3(-2.3f, 5.8f, -13.4f);
+            var light = sliceKeyLight.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.range = 13f;
+            light.intensity = 2.6f;
+            light.color = new Color(1f, 0.68f, 0.32f);
+        }
+
+        private static void CreateDocksFirstScreenPolishPass(
+            Material asphalt,
+            Material facade,
+            Material roof,
+            Material metal,
+            Material glow,
+            Material wood,
+            Material sign,
+            Material sidewalk,
+            Material puddle,
+            Material brass)
+        {
+            var root = new GameObject("Authoring_DocksFirstScreen_NoMoreBlockout");
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenWetAsphaltUnifier", new Vector3(0f, 0.305f, -8.3f), new Vector3(7.65f, 0.045f, 19.4f), asphalt).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenWetCenterReflection", new Vector3(-1.25f, 0.335f, -8.6f), new Vector3(0.32f, 0.018f, 8.6f), puddle).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenLeftCurbRun", new Vector3(-4.18f, 0.42f, -8.4f), new Vector3(0.22f, 0.24f, 19.8f), sidewalk).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenRightCurbRun", new Vector3(4.18f, 0.42f, -8.4f), new Vector3(0.22f, 0.24f, 19.8f), sidewalk).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenLeftSidewalkStone", new Vector3(-5.75f, 0.37f, -8.4f), new Vector3(2.95f, 0.12f, 19.6f), sidewalk).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenRightSidewalkStone", new Vector3(5.75f, 0.37f, -8.4f), new Vector3(2.95f, 0.12f, 19.6f), sidewalk).transform.SetParent(root.transform, true);
+
+            PlaceDistrictBuilding(DistrictArtStyle.Docks, DistrictBuildingRole.CornerShop, "FirstScreenReadyMorettiMarketAsset", new Vector3(-8.45f, 0.08f, -13.7f), new Vector3(0f, 90f, 0f), new Vector3(2.15f, 2.35f, 2.05f), facade, roof, glow, root.transform);
+            PlaceDistrictBuilding(DistrictArtStyle.Docks, DistrictBuildingRole.NarrowTenement, "FirstScreenReadyPierRoomsAsset", new Vector3(-8.35f, 0.08f, -4.6f), new Vector3(0f, 90f, 0f), new Vector3(2.05f, 2.25f, 2.0f), facade, roof, glow, root.transform);
+            PlaceDistrictBuilding(DistrictArtStyle.Docks, DistrictBuildingRole.Warehouse, "FirstScreenReadyColdStorageAsset", new Vector3(8.55f, 0.08f, -11.1f), new Vector3(0f, -90f, 0f), new Vector3(2.2f, 2.35f, 2.15f), facade, roof, glow, root.transform);
+            PlaceDistrictBuilding(DistrictArtStyle.Docks, DistrictBuildingRole.OfficeBlock, "FirstScreenReadyMorettiOfficeAsset", new Vector3(8.45f, 0.08f, -1.1f), new Vector3(0f, -90f, 0f), new Vector3(2.15f, 2.4f, 2.1f), facade, roof, glow, root.transform);
+
+            CreateDocksFacadeSlice(root.transform, "MorettiMarket", -7.18f, -13.6f, 8.2f, 5.8f, facade, roof, metal, glow, wood, sign, brass, true);
+            CreateDocksFacadeSlice(root.transform, "PierRooms", -7.08f, -4.5f, 7.6f, 6.4f, facade, roof, metal, glow, wood, sign, brass, true);
+            CreateDocksFacadeSlice(root.transform, "ColdStorage", 7.18f, -11.2f, 9.4f, 5.9f, facade, roof, metal, glow, wood, sign, brass, false);
+            CreateDocksFacadeSlice(root.transform, "MorettiOffice", 7.1f, -1.2f, 9.0f, 6.8f, facade, roof, metal, glow, wood, sign, brass, false);
+
+            for (var index = 0; index < 7; index += 1)
+            {
+                var z = -16.5f + (index * 2.8f);
+                CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenSidewalkSlabLeft_" + index, new Vector3(-5.75f, 0.455f, z), new Vector3(2.55f, 0.022f, 0.055f), metal).transform.SetParent(root.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenSidewalkSlabRight_" + index, new Vector3(5.75f, 0.455f, z + 0.9f), new Vector3(2.55f, 0.022f, 0.055f), metal).transform.SetParent(root.transform, true);
+            }
+
+            for (var stripe = 0; stripe < 4; stripe += 1)
+            {
+                CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenBrokenLaneStripe_" + stripe, new Vector3(0.95f, 0.36f, -15.4f + (stripe * 4.6f)), new Vector3(0.16f, 0.026f, 1.45f), brass).transform.SetParent(root.transform, true);
+            }
+
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenBackOfficeDirectionGlow", new Vector3(2.92f, 0.36f, -3.1f), new Vector3(1.25f, 0.022f, 0.46f), glow).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenStormDrain", new Vector3(-3.72f, 0.47f, -6.1f), new Vector3(0.5f, 0.045f, 0.92f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenStormDrainSlotsA", new Vector3(-3.72f, 0.505f, -6.1f), new Vector3(0.56f, 0.025f, 0.08f), brass).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenStormDrainSlotsB", new Vector3(-3.72f, 0.506f, -5.86f), new Vector3(0.56f, 0.025f, 0.08f), brass).transform.SetParent(root.transform, true);
+
+            CreateStaticVehicle("FirstScreenParkedPeriodSedan", new Vector3(2.8f, 0.78f, -12.1f), new Vector3(1.62f, 0.92f, 3.65f), new Color(0.045f, 0.049f, 0.052f), roof, glow);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenParkedSedanReflection", new Vector3(2.8f, 0.33f, -12.1f), new Vector3(1.95f, 0.018f, 4.25f), puddle).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenHeadlightSplashLeft", new Vector3(2.42f, 0.34f, -14.9f), new Vector3(0.22f, 0.018f, 2.75f), glow).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenHeadlightSplashRight", new Vector3(3.18f, 0.34f, -14.9f), new Vector3(0.22f, 0.018f, 2.75f), glow).transform.SetParent(root.transform, true);
+
+            for (var crate = 0; crate < 5; crate += 1)
+            {
+                CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenMarketCrate_" + crate, new Vector3(-5.72f + ((crate % 2) * 0.72f), 0.66f + ((crate / 2) * 0.34f), -14.95f + (crate * 0.45f)), new Vector3(0.62f, 0.5f, 0.54f), wood).transform.SetParent(root.transform, true);
+            }
+
+            CreateVisualPrimitive(PrimitiveType.Cylinder, "FirstScreenTrashCanA", new Vector3(-5.95f, 0.76f, -7.7f), new Vector3(0.28f, 0.58f, 0.28f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, "FirstScreenTrashCanB", new Vector3(-6.32f, 0.68f, -7.35f), new Vector3(0.22f, 0.48f, 0.22f), metal).transform.SetParent(root.transform, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, "FirstScreenNewspaperBundle", new Vector3(-5.35f, 0.57f, -7.9f), new Vector3(0.68f, 0.18f, 0.42f), sidewalk).transform.SetParent(root.transform, true);
+
+            CreateNoirActor("DockPedestrianFishBuyer", new Vector3(-5.15f, 1f, -15.25f), sign, root.transform, false);
+            CreateNoirActor("DockPedestrianLookout", new Vector3(5.45f, 1f, -5.35f), metal, root.transform, false);
+
+            var steamLight = new GameObject("FirstScreenSteamAndWindowBounce");
+            steamLight.transform.SetParent(root.transform, true);
+            steamLight.transform.position = new Vector3(-4.2f, 2.2f, -12.0f);
+            var light = steamLight.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.range = 8.5f;
+            light.intensity = 1.75f;
+            light.color = new Color(1f, 0.64f, 0.31f);
+        }
+
+        private static void CreateDocksFacadeSlice(
+            Transform root,
+            string prefix,
+            float x,
+            float centerZ,
+            float length,
+            float height,
+            Material facade,
+            Material roof,
+            Material metal,
+            Material glow,
+            Material wood,
+            Material sign,
+            Material brass,
+            bool facesEast)
+        {
+            var facingSign = facesEast ? 1f : -1f;
+            var facadeX = x;
+            var faceOffset = facingSign * 0.12f;
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "FinishedFacadeWall", new Vector3(facadeX, height * 0.5f, centerZ), new Vector3(0.52f, height, length), facade).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "RoofLip", new Vector3(facadeX + faceOffset, height + 0.16f, centerZ), new Vector3(0.72f, 0.28f, length + 0.34f), roof).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "StorefrontBase", new Vector3(facadeX + faceOffset, 1.18f, centerZ - (length * 0.18f)), new Vector3(0.28f, 2.05f, length * 0.5f), sign).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "DoorWarmRead", new Vector3(facadeX + (faceOffset * 1.45f), 1.17f, centerZ - (length * 0.36f)), new Vector3(0.08f, 1.65f, 0.72f), wood).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "DoorGlassGlow", new Vector3(facadeX + (faceOffset * 1.8f), 1.33f, centerZ - (length * 0.36f)), new Vector3(0.04f, 0.62f, 0.42f), glow).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "Awning", new Vector3(facadeX + (faceOffset * 2.5f), 2.25f, centerZ - (length * 0.12f)), new Vector3(1.08f, 0.24f, length * 0.56f), sign).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "AwningFrontTrim", new Vector3(facadeX + (faceOffset * 4.4f), 2.08f, centerZ - (length * 0.12f)), new Vector3(0.12f, 0.18f, length * 0.54f), brass).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "WallSignBack", new Vector3(facadeX + (faceOffset * 1.7f), 3.25f, centerZ + (length * 0.18f)), new Vector3(0.11f, 0.72f, length * 0.46f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cube, prefix + "WallSignWarmLine", new Vector3(facadeX + (faceOffset * 2.08f), 3.28f, centerZ + (length * 0.18f)), new Vector3(0.045f, 0.12f, length * 0.38f), glow).transform.SetParent(root, true);
+
+            for (var floor = 0; floor < 3; floor += 1)
+            {
+                var y = 2.85f + (floor * 1.05f);
+                for (var bay = 0; bay < 3; bay += 1)
+                {
+                    var z = centerZ - (length * 0.32f) + (bay * length * 0.27f);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "WindowFrame_" + floor + "_" + bay, new Vector3(facadeX + (faceOffset * 1.42f), y, z), new Vector3(0.075f, 0.68f, 0.68f), metal).transform.SetParent(root, true);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "WindowGlow_" + floor + "_" + bay, new Vector3(facadeX + (faceOffset * 1.82f), y, z), new Vector3(0.035f, 0.42f, 0.42f), glow).transform.SetParent(root, true);
+                    CreateVisualPrimitive(PrimitiveType.Cube, prefix + "WindowSill_" + floor + "_" + bay, new Vector3(facadeX + (faceOffset * 2.02f), y - 0.42f, z), new Vector3(0.09f, 0.075f, 0.84f), brass).transform.SetParent(root, true);
+                }
+            }
+
+            for (var course = 0; course < 5; course += 1)
+            {
+                CreateVisualPrimitive(PrimitiveType.Cube, prefix + "BrickCourse_" + course, new Vector3(facadeX + (faceOffset * 1.1f), 1.6f + (course * 0.82f), centerZ), new Vector3(0.052f, 0.035f, length * 0.92f), roof).transform.SetParent(root, true);
+            }
+        }
+
+        private static void CreateDocksOverheadWire(Transform root, string name, float z, Material metal)
+        {
+            CreateVisualPrimitive(PrimitiveType.Cube, name + "Span", new Vector3(0f, 5.15f, z), new Vector3(13.5f, 0.035f, 0.035f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, name + "LeftInsulator", new Vector3(-6.72f, 5.05f, z), new Vector3(0.12f, 0.12f, 0.12f), metal).transform.SetParent(root, true);
+            CreateVisualPrimitive(PrimitiveType.Cylinder, name + "RightInsulator", new Vector3(6.72f, 5.05f, z), new Vector3(0.12f, 0.12f, 0.12f), metal).transform.SetParent(root, true);
         }
 
         [System.Obsolete("Use physical sign geometry instead of camera-facing text in gameplay scenes.")]
@@ -5240,6 +5670,23 @@ namespace MafiaTopDown.Editor
         {
             var halfWidth = bodyScale.x * 0.5f;
             var halfLength = bodyScale.z * 0.5f;
+            var readyVehicleScale = ResolveReadyVehicleScale(name, bodyScale);
+            var readyModel = EnvironmentArtCatalog.CreateKenneyFallback(
+                "CarKit",
+                ResolveReadyVehicleModel(name),
+                name + "ReadyVehicleMesh",
+                position + new Vector3(0f, -0.18f, 0f),
+                Vector3.zero,
+                readyVehicleScale,
+                body.transform);
+            if (readyModel != null)
+            {
+                ApplyNoirVehicleMaterials(readyModel, bodyMaterial, trimMaterial, glowMaterial);
+                CreateVisualPrimitive(PrimitiveType.Cube, name + "ReadyHeadlampLeft", position + new Vector3(-halfWidth * 0.32f, 0.5f, -halfLength - 0.08f), new Vector3(0.26f, 0.14f, 0.08f), glowMaterial).transform.SetParent(body.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, name + "ReadyHeadlampRight", position + new Vector3(halfWidth * 0.32f, 0.5f, -halfLength - 0.08f), new Vector3(0.26f, 0.14f, 0.08f), glowMaterial).transform.SetParent(body.transform, true);
+                CreateVisualPrimitive(PrimitiveType.Cube, name + "ReadyGroundShadow", position + new Vector3(0f, -0.63f, 0f), new Vector3(bodyScale.x * 1.06f, 0.018f, bodyScale.z * 0.94f), trimMaterial).transform.SetParent(body.transform, true);
+                return;
+            }
 
             CreateVisualPrimitive(PrimitiveType.Cube, name + "LowerChassis", position + new Vector3(0f, 0.42f, 0f), new Vector3(bodyScale.x * 0.96f, 0.44f, bodyScale.z * 0.78f), bodyMaterial).transform.SetParent(body.transform, true);
             CreateVisualPrimitive(PrimitiveType.Cube, name + "LongHood", position + new Vector3(0f, 0.66f, -halfLength * 0.48f), new Vector3(bodyScale.x * 0.74f, 0.34f, bodyScale.z * 0.34f), bodyMaterial).transform.SetParent(body.transform, true);
@@ -5250,6 +5697,87 @@ namespace MafiaTopDown.Editor
             CreateVisualPrimitive(PrimitiveType.Cube, name + "LeftSideGlass", position + new Vector3(-halfWidth * 0.32f, 1.04f, -0.02f), new Vector3(0.06f, 0.22f, bodyScale.z * 0.28f), glowMaterial).transform.SetParent(body.transform, true);
             CreateVisualPrimitive(PrimitiveType.Cube, name + "RightSideGlass", position + new Vector3(halfWidth * 0.32f, 1.04f, -0.02f), new Vector3(0.06f, 0.22f, bodyScale.z * 0.28f), glowMaterial).transform.SetParent(body.transform, true);
             DecorateNoirVehicle(body, name, position, bodyScale, trimMaterial, glowMaterial);
+        }
+
+        private static string ResolveReadyVehicleModel(string name)
+        {
+            if (name.Contains("Truck", System.StringComparison.OrdinalIgnoreCase) ||
+                name.Contains("Delivery", System.StringComparison.OrdinalIgnoreCase) ||
+                name.Contains("Harbor", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "delivery";
+            }
+
+            if (name.Contains("Police", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "police";
+            }
+
+            if (name.Contains("Coupe", System.StringComparison.OrdinalIgnoreCase) ||
+                name.Contains("Sports", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "sedan-sports";
+            }
+
+            return "sedan";
+        }
+
+        private static Vector3 ResolveReadyVehicleScale(string name, Vector3 bodyScale)
+        {
+            // Vehicle meshes are parented under an invisible physics body whose local scale
+            // defines the gameplay footprint, so the art mesh scale must stay relative.
+            if (name.Contains("Truck", System.StringComparison.OrdinalIgnoreCase) ||
+                name.Contains("Delivery", System.StringComparison.OrdinalIgnoreCase) ||
+                name.Contains("Harbor", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return Vector3.one * 0.18f;
+            }
+
+            if (name.Contains("Coupe", System.StringComparison.OrdinalIgnoreCase) ||
+                name.Contains("Sports", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return Vector3.one * 0.155f;
+            }
+
+            return Vector3.one * 0.165f;
+        }
+
+        private static void ApplyNoirVehicleMaterials(GameObject vehicleModel, Material bodyMaterial, Material trimMaterial, Material glowMaterial)
+        {
+            var renderers = vehicleModel.GetComponentsInChildren<Renderer>(true);
+            foreach (var renderer in renderers)
+            {
+                var sourceMaterials = renderer.sharedMaterials;
+                if (sourceMaterials.Length == 0)
+                {
+                    renderer.sharedMaterial = bodyMaterial;
+                    continue;
+                }
+
+                var replacements = new Material[sourceMaterials.Length];
+                for (var index = 0; index < sourceMaterials.Length; index += 1)
+                {
+                    var sourceName = sourceMaterials[index] != null ? sourceMaterials[index].name : string.Empty;
+                    if (sourceName.Contains("window", System.StringComparison.OrdinalIgnoreCase) ||
+                        sourceName.Contains("glass", System.StringComparison.OrdinalIgnoreCase) ||
+                        sourceName.Contains("light", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        replacements[index] = glowMaterial;
+                    }
+                    else if (sourceName.Contains("wheel", System.StringComparison.OrdinalIgnoreCase) ||
+                        sourceName.Contains("tire", System.StringComparison.OrdinalIgnoreCase) ||
+                        sourceName.Contains("bumper", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        replacements[index] = trimMaterial;
+                    }
+                    else
+                    {
+                        replacements[index] = bodyMaterial;
+                    }
+                }
+
+                renderer.sharedMaterials = replacements;
+            }
         }
 
         private static void DecorateNoirVehicle(
@@ -5359,6 +5887,14 @@ namespace MafiaTopDown.Editor
         {
             var gate = CreatePrimitive(PrimitiveType.Cube, name, position, scale, material);
             gate.transform.SetParent(parent, true);
+            HideRenderer(gate);
+            if (gate.TryGetComponent<Collider>(out var gateCollider))
+            {
+                gateCollider.isTrigger = true;
+            }
+
+            CreateTravelGateStreetMarkers(name, position, scale, material, parent);
+
             var travel = gate.AddComponent<DistrictTravelInteractable>();
             SetStringValue(travel, "promptText", promptText);
             SetStringValue(travel, "requiredDistrictId", string.Empty);
@@ -5493,6 +6029,14 @@ namespace MafiaTopDown.Editor
             string missionStageId = "")
         {
             var gate = CreatePrimitive(PrimitiveType.Cube, name, position, scale, material);
+            HideRenderer(gate);
+            if (gate.TryGetComponent<Collider>(out var gateCollider))
+            {
+                gateCollider.isTrigger = true;
+            }
+
+            CreateTravelGateStreetMarkers(name, position, scale, material);
+
             var travel = gate.AddComponent<DistrictTravelInteractable>();
             SetStringValue(travel, "promptText", promptText);
             SetStringValue(travel, "requiredDistrictId", requiredDistrictId);
@@ -5512,6 +6056,32 @@ namespace MafiaTopDown.Editor
                 SetObjectReference(travel, "campaignProgressionController", campaignProgressionController);
                 SetObjectReference(travel, "missionAsset", missionAsset);
                 SetStringValue(travel, "missionStageIdToComplete", missionStageId);
+            }
+        }
+
+        private static void CreateTravelGateStreetMarkers(
+            string name,
+            Vector3 position,
+            Vector3 scale,
+            Material material,
+            Transform? parent = null)
+        {
+            var markerHalfOffset = scale.x >= scale.z
+                ? new Vector3(Mathf.Max(1.2f, scale.x * 0.45f), 0f, 0f)
+                : new Vector3(0f, 0f, Mathf.Max(1.2f, scale.z * 0.45f));
+
+            for (var side = -1; side <= 1; side += 2)
+            {
+                var marker = CreateVisualPrimitive(
+                    PrimitiveType.Cube,
+                    name + "_CurbMarker_" + (side < 0 ? "A" : "B"),
+                    position + (markerHalfOffset * side) + new Vector3(0f, -0.76f, 0f),
+                    new Vector3(0.26f, 0.18f, 0.26f),
+                    material);
+                if (parent != null)
+                {
+                    marker.transform.SetParent(parent, true);
+                }
             }
         }
     }

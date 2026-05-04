@@ -98,9 +98,9 @@ namespace MafiaTopDown.Editor
                 return;
             }
 
-            camera.fieldOfView = 36f;
-            camera.transform.position = player.transform.position + new Vector3(0f, 10.8f, -6.6f);
-            camera.transform.rotation = Quaternion.Euler(52f, -2f, 0f);
+            camera.fieldOfView = 38f;
+            camera.transform.position = player.transform.position + new Vector3(0.25f, 7.0f, -6.65f);
+            camera.transform.rotation = Quaternion.Euler(48f, 8f, 0f);
         }
 
         private static byte[] EncodeTextureToPng(Texture2D texture)
