@@ -3,6 +3,7 @@
 using MafiaTopDown.Gameplay.Runtime.Camera;
 using MafiaTopDown.Gameplay.Runtime.Combat;
 using MafiaTopDown.Gameplay.Runtime.Data;
+using MafiaTopDown.Gameplay.Runtime.Diagnostics;
 using MafiaTopDown.Gameplay.Runtime.Interaction;
 using MafiaTopDown.Gameplay.Runtime.Law;
 using MafiaTopDown.Gameplay.Runtime.Missions;
@@ -99,6 +100,7 @@ namespace MafiaTopDown.Editor
             var bootFlowController = bootRoot.AddComponent<BootFlowController>();
             SetStringValue(bootFlowController, "firstPlayableSpawnPoint", "PickupSpawn");
             SetObjectReference(bootFlowController, "saveGameFileService", saveGameFileService);
+            bootRoot.AddComponent<LaunchScreenshotCapture>();
 
             EditorSceneManager.SaveScene(scene);
         }
@@ -325,7 +327,7 @@ namespace MafiaTopDown.Editor
 
             CreateSteamReadyDocksCityPass(asphalt, brick, roof, metal, windowGlow, crateWood, officeSign, sidewalk, puddle, water, stone, brass, lanePaint);
 
-            var openingSpawn = new Vector3(-14.8f, 1f, -22.5f);
+            var openingSpawn = new Vector3(-14.8f, 1.08f, -22.5f);
             var player = CreateNoirActor("Player", openingSpawn, playerCoat, null, false);
             var characterController = player.AddComponent<CharacterController>();
             characterController.height = 1.8f;
@@ -343,15 +345,16 @@ namespace MafiaTopDown.Editor
 
             CreateSpawnPoint("DefaultSpawnPoint", "DefaultSpawn", openingSpawn);
             CreateSpawnPoint("PickupSpawnPoint", "PickupSpawn", openingSpawn);
-            CreateSpawnPoint("DriveSpawnPoint", "DriveSpawn", new Vector3(-14.4f, 1f, -14.0f));
-            CreateSpawnPoint("ExteriorReturnSpawnPoint", "ExteriorReturn", new Vector3(0f, 1f, 12.5f));
-            CreateSpawnPoint("PierExitSpawnPoint", "PierExitSpawn", new Vector3(-3.2f, 1f, 9.8f));
-            CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(0f, 1f, -12.8f));
-            CreateSpawnPoint("FromRailYardGatePoint", "FromRailYardGate", new Vector3(6.8f, 1f, -1.6f));
-            CreateSpawnPoint("FromWarehouseInteriorPoint", "FromWarehouseInterior", new Vector3(-5.15f, 1f, -9.9f));
-            CreateSpawnPoint("FromSocialClubInteriorPoint", "FromSocialClubInterior", new Vector3(5.15f, 1f, 5.4f));
+            CreateSpawnPoint("DriveSpawnPoint", "DriveSpawn", new Vector3(-14.4f, 1.08f, -14.0f));
+            CreateSpawnPoint("ExteriorReturnSpawnPoint", "ExteriorReturn", new Vector3(0f, 1.08f, 12.5f));
+            CreateSpawnPoint("PierExitSpawnPoint", "PierExitSpawn", new Vector3(-3.2f, 1.08f, 9.8f));
+            CreateSpawnPoint("FromBusinessCoreGatePoint", "FromBusinessCoreGate", new Vector3(0f, 1.08f, -12.8f));
+            CreateSpawnPoint("FromRailYardGatePoint", "FromRailYardGate", new Vector3(6.8f, 1.08f, -1.6f));
+            CreateSpawnPoint("FromWarehouseInteriorPoint", "FromWarehouseInterior", new Vector3(-5.15f, 1.08f, -9.9f));
+            CreateSpawnPoint("FromSocialClubInteriorPoint", "FromSocialClubInterior", new Vector3(5.15f, 1.08f, 5.4f));
 
             var campaignSystems = new GameObject("CampaignSystems");
+            campaignSystems.AddComponent<LaunchScreenshotCapture>();
             var saveGameFileService = campaignSystems.AddComponent<SaveGameFileService>();
             SetStringValue(saveGameFileService, "defaultSceneName", "District_01");
             SetStringValue(saveGameFileService, "defaultSpawnPointId", "PickupSpawn");
@@ -380,14 +383,14 @@ namespace MafiaTopDown.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.28f, 0.29f, 0.33f);
             camera.orthographic = false;
-            camera.fieldOfView = 38f;
+            camera.fieldOfView = 42f;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 140f;
-            var tunedOpeningCameraOffset = new Vector3(0.2f, 4.85f, -4.2f);
+            var tunedOpeningCameraOffset = new Vector3(0.35f, 7.2f, -6.0f);
             cameraRoot.transform.position = player.transform.position + tunedOpeningCameraOffset;
             var topDownCamera = cameraRoot.AddComponent<TopDownCameraController>();
             SetObjectReference(topDownCamera, "followTarget", player.transform);
-            ConfigureNoirCamera(camera, topDownCamera, tunedOpeningCameraOffset, 58f, 8f, 4.4f, 8.2f);
+            ConfigureNoirCamera(camera, topDownCamera, tunedOpeningCameraOffset, 56f, 8f, 6.0f, 10.5f);
 
             var sceneTransitionControllerObject = new GameObject("SceneTransitionController");
             var sceneTransitionController = sceneTransitionControllerObject.AddComponent<SceneTransitionController>();
@@ -4708,8 +4711,10 @@ namespace MafiaTopDown.Editor
             var root = new GameObject("SteamDocks_AuthoredCitySlice");
 
             CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_CityGround", new Vector3(0f, 0.0f, 0f), new Vector3(56f, 0.08f, 78f), asphalt).transform.SetParent(root.transform, true);
+            CreateColliderBlock("SteamDocks_PlayableGroundCollider", new Vector3(0f, -0.04f, 0f), new Vector3(56f, 0.16f, 78f)).transform.SetParent(root.transform, true);
             CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_HarborWater", new Vector3(-31f, -0.12f, 0f), new Vector3(11f, 0.08f, 78f), water).transform.SetParent(root.transform, true);
             CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_DockBoardwalk", new Vector3(-23.4f, 0.16f, 0f), new Vector3(4.4f, 0.18f, 74f), stone).transform.SetParent(root.transform, true);
+            CreateColliderBlock("SteamDocks_DockBoardwalkCollider", new Vector3(-23.4f, 0.09f, 0f), new Vector3(4.4f, 0.22f, 74f)).transform.SetParent(root.transform, true);
             CreateVisualPrimitive(PrimitiveType.Cube, "SteamDocks_HarborRail", new Vector3(-25.7f, 0.76f, 0f), new Vector3(0.16f, 1.1f, 72f), metal).transform.SetParent(root.transform, true);
 
             var northSouthRoads = new[] { -15f, 0f, 15f };

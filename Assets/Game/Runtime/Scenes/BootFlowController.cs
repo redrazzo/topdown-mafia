@@ -12,9 +12,9 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
         [SerializeField] private string firstPlayableSpawnPoint = "PickupSpawn";
         [SerializeField] private SaveGameFileService? saveGameFileService;
         [SerializeField] private bool loadLastSceneFromSave = true;
-        [SerializeField] private Rect menuRect = new Rect(64f, 96f, 548f, 648f);
-        [SerializeField] private string title = "Port City Blood Money";
-        [SerializeField] private string subtitle = "A rain-slick crime story in 1933.";
+        [SerializeField] private Rect menuRect = new Rect(58f, 72f, 520f, 590f);
+        [SerializeField] private string title = "Blood On The Docks";
+        [SerializeField] private string subtitle = "A borrowed sedan. A quiet favor. A city that keeps score.";
         [SerializeField] private int defaultSlotIndex = 1;
 
         private bool _saveExists;
@@ -35,6 +35,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
         private Texture2D? _buttonHoverTexture;
         private Texture2D? _buttonActiveTexture;
         private Texture2D? _goldTexture;
+        private Texture2D? _backdropTexture;
         private float _menuInputReadyAtTime;
 
         private void Start()
@@ -270,18 +271,18 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             var y = panel.y + 30f;
             var width = panel.width - 68f;
 
-            GUI.Label(new Rect(x, y, width, 20f), "PORT CITY, 1933 / HARBOR DISTRICT", _smallCapsStyle);
-            y += 32f;
-            GUI.Label(new Rect(x, y, width, 86f), title.ToUpperInvariant(), _titleStyle);
-            y += 92f;
-            GUI.Label(new Rect(x, y, width, 42f), subtitle, _subtitleStyle);
-            y += 56f;
+            GUI.Label(new Rect(x, y, width, 18f), "PORT CITY, 1933 / OPEN CASE FILE", _smallCapsStyle);
+            y += 27f;
+            GUI.Label(new Rect(x, y, width, 78f), title.ToUpperInvariant(), _titleStyle);
+            y += 80f;
+            GUI.Label(new Rect(x, y, width, 46f), subtitle, _subtitleStyle);
+            y += 58f;
 
             DrawRule(new Rect(x, y, width, 2f));
             y += 22f;
             GUI.Label(
                 new Rect(x, y, width, 52f),
-                "Pick a save slot and start on the docks. The campaign opens into four dense districts: harbor, business core, old quarter, and rail yard.",
+                "Start in the harbor district with the first playable case. The docks are wet, watched, and boxed in by warehouses that do not forget a debt.",
                 _bodyStyle);
             y += 62f;
 
@@ -327,7 +328,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             y += 58f;
             DrawRule(new Rect(x, y, width, 1f));
             y += 16f;
-            GUI.Label(new Rect(x, y, width, 44f), "1-3 SELECT SLOT     ENTER START     WASD DRIVE / WALK     E INTERACT", _smallCapsStyle);
+            GUI.Label(new Rect(x, y, width, 30f), "1-3 SLOT     ENTER START     WASD MOVE / DRIVE     E USE     ESC PAUSE", _smallCapsStyle);
         }
 
         private void DrawLoading(Rect panel)
@@ -503,10 +504,11 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             _buttonHoverTexture = MakeTexture(new Color(0.125f, 0.085f, 0.045f, 0.97f));
             _buttonActiveTexture = MakeTexture(new Color(0.22f, 0.13f, 0.055f, 0.98f));
             _goldTexture = MakeTexture(new Color(0.82f, 0.58f, 0.24f, 0.92f));
+            _backdropTexture = CreateNoirBackdropTexture();
 
             _titleStyle = new GUIStyle(GUI.skin.label)
             {
-                fontSize = 40,
+                fontSize = 42,
                 fontStyle = FontStyle.Bold,
                 normal = { textColor = new Color(0.98f, 0.84f, 0.55f, 1f) },
                 wordWrap = true
@@ -514,7 +516,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
 
             _subtitleStyle = new GUIStyle(GUI.skin.label)
             {
-                fontSize = 18,
+                fontSize = 17,
                 fontStyle = FontStyle.Bold,
                 normal = { textColor = new Color(0.78f, 0.58f, 0.31f, 1f) },
                 wordWrap = true
@@ -522,14 +524,14 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
 
             _bodyStyle = new GUIStyle(GUI.skin.label)
             {
-                fontSize = 15,
+                fontSize = 14,
                 normal = { textColor = new Color(0.86f, 0.81f, 0.69f, 1f) },
                 wordWrap = true
             };
 
             _smallCapsStyle = new GUIStyle(GUI.skin.label)
             {
-                fontSize = 12,
+                fontSize = 11,
                 fontStyle = FontStyle.Bold,
                 normal = { textColor = new Color(0.76f, 0.56f, 0.28f, 1f) },
                 wordWrap = true
@@ -537,7 +539,7 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
 
             _buttonTextStyle = new GUIStyle(GUI.skin.label)
             {
-                fontSize = 16,
+                fontSize = 15,
                 fontStyle = FontStyle.Bold,
                 normal = { textColor = new Color(0.92f, 0.83f, 0.65f, 1f) },
                 wordWrap = false
@@ -555,11 +557,20 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
 
         private void DrawBackdrop()
         {
-            DrawRect(new Rect(0f, 0f, Screen.width, Screen.height), new Color(0f, 0f, 0f, 0.06f));
-            DrawHorizontalGradient(0f, Screen.height, Screen.width * 0.72f, true, new Color(0f, 0f, 0f, 0.88f));
-            DrawHorizontalGradient(Screen.width * 0.54f, Screen.height, Screen.width * 0.46f, false, new Color(0f, 0f, 0f, 0.64f));
-            DrawVerticalGradient(0f, Screen.width, 150f, true, new Color(0f, 0f, 0f, 0.72f));
-            DrawVerticalGradient(Screen.height - 210f, Screen.width, 210f, false, new Color(0f, 0f, 0f, 0.80f));
+            if (_backdropTexture != null)
+            {
+                var originalColor = GUI.color;
+                GUI.color = new Color(0.9f, 0.82f, 0.68f, 1f);
+                GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), _backdropTexture, ScaleMode.ScaleAndCrop);
+                GUI.color = originalColor;
+            }
+
+            DrawRect(new Rect(0f, 0f, Screen.width, Screen.height), new Color(0f, 0f, 0f, 0.20f));
+            DrawSodiumGlow(new Rect(Screen.width * 0.60f, Screen.height * 0.18f, Screen.width * 0.32f, Screen.height * 0.46f));
+            DrawHorizontalGradient(0f, Screen.height, Screen.width * 0.68f, true, new Color(0f, 0f, 0f, 0.91f));
+            DrawHorizontalGradient(Screen.width * 0.58f, Screen.height, Screen.width * 0.42f, false, new Color(0f, 0f, 0f, 0.58f));
+            DrawVerticalGradient(0f, Screen.width, 170f, true, new Color(0f, 0f, 0f, 0.76f));
+            DrawVerticalGradient(Screen.height - 240f, Screen.width, 240f, false, new Color(0f, 0f, 0f, 0.86f));
             DrawScreenRain();
             DrawRect(new Rect(0f, 0f, Screen.width, 24f), new Color(0f, 0f, 0f, 0.88f));
             DrawRect(new Rect(0f, Screen.height - 28f, Screen.width, 28f), new Color(0f, 0f, 0f, 0.88f));
@@ -569,8 +580,8 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
 
         private Rect ResolveMenuRect()
         {
-            var width = Mathf.Clamp(Screen.width * 0.31f, 520f, 610f);
-            var height = Mathf.Clamp(Screen.height * 0.66f, 620f, 710f);
+            var width = Mathf.Clamp(Screen.width * 0.29f, 492f, 560f);
+            var height = Mathf.Clamp(Screen.height * 0.61f, 570f, 640f);
             var x = Mathf.Clamp(Screen.width * 0.035f, 42f, 76f);
             var y = Mathf.Max(42f, (Screen.height - height) * 0.5f);
             return new Rect(x, y, width, height);
@@ -588,11 +599,11 @@ namespace MafiaTopDown.Gameplay.Runtime.Scenes
             var y = Screen.height - 178f;
             DrawRect(new Rect(x - 18f, y - 18f, width + 36f, 126f), new Color(0f, 0f, 0f, 0.42f));
             DrawRect(new Rect(x - 18f, y - 18f, 3f, 126f), new Color(0.78f, 0.54f, 0.22f, 0.66f));
-            GUI.Label(new Rect(x, y, width, 24f), "THE FAMILY BUSINESS", _smallCapsStyle);
+            GUI.Label(new Rect(x, y, width, 24f), "THE FIRST JOB", _smallCapsStyle);
             DrawRule(new Rect(x, y + 30f, Mathf.Min(260f, width), 2f));
             GUI.Label(
                 new Rect(x, y + 44f, width, 58f),
-                "A borrowed sedan. A dirty favor. A city that only opens its doors after midnight.",
+                "Walk to Luca, take the sedan, and reach the back office without dropping through the docks.",
                 _bodyStyle);
         }
 
